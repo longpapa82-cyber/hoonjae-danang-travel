@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" fill="none">
+  <!-- 배경 -->
+  <rect width="192" height="192" rx="32" fill="#3B82F6"/>
+
+  <!-- 위치 핀 아이콘 -->
+  <path d="M96 48C84 48 74 58 74 70C74 85 96 112 96 112C96 112 118 85 118 70C118 58 108 48 96 48Z" fill="white"/>
+  <circle cx="96" cy="70" r="8" fill="#3B82F6"/>
+
+  <!-- 비행기 -->
+  <g transform="translate(76, 125)">
+    <path d="M20 0L30 15L25 18L20 10L15 10L10 18L5 15L15 0Z" fill="#FCD34D"/>
+    <rect x="18" y="0" width="4" height="8" fill="#FCD34D"/>
+    <ellipse cx="20" cy="2" rx="2" ry="1" fill="#F59E0B"/>
+  </g>
+</svg>
