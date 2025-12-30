@@ -71,7 +71,7 @@ export function LocationPermissionModal() {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ type: 'spring', duration: 0.5 }}
-              className="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl max-w-md w-full overflow-hidden"
+              className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden"
             >
               {/* 아이콘 헤더 */}
               <div className="bg-gradient-to-br from-primary to-blue-600 p-8 text-center">
@@ -117,15 +117,15 @@ export function LocationPermissionModal() {
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 mb-4"
+                    className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4"
                   >
                     <div className="flex items-start gap-3">
-                      <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
+                      <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
                       <div className="text-sm">
-                        <p className="font-semibold text-red-800 dark:text-red-300 mb-1">
+                        <p className="font-semibold text-red-800 mb-1">
                           위치 권한이 거부되었습니다
                         </p>
-                        <p className="text-red-600 dark:text-red-400">
+                        <p className="text-red-600">
                           브라우저 설정에서 위치 권한을 허용해주세요.
                         </p>
                       </div>
@@ -138,7 +138,7 @@ export function LocationPermissionModal() {
                   <button
                     onClick={handleDeny}
                     disabled={isRequesting}
-                    className="flex-1 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 touch-manipulation"
+                    className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200:bg-gray-600 transition-colors disabled:opacity-50 touch-manipulation"
                   >
                     나중에
                   </button>
@@ -159,7 +159,7 @@ export function LocationPermissionModal() {
                 </div>
 
                 {/* 개인정보 안내 */}
-                <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-4">
+                <p className="text-xs text-gray-500 text-center mt-4">
                   위치 정보는 기기에만 저장되며 서버로 전송되지 않습니다
                 </p>
               </div>
@@ -184,10 +184,10 @@ function FeatureItem({ icon: Icon, title, description }: FeatureItemProps) {
         <Icon className="w-5 h-5 text-primary" />
       </div>
       <div className="flex-1">
-        <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-1">
+        <h3 className="font-semibold text-gray-800 mb-1">
           {title}
         </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-sm text-gray-600">
           {description}
         </p>
       </div>

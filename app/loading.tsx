@@ -5,7 +5,7 @@ import { Plane } from 'lucide-react';
 
 export default function Loading() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
       <div className="text-center">
         {/* 비행기 애니메이션 */}
         <motion.div
@@ -29,13 +29,13 @@ export default function Loading() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          <h2 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <h2 className="text-xl font-semibold text-gray-700 mb-2">
             여행 정보 로딩 중...
           </h2>
         </motion.div>
 
         {/* 로딩 바 */}
-        <div className="w-48 h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mx-auto mt-4">
+        <div className="w-48 h-1 bg-gray-200 rounded-full overflow-hidden mx-auto mt-4">
           <motion.div
             className="h-full bg-primary"
             initial={{ width: '0%' }}

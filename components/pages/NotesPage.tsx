@@ -106,25 +106,25 @@ export function NotesPage() {
             exit={{ opacity: 0, height: 0 }}
             className="mb-6 overflow-hidden"
           >
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
+            <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="제목을 입력하세요"
-                className="w-full mb-4 px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-gray-800 dark:text-gray-100"
+                className="w-full mb-4 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-gray-800"
               />
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder="메모 내용을 입력하세요"
                 rows={6}
-                className="w-full mb-4 px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary resize-none text-gray-800 dark:text-gray-100"
+                className="w-full mb-4 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary resize-none text-gray-800"
               />
               <div className="flex gap-2 justify-end">
                 <button
                   onClick={handleCancel}
-                  className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                  className="px-4 py-2 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200:bg-gray-600 transition-colors"
                 >
                   취소
                 </button>
@@ -146,13 +146,13 @@ export function NotesPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl p-12 text-center shadow-lg"
+          className="bg-white rounded-2xl p-12 text-center shadow-lg"
         >
-          <FileText className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">
             아직 메모가 없습니다
           </h3>
-          <p className="text-gray-500 dark:text-gray-400 mb-4">
+          <p className="text-gray-500 mb-4">
             여행 중 기억하고 싶은 것들을 메모해보세요
           </p>
           <button
@@ -174,15 +174,15 @@ export function NotesPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+              className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200"
             >
               {/* 헤더 */}
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
-                  <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-1">
+                  <h3 className="text-lg font-bold text-gray-800 mb-1">
                     {note.title}
                   </h3>
-                  <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
                     <Calendar className="w-3 h-3" />
                     {new Date(note.date).toLocaleString('ko-KR')}
                   </div>
@@ -190,13 +190,13 @@ export function NotesPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => startEdit(note)}
-                    className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                    className="p-2 text-gray-600 hover:bg-gray-100:bg-gray-700 rounded-lg transition-colors"
                   >
                     <Edit className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => deleteNote(note.id)}
-                    className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                    className="p-2 text-red-600 hover:bg-red-50:bg-red-900/20 rounded-lg transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -204,7 +204,7 @@ export function NotesPage() {
               </div>
 
               {/* 내용 */}
-              <p className="text-gray-600 dark:text-gray-400 whitespace-pre-wrap">
+              <p className="text-gray-600 whitespace-pre-wrap">
                 {note.content}
               </p>
             </motion.div>

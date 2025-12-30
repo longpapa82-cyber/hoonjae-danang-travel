@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -34,10 +34,10 @@ export default function NotFound() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
         >
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+          <h1 className="text-3xl font-bold text-gray-800 mb-4">
             길을 잃으셨나요?
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
+          <p className="text-lg text-gray-600 mb-8">
             요청하신 페이지를 찾을 수 없습니다.
           </p>
         </motion.div>
@@ -61,7 +61,7 @@ export default function NotFound() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
-          className="mt-8 text-sm text-gray-500 dark:text-gray-500"
+          className="mt-8 text-sm text-gray-500"
         >
           다낭 여행 일정을 확인하시려면 홈 화면으로 이동해주세요
         </motion.p>

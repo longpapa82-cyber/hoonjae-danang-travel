@@ -40,13 +40,13 @@ export function ImageModal({ imageUrl, title, isOpen, onClose }: ImageModalProps
             exit={{ scale: 0.9, opacity: 0 }}
             transition={{ type: 'spring', duration: 0.3 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative max-w-4xl w-full bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-2xl"
+            className="relative max-w-4xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl"
           >
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-700 transition-colors"
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/90 hover:bg-white:bg-gray-700 transition-colors"
             >
-              <X className="w-6 h-6 text-gray-800 dark:text-gray-100" />
+              <X className="w-6 h-6 text-gray-800" />
             </button>
 
             <div className="relative w-full h-[70vh]">
@@ -60,8 +60,8 @@ export function ImageModal({ imageUrl, title, isOpen, onClose }: ImageModalProps
               />
             </div>
 
-            <div className="p-4 bg-white dark:bg-gray-800">
-              <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+            <div className="p-4 bg-white">
+              <h3 className="text-xl font-bold text-gray-800">
                 {title}
               </h3>
             </div>

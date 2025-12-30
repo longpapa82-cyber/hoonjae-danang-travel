@@ -39,7 +39,7 @@ export function ThemeToggle() {
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
       onClick={toggleTheme}
-      className="fixed top-4 right-4 z-50 p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg border-2 border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-primary transition-colors"
+      className="fixed top-4 right-4 z-50 p-3 rounded-full bg-white shadow-lg border-2 border-gray-200 hover:border-primary:border-primary transition-colors"
       aria-label="테마 전환"
     >
       {isDark ? (

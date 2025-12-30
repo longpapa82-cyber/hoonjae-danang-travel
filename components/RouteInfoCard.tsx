@@ -70,15 +70,15 @@ export function RouteInfoCard() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl p-6 shadow-lg border border-yellow-200 dark:border-yellow-800"
+        className="bg-yellow-50 rounded-2xl p-6 shadow-lg border border-yellow-200"
       >
         <div className="flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
           <div>
-            <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-1">
+            <h3 className="font-semibold text-gray-800 mb-1">
               Google Maps API 키가 필요합니다
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+            <p className="text-sm text-gray-600 mb-2">
               실시간 경로 안내를 위해 Google Maps API 키를 설정해주세요.
             </p>
             <a
@@ -101,15 +101,15 @@ export function RouteInfoCard() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-red-50 dark:bg-red-900/20 rounded-2xl p-6 shadow-lg border border-red-200 dark:border-red-800"
+        className="bg-red-50 rounded-2xl p-6 shadow-lg border border-red-200"
       >
         <div className="flex items-center gap-3">
           <AlertCircle className="w-5 h-5 text-red-600" />
           <div>
-            <h3 className="font-semibold text-gray-800 dark:text-gray-100">
+            <h3 className="font-semibold text-gray-800">
               지도 로딩 실패
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-gray-600">
               {loadError.message}
             </p>
           </div>
@@ -129,15 +129,15 @@ export function RouteInfoCard() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-6 shadow-lg border border-blue-200 dark:border-blue-800"
+        className="bg-blue-50 rounded-2xl p-6 shadow-lg border border-blue-200"
       >
         <div className="flex items-center gap-3">
           <Navigation className="w-5 h-5 text-blue-600" />
           <div>
-            <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-1">
+            <h3 className="font-semibold text-gray-800 mb-1">
               실시간 경로 안내
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-gray-600">
               여행이 시작되면 현재 위치에서 다음 목적지까지의 실시간 경로와 소요시간을 확인할 수 있습니다.
             </p>
           </div>
@@ -155,13 +155,13 @@ export function RouteInfoCard() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+      className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200"
     >
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Navigation className="w-5 h-5 text-primary" />
-          <h3 className="font-semibold text-gray-800 dark:text-gray-100">
+          <h3 className="font-semibold text-gray-800">
             경로 안내
           </h3>
         </div>
@@ -173,8 +173,8 @@ export function RouteInfoCard() {
 
       {/* 에러 */}
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-3 mb-4">
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+        <div className="bg-red-50 rounded-xl p-3 mb-4">
+          <p className="text-sm text-red-600">{error}</p>
         </div>
       )}
 
@@ -183,10 +183,10 @@ export function RouteInfoCard() {
         <div className="space-y-4">
           {/* 목적지 */}
           <div>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+            <p className="text-sm text-gray-500 mb-1">
               다음 목적지
             </p>
-            <p className="font-bold text-lg text-gray-800 dark:text-gray-100">
+            <p className="font-bold text-lg text-gray-800">
               {travelStatus.currentActivity.title}
             </p>
           </div>
@@ -197,7 +197,7 @@ export function RouteInfoCard() {
             <div className="bg-primary/10 rounded-xl p-4 border border-primary/20">
               <div className="flex items-center gap-2 mb-1">
                 <TrendingUp className="w-4 h-4 text-primary" />
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-gray-600">
                   거리
                 </p>
               </div>
@@ -210,7 +210,7 @@ export function RouteInfoCard() {
             <div className="bg-success/10 rounded-xl p-4 border border-success/20">
               <div className="flex items-center gap-2 mb-1">
                 <Clock className="w-4 h-4 text-success" />
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-gray-600">
                   소요시간
                 </p>
               </div>
@@ -252,7 +252,7 @@ export function RouteInfoCard() {
         <div className="flex items-center justify-center py-8">
           <div className="text-center">
             <Loader className="w-8 h-8 text-gray-400 animate-spin mx-auto mb-2" />
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-gray-500">
               경로 계산 중...
             </p>
           </div>

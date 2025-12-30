@@ -81,8 +81,8 @@ export function SwipeableActivityCard({
             ? 'border-4 border-warning'
             : isCompleted
             ? 'border-2 border-success/50 opacity-80'
-            : 'border-2 border-gray-200 dark:border-gray-700'
-        } bg-white dark:bg-gray-800`}
+            : 'border-2 border-gray-200'
+        } bg-white`}
       >
         {/* 이미지 */}
         {activity.imageUrl && (
@@ -104,7 +104,7 @@ export function SwipeableActivityCard({
         {/* 콘텐츠 */}
         <div className="p-6">
           {/* 시간 */}
-          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
+          <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
             <Clock className="w-4 h-4" />
             <span className="font-semibold">{activity.time}</span>
           </div>
@@ -114,7 +114,7 @@ export function SwipeableActivityCard({
             className={`text-2xl font-bold mb-3 ${
               isCompleted
                 ? 'line-through text-gray-500'
-                : 'text-gray-800 dark:text-gray-100'
+                : 'text-gray-800'
             }`}
           >
             {activity.title}
@@ -122,7 +122,7 @@ export function SwipeableActivityCard({
 
           {/* 설명 */}
           {activity.description && (
-            <div className="flex items-start gap-2 text-gray-600 dark:text-gray-400 mb-3">
+            <div className="flex items-start gap-2 text-gray-600 mb-3">
               <MapPin className="w-4 h-4 mt-1 flex-shrink-0" />
               <p className="text-sm">{activity.description}</p>
             </div>

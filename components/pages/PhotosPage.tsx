@@ -83,13 +83,13 @@ export function PhotosPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="bg-white dark:bg-gray-800 rounded-2xl p-12 text-center shadow-lg"
+          className="bg-white rounded-2xl p-12 text-center shadow-lg"
         >
-          <Camera className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">
+          <Camera className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">
             아직 사진이 없습니다
           </h3>
-          <p className="text-gray-500 dark:text-gray-400 mb-4">
+          <p className="text-gray-500 mb-4">
             여행 중 찍은 사진을 업로드해보세요
           </p>
           <button
@@ -147,10 +147,10 @@ export function PhotosPage() {
               animate={{ scale: 1 }}
               exit={{ scale: 0.8 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden max-w-2xl w-full max-h-[90vh] flex flex-col"
+              className="bg-white rounded-2xl overflow-hidden max-w-2xl w-full max-h-[90vh] flex flex-col"
             >
               {/* 이미지 */}
-              <div className="relative aspect-square bg-gray-100 dark:bg-gray-900">
+              <div className="relative aspect-square bg-gray-100">
                 <Image
                   src={selectedPhoto.url}
                   alt="여행 사진"
@@ -163,12 +163,12 @@ export function PhotosPage() {
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Calendar className="w-4 h-4" />
                       {new Date(selectedPhoto.date).toLocaleString('ko-KR')}
                     </div>
                     {selectedPhoto.activity && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
                         <MapPin className="w-4 h-4" />
                         {selectedPhoto.activity}
                       </div>
@@ -177,13 +177,13 @@ export function PhotosPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => deletePhoto(selectedPhoto.id)}
-                      className="p-2 bg-red-50 dark:bg-red-900/20 text-red-600 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
+                      className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100:bg-red-900/30 transition-colors"
                     >
                       <Trash2 className="w-5 h-5" />
                     </button>
                     <button
                       onClick={() => setSelectedPhoto(null)}
-                      className="p-2 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                      className="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200:bg-gray-600 transition-colors"
                     >
                       <X className="w-5 h-5" />
                     </button>

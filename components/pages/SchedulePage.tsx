@@ -42,17 +42,17 @@ export function SchedulePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: dayIndex * 0.1 }}
-              className={`bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border-2 ${
+              className={`bg-white rounded-2xl p-6 shadow-lg border-2 ${
                 isCurrentDay
                   ? 'border-primary'
-                  : 'border-gray-200 dark:border-gray-700'
+                  : 'border-gray-200'
               }`}
             >
               {/* 일차 헤더 */}
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+                    <h2 className="text-xl font-bold text-gray-800">
                       {day.day}일차
                     </h2>
                     {isCurrentDay && (
@@ -61,7 +61,7 @@ export function SchedulePage() {
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-gray-500">
                     {day.date} ({day.dayOfWeek})
                   </p>
                 </div>
@@ -91,8 +91,8 @@ export function SchedulePage() {
                         isInProgress
                           ? 'bg-primary/10 border-2 border-primary shadow-lg scale-[1.02]'
                           : isCompleted || isManuallyCheckedIn
-                          ? 'bg-gray-100 dark:bg-gray-700/30 opacity-60'
-                          : 'bg-gray-50 dark:bg-gray-700/50'
+                          ? 'bg-gray-100 opacity-60'
+                          : 'bg-gray-50'
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -138,16 +138,16 @@ export function SchedulePage() {
                           <h3
                             className={`font-semibold mb-1 ${
                               isCompleted || isManuallyCheckedIn
-                                ? 'text-gray-500 dark:text-gray-400 line-through'
+                                ? 'text-gray-500 line-through'
                                 : isInProgress
-                                ? 'text-primary dark:text-blue-400'
-                                : 'text-gray-800 dark:text-gray-100'
+                                ? 'text-primary'
+                                : 'text-gray-800'
                             }`}
                           >
                             {activity.title}
                           </h3>
                           {activity.description && (
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="text-sm text-gray-600">
                               {activity.description}
                             </p>
                           )}
@@ -170,8 +170,8 @@ export function SchedulePage() {
                               onClick={() => toggleCheckin(activity.id)}
                               className={`mt-2 w-full py-2 px-3 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
                                 isManuallyCheckedIn
-                                  ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-300 dark:border-green-700'
-                                  : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                                  ? 'bg-green-100 text-green-700 border border-green-300'
+                                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50:bg-gray-600'
                               }`}
                             >
                               {isManuallyCheckedIn ? (
@@ -196,10 +196,10 @@ export function SchedulePage() {
 
               {/* 식사 정보 */}
               {day.meals.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="mt-4 pt-4 border-t border-gray-200">
                   <div className="flex items-center gap-2 mb-2">
                     <Utensils className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                    <span className="text-sm font-semibold text-gray-700">
                       식사
                     </span>
                   </div>
@@ -207,7 +207,7 @@ export function SchedulePage() {
                     {day.meals.map((meal, mealIndex) => (
                       <span
                         key={mealIndex}
-                        className="px-3 py-1 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 text-sm text-gray-700 dark:text-gray-300 rounded-full"
+                        className="px-3 py-1 bg-gradient-to-r from-orange-50 to-red-50 text-sm text-gray-700 rounded-full"
                       >
                         {meal.type}: {meal.menu}
                       </span>

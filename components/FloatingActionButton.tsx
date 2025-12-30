@@ -108,7 +108,7 @@ export function FloatingActionButton({ onTabChange }: FloatingActionButtonProps)
           onClick={() => setIsOpen(!isOpen)}
           className={`w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-colors ${
             isOpen
-              ? 'bg-gray-800 dark:bg-gray-600'
+              ? 'bg-gray-800'
               : 'bg-primary hover:bg-blue-600'
           }`}
         >

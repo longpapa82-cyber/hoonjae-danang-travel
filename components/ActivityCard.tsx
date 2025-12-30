@@ -29,14 +29,14 @@ export function ActivityCard({ activity, status, index }: ActivityCardProps) {
           ? 'border-warning bg-warning/5 shadow-lg scale-105'
           : isCompleted
           ? 'border-success/30 bg-success/5 opacity-70'
-          : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'
+          : 'border-gray-200 bg-white'
       }`}
     >
       {/* 상태 표시 */}
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-center gap-2">
           <Clock className="w-4 h-4 text-gray-500" />
-          <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+          <span className="text-sm font-semibold text-gray-700">
             {activity.time}
           </span>
         </div>
@@ -44,13 +44,13 @@ export function ActivityCard({ activity, status, index }: ActivityCardProps) {
       </div>
 
       {/* 제목 */}
-      <h3 className={`text-lg font-bold mb-2 ${isCompleted ? 'line-through text-gray-500' : 'text-gray-800 dark:text-gray-100'}`}>
+      <h3 className={`text-lg font-bold mb-2 ${isCompleted ? 'line-through text-gray-500' : 'text-gray-800'}`}>
         {activity.title}
       </h3>
 
       {/* 설명 */}
       {activity.description && (
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 flex items-start gap-2">
+        <p className="text-sm text-gray-600 mb-2 flex items-start gap-2">
           <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
           {activity.description}
         </p>

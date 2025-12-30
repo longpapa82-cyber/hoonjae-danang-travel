@@ -63,24 +63,24 @@ export function BottomSheet({
             dragElastic={0.2}
             onDragEnd={handleDragEnd}
             style={{ y }}
-            className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 rounded-t-3xl shadow-2xl z-50 max-h-[90vh] flex flex-col"
+            className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-50 max-h-[90vh] flex flex-col"
           >
             {/* 드래그 핸들 */}
             <div className="flex flex-col items-center pt-3 pb-2 px-4">
-              <div className="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full mb-4" />
+              <div className="w-12 h-1.5 bg-gray-300 rounded-full mb-4" />
 
               {/* 헤더 */}
               {title && (
                 <div className="flex items-center justify-between w-full mb-4">
-                  <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+                  <h2 className="text-xl font-bold text-gray-800">
                     {title}
                   </h2>
                   <button
                     onClick={onClose}
-                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors touch-manipulation"
+                    className="p-2 rounded-full hover:bg-gray-100:bg-gray-700 transition-colors touch-manipulation"
                     aria-label="닫기"
                   >
-                    <X className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                    <X className="w-5 h-5 text-gray-600" />
                   </button>
                 </div>
               )}

@@ -27,7 +27,7 @@ export function CountdownTimer({ days, hours, minutes, seconds }: CountdownTimer
           transition={{ duration: 0.5, delay: index * 0.1 }}
           className="flex flex-col items-center"
         >
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 min-w-[80px]">
+          <div className="bg-white rounded-xl shadow-lg p-4 min-w-[80px]">
             <motion.div
               key={unit.value}
               initial={{ scale: 1.2, opacity: 0 }}
@@ -38,7 +38,7 @@ export function CountdownTimer({ days, hours, minutes, seconds }: CountdownTimer
               {String(unit.value).padStart(2, '0')}
             </motion.div>
           </div>
-          <span className="text-sm text-gray-600 dark:text-gray-400 mt-2">{unit.label}</span>
+          <span className="text-sm text-gray-600 mt-2">{unit.label}</span>
         </motion.div>
       ))}
     </div>

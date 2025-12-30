@@ -62,15 +62,15 @@ export function CurrentLocationCard() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl p-6 shadow-lg border border-yellow-200 dark:border-yellow-800"
+        className="bg-yellow-50 rounded-2xl p-6 shadow-lg border border-yellow-200"
       >
         <div className="flex items-center gap-3">
           <MapPin className="w-5 h-5 text-yellow-600" />
           <div>
-            <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-1">
+            <h3 className="font-semibold text-gray-800 mb-1">
               위치 권한이 필요합니다
             </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
+            <p className="text-sm text-gray-600">
               브라우저 설정에서 위치 권한을 허용해주세요.
             </p>
           </div>
@@ -83,13 +83,13 @@ export function CurrentLocationCard() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+      className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200"
     >
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <MapPin className="w-5 h-5 text-primary" />
-          <h3 className="font-semibold text-gray-800 dark:text-gray-100">
+          <h3 className="font-semibold text-gray-800">
             현재 위치
           </h3>
         </div>
@@ -114,7 +114,7 @@ export function CurrentLocationCard() {
       {position ? (
         <div className="space-y-3">
           {/* 좌표 */}
-          <div className="text-sm text-gray-600 dark:text-gray-400">
+          <div className="text-sm text-gray-600">
             <div>위도: {position.latitude.toFixed(6)}</div>
             <div>경도: {position.longitude.toFixed(6)}</div>
             <div>정확도: ±{Math.round(position.accuracy)}m</div>
@@ -130,10 +130,10 @@ export function CurrentLocationCard() {
               <div className="flex items-center gap-3">
                 <Navigation className="w-6 h-6 text-primary flex-shrink-0" />
                 <div className="flex-1">
-                  <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
+                  <div className="text-sm text-gray-600 mb-1">
                     다음 목적지
                   </div>
-                  <div className="font-bold text-gray-800 dark:text-gray-100">
+                  <div className="font-bold text-gray-800">
                     {travelStatus.currentActivity.title}
                   </div>
                   <div className="text-sm text-primary font-semibold mt-1">
@@ -152,14 +152,14 @@ export function CurrentLocationCard() {
             {isTracking ? (
               <>
                 <Loader className="w-8 h-8 text-gray-400 animate-spin mx-auto mb-2" />
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-gray-500">
                   위치를 가져오는 중...
                 </p>
               </>
             ) : (
               <>
                 <MapPin className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                <p className="text-sm text-gray-500 mb-2">
                   위치 추적이 시작되지 않았습니다
                 </p>
                 <button

@@ -30,7 +30,7 @@ export function ProgressRing({
           stroke="currentColor"
           strokeWidth={strokeWidth}
           fill="none"
-          className="text-gray-200 dark:text-gray-700"
+          className="text-gray-200"
         />
         {/* 진행률 원 */}
         <motion.circle
@@ -53,7 +53,7 @@ export function ProgressRing({
       {/* 중앙 텍스트 */}
       <div className="absolute inset-0 flex items-center justify-center">
         <motion.span
-          className="text-4xl font-bold text-gray-800 dark:text-gray-100"
+          className="text-4xl font-bold text-gray-800"
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}

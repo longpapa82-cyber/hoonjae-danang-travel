@@ -23,7 +23,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     <motion.nav
       initial={{ y: 100 }}
       animate={{ y: 0 }}
-      className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 z-50"
+      className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50"
       style={{
         paddingBottom: 'env(safe-area-inset-bottom)',
       }}
@@ -54,7 +54,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                   className={`w-6 h-6 relative z-10 transition-colors ${
                     isActive
                       ? 'text-primary'
-                      : 'text-gray-400 dark:text-gray-500'
+                      : 'text-gray-400'
                   }`}
                 />
 
@@ -63,7 +63,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                   className={`text-xs font-medium relative z-10 transition-colors ${
                     isActive
                       ? 'text-primary'
-                      : 'text-gray-500 dark:text-gray-400'
+                      : 'text-gray-500'
                   }`}
                 >
                   {tab.label}
