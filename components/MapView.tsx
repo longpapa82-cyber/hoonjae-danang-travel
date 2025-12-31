@@ -58,13 +58,39 @@ export function MapView() {
     return locations;
   }, []);
 
-  // 현재 활동의 목적지 좌표
-  const destination = travelStatus?.currentActivity?.location
-    ? {
+  // 현재 활동의 목적지 좌표 (현재 활동에 location이 없으면 다음 활동 찾기)
+  const destination = useMemo(() => {
+    if (!travelStatus || travelStatus.status !== 'IN_PROGRESS') return null;
+
+    // 현재 활동에 location이 있으면 사용
+    if (travelStatus.currentActivity?.location) {
+      return {
         lat: travelStatus.currentActivity.location.latitude,
         lng: travelStatus.currentActivity.location.longitude,
+      };
+    }
+
+    // 현재 활동에 location이 없으면 다음 활동 찾기
+    const currentDay = travelData.days.find(day => day.day === travelStatus.currentDay);
+    if (!currentDay) return null;
+
+    const currentActivityIndex = currentDay.activities.findIndex(
+      a => a.id === travelStatus.currentActivity?.id
+    );
+
+    // 같은 날의 다음 활동 중 location이 있는 것 찾기
+    for (let i = currentActivityIndex + 1; i < currentDay.activities.length; i++) {
+      const activity = currentDay.activities[i];
+      if (activity.location) {
+        return {
+          lat: activity.location.latitude,
+          lng: activity.location.longitude,
+        };
       }
-    : null;
+    }
+
+    return null;
+  }, [travelStatus]);
 
   // 지도 로드 시
   const onLoad = useCallback((map: google.maps.Map) => {
@@ -75,15 +101,18 @@ export function MapView() {
     setMap(null);
   }, []);
 
-  // 현재 위치로 지도 중심 이동
+  // 지도 중심 설정 (현재 위치 우선, 없으면 목적지)
   useEffect(() => {
     if (position) {
       setCenter({
         lat: position.latitude,
         lng: position.longitude,
       });
+    } else if (destination && travelStatus?.status === 'IN_PROGRESS') {
+      // 현재 위치가 없지만 여행 중이면 목적지 근처로 중심 설정
+      setCenter(destination);
     }
-  }, [position]);
+  }, [position, destination, travelStatus?.status]);
 
   // 경로 계산 (여행 중일 때만)
   useEffect(() => {
