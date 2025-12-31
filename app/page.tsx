@@ -24,7 +24,7 @@ export default function Home() {
                 🌴 훈재의 여행 계획표
               </h1>
               <p className="text-sm text-gray-600">
-                2025.01.15 (목) - 01.19 (월)
+                2026.01.15 (목) - 01.19 (월)
               </p>
             </header>
           )}

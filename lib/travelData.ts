@@ -3,12 +3,12 @@ import { LOCATIONS } from './locations';
 
 export const travelData: TravelData = {
   title: '다낭 여행',
-  startDate: '2025-01-15T13:00:00+09:00', // 한국 시간
-  endDate: '2025-01-19T08:00:00+09:00',
+  startDate: '2026-01-15T13:00:00+09:00', // 한국 시간
+  endDate: '2026-01-19T08:00:00+09:00',
   days: [
     {
       day: 1,
-      date: '2025-01-15',
+      date: '2026-01-15',
       dayOfWeek: '목',
       activities: [
         {
@@ -47,7 +47,7 @@ export const travelData: TravelData = {
     },
     {
       day: 2,
-      date: '2025-01-16',
+      date: '2026-01-16',
       dayOfWeek: '금',
       activities: [
         {
@@ -154,7 +154,7 @@ export const travelData: TravelData = {
     },
     {
       day: 3,
-      date: '2025-01-17',
+      date: '2026-01-17',
       dayOfWeek: '토',
       activities: [
         {
@@ -205,7 +205,7 @@ export const travelData: TravelData = {
     },
     {
       day: 4,
-      date: '2025-01-18',
+      date: '2026-01-18',
       dayOfWeek: '일',
       activities: [
         {
@@ -269,7 +269,7 @@ export const travelData: TravelData = {
     },
     {
       day: 5,
-      date: '2025-01-19',
+      date: '2026-01-19',
       dayOfWeek: '월',
       activities: [
         {
