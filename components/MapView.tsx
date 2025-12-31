@@ -113,8 +113,9 @@ export function MapView() {
     console.log('✅ MapView: 지도 초기화 시작');
     setMap(map);
 
-    // 초기 center와 zoom 레벨만 설정, 이후 사용자가 자유롭게 조작 가능
-    map.setCenter(center);
+    // 초기 center는 기본 다낭 중심, 이후 useEffect에서 실제 위치로 업데이트
+    // 여기서는 그냥 기본값으로 설정하고, zoom만 설정
+    map.setCenter(defaultCenter);
     map.setZoom(12);
 
     // 줌 변경 이벤트 리스너 추가 (디버깅용)
@@ -139,23 +140,23 @@ export function MapView() {
     mapInitialized.current = false;
   }, []);
 
-  // 지도 중심 설정 (초기 로딩 시에만, 이후에는 사용자가 자유롭게 조작)
+  // 지도 중심 업데이트 (map 객체를 직접 조작, state 업데이트 없음)
   useEffect(() => {
-    // 이미 초기화되었으면 건너뛰기
-    if (centerInitialized) return;
+    if (!map || centerInitialized) return;
 
     if (position) {
-      setCenter({
+      console.log('📍 지도 중심을 현재 위치로 업데이트');
+      map.setCenter({
         lat: position.latitude,
         lng: position.longitude,
       });
       setCenterInitialized(true);
     } else if (destination && travelStatus?.status === 'IN_PROGRESS') {
-      // 현재 위치가 없지만 여행 중이면 목적지 근처로 중심 설정
-      setCenter(destination);
+      console.log('📍 지도 중심을 목적지로 업데이트');
+      map.setCenter(destination);
       setCenterInitialized(true);
     }
-  }, [position, destination, travelStatus?.status, centerInitialized]);
+  }, [map, position, destination, travelStatus?.status, centerInitialized]);
 
   // 두 좌표 간 직선 거리 계산 (km)
   const calculateDistance = (
@@ -286,25 +287,26 @@ export function MapView() {
     );
   }
 
-  // 여행 전에는 다낭 중심으로 지도 표시
+  // 여행 전에는 다낭 중심으로 지도 표시 (map 객체 직접 조작)
   useEffect(() => {
-    if (travelStatus?.status === 'BEFORE_TRIP') {
-      // 다낭 공항이나 다낭 지역 위치를 찾아서 센터 설정
-      const danangLocation = allLocations.find(
-        loc => loc.activity.location && loc.activity.location.latitude > 15 && loc.activity.location.latitude < 17
-      );
+    if (!map || travelStatus?.status !== 'BEFORE_TRIP') return;
 
-      if (danangLocation?.activity.location) {
-        setCenter({
-          lat: danangLocation.activity.location.latitude,
-          lng: danangLocation.activity.location.longitude,
-        });
-      } else {
-        // 다낭 위치를 찾지 못하면 기본 다낭 중심 좌표 사용
-        setCenter(defaultCenter);
-      }
+    // 다낭 공항이나 다낭 지역 위치를 찾아서 센터 설정
+    const danangLocation = allLocations.find(
+      loc => loc.activity.location && loc.activity.location.latitude > 15 && loc.activity.location.latitude < 17
+    );
+
+    if (danangLocation?.activity.location) {
+      console.log('📍 여행 전 - 다낭 위치로 지도 중심 설정');
+      map.setCenter({
+        lat: danangLocation.activity.location.latitude,
+        lng: danangLocation.activity.location.longitude,
+      });
+    } else {
+      console.log('📍 여행 전 - 기본 다낭 중심으로 지도 설정');
+      map.setCenter(defaultCenter);
     }
-  }, [travelStatus?.status, allLocations]);
+  }, [map, travelStatus?.status, allLocations]);
 
   // 로딩 중
   if (!isLoaded) {
