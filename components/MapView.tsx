@@ -34,8 +34,24 @@ export function MapView() {
   const renderCount = useRef(0);
   renderCount.current += 1;
 
-  const travelStatus = useTravelStatus();
+  const travelStatusRaw = useTravelStatus();
   const { isLoaded, loadError } = useGoogleMaps();
+
+  // travelStatus에서 실제 필요한 값만 추출하여 memoization
+  // 이렇게 하면 매초 travelStatus 객체가 바뀌어도, 실제 값이 같으면 리렌더링 안 됨
+  const travelStatus = useMemo(() => {
+    if (!travelStatusRaw) return null;
+    return {
+      status: travelStatusRaw.status,
+      currentDay: travelStatusRaw.currentDay,
+      currentActivity: travelStatusRaw.currentActivity,
+      // 다른 필요한 필드들만 추가
+    };
+  }, [
+    travelStatusRaw?.status,
+    travelStatusRaw?.currentDay,
+    travelStatusRaw?.currentActivity?.id, // id만 비교
+  ]);
 
   // 여행 중일 때만 위치 추적 자동 시작
   const shouldTrackLocation = travelStatus?.status === 'IN_PROGRESS';
