@@ -75,6 +75,7 @@ export const travelData: TravelData = {
           title: '베트남 전통 마사지',
           description: '120분',
           tip: '팁 4$',
+          imageUrl: '/images/image-massage.png',
           location: LOCATIONS.DANANG_HOTEL,
         },
         {
