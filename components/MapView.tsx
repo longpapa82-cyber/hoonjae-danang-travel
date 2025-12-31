@@ -30,9 +30,12 @@ const mapOptions: google.maps.MapOptions = {
 };
 
 export function MapView() {
-  const { position } = useLocation({ autoStart: false });
   const travelStatus = useTravelStatus();
   const { isLoaded, loadError } = useGoogleMaps();
+
+  // 여행 중일 때만 위치 추적 자동 시작
+  const shouldTrackLocation = travelStatus?.status === 'IN_PROGRESS';
+  const { position } = useLocation({ autoStart: shouldTrackLocation });
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
