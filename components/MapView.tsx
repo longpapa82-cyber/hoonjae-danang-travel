@@ -41,6 +41,7 @@ export function MapView() {
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const [center, setCenter] = useState(defaultCenter);
   const [selectedActivity, setSelectedActivity] = useState<Activity & { date: string } | null>(null);
+  const [centerInitialized, setCenterInitialized] = useState(false);
 
   // 모든 여행 일정의 위치 수집
   const allLocations = useMemo(() => {
@@ -104,18 +105,23 @@ export function MapView() {
     setMap(null);
   }, []);
 
-  // 지도 중심 설정 (현재 위치 우선, 없으면 목적지)
+  // 지도 중심 설정 (초기 로딩 시에만, 이후에는 사용자가 자유롭게 조작)
   useEffect(() => {
+    // 이미 초기화되었으면 건너뛰기
+    if (centerInitialized) return;
+
     if (position) {
       setCenter({
         lat: position.latitude,
         lng: position.longitude,
       });
+      setCenterInitialized(true);
     } else if (destination && travelStatus?.status === 'IN_PROGRESS') {
       // 현재 위치가 없지만 여행 중이면 목적지 근처로 중심 설정
       setCenter(destination);
+      setCenterInitialized(true);
     }
-  }, [position, destination, travelStatus?.status]);
+  }, [position, destination, travelStatus?.status, centerInitialized]);
 
   // 두 좌표 간 직선 거리 계산 (km)
   const calculateDistance = (
