@@ -54,29 +54,29 @@ export function DayTimeline({ day, isCurrentDay }: DayTimelineProps) {
         className="w-full p-6 text-left hover:bg-gray-50:bg-gray-700/50 transition-colors"
       >
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Calendar className={`w-6 h-6 ${isCurrentDay ? 'text-primary' : 'text-gray-500'}`} />
-            <div>
-              <h2 className="text-2xl font-bold text-gray-800">
+          <div className="flex items-center gap-2">
+            <Calendar className={`w-5 h-5 flex-shrink-0 ${isCurrentDay ? 'text-primary' : 'text-gray-500'}`} />
+            <div className="min-w-0 flex-1">
+              <h2 className="text-base md:text-lg font-bold text-gray-800 leading-tight">
                 {day.day}일차 - {day.date} ({day.dayOfWeek})
               </h2>
               {day.meals.length > 0 && (
-                <div className="flex items-center gap-2 mt-1 text-sm text-gray-600">
-                  <Utensils className="w-4 h-4" />
-                  {day.meals.map(meal => `${meal.type}: ${meal.menu}`).join(' | ')}
+                <div className="flex items-center gap-1 mt-1 text-xs text-gray-600 truncate">
+                  <Utensils className="w-3 h-3 flex-shrink-0" />
+                  <span className="truncate">{day.meals.map(meal => `${meal.type}: ${meal.menu}`).join(' | ')}</span>
                 </div>
               )}
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <div className="text-right">
-              <div className="text-sm text-gray-500">진행률</div>
-              <div className="text-2xl font-bold text-primary">{dayProgress}%</div>
+              <div className="text-xs text-gray-500">진행률</div>
+              <div className="text-xl font-bold text-primary">{dayProgress}%</div>
             </div>
             <motion.div
               animate={{ rotate: isExpanded ? 180 : 0 }}
               transition={{ duration: 0.3 }}
-              className="text-gray-400"
+              className="text-gray-400 text-sm"
             >
               ▼
             </motion.div>
