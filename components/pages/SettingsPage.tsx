@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Settings,
@@ -9,11 +9,62 @@ import {
   MapPin,
   Info,
   ChevronRight,
+  Calendar,
+  RotateCcw,
 } from 'lucide-react';
 
 export function SettingsPage() {
   const [notifications, setNotifications] = useState(true);
   const [locationTracking, setLocationTracking] = useState(true);
+  const [testMode, setTestMode] = useState(false);
+  const [testDate, setTestDate] = useState('');
+
+  // 테스트 모드 상태 로드
+  useEffect(() => {
+    const savedTestDate = localStorage.getItem('testDate');
+    if (savedTestDate) {
+      setTestMode(true);
+      setTestDate(savedTestDate);
+    }
+  }, []);
+
+  // 테스트 날짜 설정
+  const setTestDateTime = (dateStr: string) => {
+    localStorage.setItem('testDate', dateStr);
+    setTestDate(dateStr);
+    setTestMode(true);
+    window.location.reload(); // 페이지 새로고침으로 모든 컴포넌트 업데이트
+  };
+
+  // 테스트 모드 해제
+  const resetTestMode = () => {
+    localStorage.removeItem('testDate');
+    setTestMode(false);
+    setTestDate('');
+    window.location.reload();
+  };
+
+  // 빠른 설정 함수
+  const setQuickTest = (scenario: string) => {
+    const scenarios: Record<string, string> = {
+      '1일차-시작': '2026-01-15T13:00:00+09:00',
+      '1일차-공항': '2026-01-15T15:00:00+09:00',
+      '1일차-도착': '2026-01-15T22:00:00+09:00',
+      '2일차-아침': '2026-01-16T09:00:00+09:00',
+      '2일차-마사지': '2026-01-16T10:30:00+09:00',
+      '2일차-오행산': '2026-01-16T13:30:00+09:00',
+      '2일차-호이안': '2026-01-16T18:00:00+09:00',
+      '3일차-바나힐스': '2026-01-17T10:00:00+09:00',
+      '3일차-미케비치': '2026-01-17T16:00:00+09:00',
+      '4일차-대성당': '2026-01-18T13:00:00+09:00',
+      '5일차-귀국': '2026-01-19T05:35:00+09:00',
+    };
+
+    const dateStr = scenarios[scenario];
+    if (dateStr) {
+      setTestDateTime(dateStr);
+    }
+  };
 
   return (
     <div className="pb-24">
@@ -137,11 +188,90 @@ export function SettingsPage() {
           </button>
         </motion.div>
 
-        {/* 앱 정보 */}
+        {/* 테스트 모드 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
+          className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200"
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-red-100 rounded-lg">
+              <Calendar className="w-5 h-5 text-red-600" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-800">
+                테스트 모드
+              </h3>
+              <p className="text-sm text-gray-500">
+                {testMode ? '활성화됨' : '비활성화됨'}
+              </p>
+            </div>
+          </div>
+
+          {testMode && (
+            <div className="mb-4 p-3 bg-red-50 rounded-lg">
+              <p className="text-sm text-red-700 font-medium">
+                현재 시간: {new Date(testDate).toLocaleString('ko-KR')}
+              </p>
+              <button
+                onClick={resetTestMode}
+                className="mt-2 flex items-center gap-2 text-sm text-red-600 hover:text-red-700 font-medium"
+              >
+                <RotateCcw className="w-4 h-4" />
+                실제 시간으로 복구
+              </button>
+            </div>
+          )}
+
+          <div className="space-y-2">
+            <p className="text-sm font-medium text-gray-700 mb-2">빠른 테스트:</p>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => setQuickTest('1일차-시작')}
+                className="px-3 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm hover:bg-blue-100 transition-colors"
+              >
+                1일차 시작
+              </button>
+              <button
+                onClick={() => setQuickTest('1일차-도착')}
+                className="px-3 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm hover:bg-blue-100 transition-colors"
+              >
+                1일차 도착
+              </button>
+              <button
+                onClick={() => setQuickTest('2일차-마사지')}
+                className="px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm hover:bg-green-100 transition-colors"
+              >
+                2일차 마사지
+              </button>
+              <button
+                onClick={() => setQuickTest('2일차-호이안')}
+                className="px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm hover:bg-green-100 transition-colors"
+              >
+                2일차 호이안
+              </button>
+              <button
+                onClick={() => setQuickTest('3일차-바나힐스')}
+                className="px-3 py-2 bg-purple-50 text-purple-700 rounded-lg text-sm hover:bg-purple-100 transition-colors"
+              >
+                3일차 바나힐스
+              </button>
+              <button
+                onClick={() => setQuickTest('4일차-대성당')}
+                className="px-3 py-2 bg-orange-50 text-orange-700 rounded-lg text-sm hover:bg-orange-100 transition-colors"
+              >
+                4일차 대성당
+              </button>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* 앱 정보 */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
           className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200"
         >
           <div className="flex items-center gap-3">
