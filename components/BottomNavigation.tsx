@@ -21,6 +21,8 @@ const tabs = [
 export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationProps) {
   return (
     <motion.nav
+      role="navigation"
+      aria-label="주요 메뉴"
       initial={{ y: 100 }}
       animate={{ y: 0 }}
       className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50"
@@ -29,7 +31,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
       }}
     >
       <div className="max-w-md mx-auto px-4">
-        <div className="flex items-center justify-around py-2">
+        <div className="flex items-center justify-around py-2" role="tablist">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -37,8 +39,18 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
             return (
               <button
                 key={tab.id}
+                role="tab"
+                aria-label={`${tab.label} 탭`}
+                aria-selected={isActive}
+                aria-current={isActive ? 'page' : undefined}
                 onClick={() => onTabChange(tab.id)}
-                className="flex flex-col items-center gap-1 py-2 px-4 relative"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onTabChange(tab.id);
+                  }
+                }}
+                className="flex flex-col items-center gap-1 py-2 px-4 relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-xl"
               >
                 {/* 활성 표시 */}
                 {isActive && (
@@ -54,8 +66,9 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                   className={`w-6 h-6 relative z-10 transition-colors ${
                     isActive
                       ? 'text-primary'
-                      : 'text-gray-400'
+                      : 'text-gray-600'
                   }`}
+                  aria-hidden="true"
                 />
 
                 {/* 라벨 */}
@@ -63,7 +76,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                   className={`text-xs font-medium relative z-10 transition-colors ${
                     isActive
                       ? 'text-primary'
-                      : 'text-gray-500'
+                      : 'text-gray-700'
                   }`}
                 >
                   {tab.label}

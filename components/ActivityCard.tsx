@@ -20,10 +20,12 @@ export function ActivityCard({ activity, status, index }: ActivityCardProps) {
   const isInProgress = status === 'IN_PROGRESS';
 
   return (
-    <motion.div
+    <motion.article
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.4, delay: index * 0.05 }}
+      aria-label={`${activity.time} - ${activity.title}`}
+      aria-describedby={`activity-${activity.id}-description`}
       className={`relative p-4 rounded-xl border-2 transition-all ${
         isInProgress
           ? 'border-warning bg-warning/5 shadow-lg scale-105'
@@ -50,8 +52,8 @@ export function ActivityCard({ activity, status, index }: ActivityCardProps) {
 
       {/* 설명 */}
       {activity.description && (
-        <p className="text-sm text-gray-600 mb-2 flex items-start gap-2">
-          <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" />
+        <p id={`activity-${activity.id}-description`} className="text-sm text-gray-600 mb-2 flex items-start gap-2">
+          <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" aria-hidden="true" />
           {activity.description}
         </p>
       )}
@@ -67,10 +69,17 @@ export function ActivityCard({ activity, status, index }: ActivityCardProps) {
       {/* 이미지 */}
       {activity.imageUrl && (
         <>
-          <motion.div
+          <motion.button
             whileHover={{ scale: 1.02 }}
-            className="mt-3 rounded-lg overflow-hidden relative group cursor-pointer"
+            className="mt-3 rounded-lg overflow-hidden relative group cursor-pointer w-full focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             onClick={() => setIsModalOpen(true)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setIsModalOpen(true);
+              }
+            }}
+            aria-label={`${activity.title} 이미지 크게 보기`}
           >
             <Image
               src={activity.imageUrl}
@@ -83,9 +92,9 @@ export function ActivityCard({ activity, status, index }: ActivityCardProps) {
               blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-              <Maximize2 className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+              <Maximize2 className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
             </div>
-          </motion.div>
+          </motion.button>
 
           <ImageModal
             imageUrl={activity.imageUrl}
@@ -95,6 +104,6 @@ export function ActivityCard({ activity, status, index }: ActivityCardProps) {
           />
         </>
       )}
-    </motion.div>
+    </motion.article>
   );
 }
