@@ -170,16 +170,22 @@ export function MapView() {
     );
   }
 
-  // 여행 전에는 전체 일정 미리보기로 센터 설정
+  // 여행 전에는 다낭 중심으로 지도 표시
   useEffect(() => {
-    if (travelStatus?.status === 'BEFORE_TRIP' && allLocations.length > 0) {
-      // 첫 번째 위치로 센터 설정
-      const firstLocation = allLocations[0].activity.location;
-      if (firstLocation) {
+    if (travelStatus?.status === 'BEFORE_TRIP') {
+      // 다낭 공항이나 다낭 지역 위치를 찾아서 센터 설정
+      const danangLocation = allLocations.find(
+        loc => loc.activity.location && loc.activity.location.latitude > 15 && loc.activity.location.latitude < 17
+      );
+
+      if (danangLocation?.activity.location) {
         setCenter({
-          lat: firstLocation.latitude,
-          lng: firstLocation.longitude,
+          lat: danangLocation.activity.location.latitude,
+          lng: danangLocation.activity.location.longitude,
         });
+      } else {
+        // 다낭 위치를 찾지 못하면 기본 다낭 중심 좌표 사용
+        setCenter(defaultCenter);
       }
     }
   }, [travelStatus?.status, allLocations]);
