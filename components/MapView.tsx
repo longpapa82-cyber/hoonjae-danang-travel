@@ -96,12 +96,13 @@ export function MapView() {
     return null;
   }, [travelStatus]);
 
-  // 지도 로드 시 (초기 zoom 레벨 설정)
+  // 지도 로드 시 (초기 center와 zoom 레벨 설정)
   const onLoad = useCallback((map: google.maps.Map) => {
     setMap(map);
-    // 초기 zoom 레벨만 설정, 이후 사용자가 자유롭게 조작 가능
+    // 초기 center와 zoom 레벨만 설정, 이후 사용자가 자유롭게 조작 가능
+    map.setCenter(center);
     map.setZoom(12);
-  }, []);
+  }, [center]);
 
   const onUnmount = useCallback(() => {
     setMap(null);
@@ -310,7 +311,6 @@ export function MapView() {
       {/* 지도 */}
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
-        center={center}
         onLoad={onLoad}
         onUnmount={onUnmount}
         options={mapOptions}
