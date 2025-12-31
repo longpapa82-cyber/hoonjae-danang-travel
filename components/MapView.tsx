@@ -33,7 +33,6 @@ export function MapView() {
   // 리렌더링 추적
   const renderCount = useRef(0);
   renderCount.current += 1;
-  console.log(`🔄 MapView 렌더링 #${renderCount.current}`);
 
   const travelStatus = useTravelStatus();
   const { isLoaded, loadError } = useGoogleMaps();
@@ -42,9 +41,23 @@ export function MapView() {
   const shouldTrackLocation = travelStatus?.status === 'IN_PROGRESS';
   const { position } = useLocation({ autoStart: shouldTrackLocation });
 
+  // 렌더링 원인 추적
+  const prevPositionRef = useRef(position);
+  const prevTravelStatusRef = useRef(travelStatus);
+
+  if (prevPositionRef.current !== position) {
+    console.log(`🔄 MapView 렌더링 #${renderCount.current} - position 변경:`,
+      prevPositionRef.current?.timestamp, '→', position?.timestamp);
+    prevPositionRef.current = position;
+  } else if (prevTravelStatusRef.current !== travelStatus) {
+    console.log(`🔄 MapView 렌더링 #${renderCount.current} - travelStatus 변경`);
+    prevTravelStatusRef.current = travelStatus;
+  } else {
+    console.log(`🔄 MapView 렌더링 #${renderCount.current} - 원인 불명`);
+  }
+
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
-  const [center, setCenter] = useState(defaultCenter);
   const [selectedActivity, setSelectedActivity] = useState<Activity & { date: string } | null>(null);
   const [centerInitialized, setCenterInitialized] = useState(false);
   const mapInitialized = useRef(false);
