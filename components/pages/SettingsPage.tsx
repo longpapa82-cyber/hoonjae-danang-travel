@@ -21,13 +21,13 @@ export function SettingsPage() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-gray-700 to-gray-900 rounded-2xl p-6 mb-6 text-white"
+        className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-6 mb-6 text-white"
       >
         <div className="flex items-center gap-3">
           <Settings className="w-6 h-6" />
           <div>
             <h1 className="text-2xl font-bold">설정</h1>
-            <p className="text-sm text-gray-300">앱 환경설정</p>
+            <p className="text-sm text-blue-50">앱 환경설정</p>
           </div>
         </div>
       </motion.div>
