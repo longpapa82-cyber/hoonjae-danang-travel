@@ -27,6 +27,7 @@ const mapOptions: google.maps.MapOptions = {
   streetViewControl: false,
   mapTypeControl: false,
   fullscreenControl: true,
+  gestureHandling: 'greedy', // 스크롤 시 바로 지도 줌 가능 (ctrl 불필요)
 };
 
 export function MapView() {
