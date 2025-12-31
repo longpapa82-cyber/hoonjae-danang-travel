@@ -87,6 +87,29 @@ export function useLocation(options: UseLocationOptions = {}): UseLocationReturn
 
   // 초기 설정
   useEffect(() => {
+    // 테스트 모드 확인 (localStorage에 testDate가 있으면 테스트 모드)
+    const testDateStr = typeof window !== 'undefined' ? localStorage.getItem('testDate') : null;
+
+    if (testDateStr && autoStart) {
+      // 테스트 모드: 다낭 근처의 시뮬레이션 위치 제공
+      // 호텔(Wyndham Soleil Danang) 근처 위치
+      const testPosition: LocationPosition = {
+        latitude: 16.0583,
+        longitude: 108.2226,
+        accuracy: 10,
+        timestamp: Date.now(),
+      };
+
+      setPosition(testPosition);
+      setPermission('granted');
+      setIsTracking(true);
+      console.log('테스트 모드: 시뮬레이션 위치 사용 (다낭 호텔)', testPosition);
+
+      // 테스트 모드에서는 실제 GPS 추적하지 않음
+      return;
+    }
+
+    // 실제 위치 추적 모드
     // 권한 확인
     checkPermission();
 

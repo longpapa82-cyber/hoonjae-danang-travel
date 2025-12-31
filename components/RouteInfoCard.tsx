@@ -79,9 +79,16 @@ export function RouteInfoCard() {
           trafficModel: 'best_guess',
         });
         setRouteInfo(route);
-      } catch (err) {
+      } catch (err: any) {
         console.error('Route calculation failed:', err);
-        setError('경로를 찾을 수 없습니다. 목적지가 너무 멀리 있거나 도로 연결이 없습니다.');
+
+        // ZERO_RESULTS 에러는 일반적으로 목적지가 너무 멀 때 발생
+        if (err.message?.includes('ZERO_RESULTS')) {
+          // 여행지에 도착하면 작동할 것이라는 안내 메시지
+          setError(null); // 에러로 표시하지 않고 안내 메시지만 표시
+        } else {
+          setError('경로 계산에 실패했습니다. 잠시 후 다시 시도됩니다.');
+        }
       } finally {
         setIsCalculating(false);
       }
@@ -286,6 +293,18 @@ export function RouteInfoCard() {
               경로 계산 중...
             </p>
           </div>
+        </div>
+      )}
+
+      {/* 경로 정보 없음 (너무 먼 거리 등) */}
+      {!routeInfo && !error && !isCalculating && (
+        <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
+          <p className="text-sm text-blue-700 text-center">
+            여행지에 도착하면 실시간 경로 안내가 시작됩니다
+          </p>
+          <p className="text-xs text-blue-600 text-center mt-1">
+            현재 위치에서 목적지까지 자동차 경로를 계산할 수 없습니다
+          </p>
         </div>
       )}
     </motion.div>
