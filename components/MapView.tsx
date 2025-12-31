@@ -310,6 +310,7 @@ export function MapView() {
 
       {/* 지도 */}
       <GoogleMap
+        key="travel-map"
         mapContainerStyle={mapContainerStyle}
         onLoad={onLoad}
         onUnmount={onUnmount}
