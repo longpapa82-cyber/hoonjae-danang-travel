@@ -97,7 +97,7 @@ export function useLocation(options: UseLocationOptions = {}): UseLocationReturn
         latitude: 16.0583,
         longitude: 108.2226,
         accuracy: 10,
-        timestamp: Date.now(),
+        timestamp: 1704067200000, // 고정 timestamp (무한 루프 방지)
       };
 
       setPosition(testPosition);
