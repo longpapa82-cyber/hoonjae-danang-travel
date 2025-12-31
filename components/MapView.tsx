@@ -117,11 +117,31 @@ export function MapView() {
     }
   }, [position, destination, travelStatus?.status]);
 
+  // 두 좌표 간 직선 거리 계산 (km)
+  const calculateDistance = (
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ): number => {
+    const R = 6371; // 지구 반지름 (km)
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
   // 경로 계산 (여행 중일 때만)
   useEffect(() => {
     // 여행 상태가 없거나, 여행 중이 아니면 실행 안 함
     if (!travelStatus || travelStatus.status !== 'IN_PROGRESS') {
-      console.log('경로 계산 건너뛰기: 여행 전 또는 완료');
+      console.log('MapView: 경로 계산 건너뛰기 - 여행 전 또는 완료');
       return;
     }
 
@@ -129,7 +149,23 @@ export function MapView() {
       return;
     }
 
-    console.log('경로 계산 시작: 여행 중');
+    // 거리 체크: 현재 위치와 목적지가 100km 이상 떨어져 있으면 경로 계산하지 않음
+    const distance = calculateDistance(
+      position.latitude,
+      position.longitude,
+      destination.lat,
+      destination.lng
+    );
+
+    if (distance > 100) {
+      console.log(
+        `MapView: 경로 계산 건너뛰기 - 거리가 너무 멀음 (${distance.toFixed(0)}km)`
+      );
+      setDirections(null);
+      return;
+    }
+
+    console.log(`MapView: 경로 계산 시작 - 거리 ${distance.toFixed(1)}km`);
     const directionsService = new google.maps.DirectionsService();
 
     directionsService.route(
@@ -146,7 +182,7 @@ export function MapView() {
         if (status === google.maps.DirectionsStatus.OK && result) {
           setDirections(result);
         } else {
-          console.log('경로 계산 실패:', status, '- 정상 (여행 전)');
+          console.log(`MapView: 경로 계산 실패 - ${status}`);
         }
       }
     );
