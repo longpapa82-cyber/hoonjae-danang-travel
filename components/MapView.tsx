@@ -170,28 +170,19 @@ export function MapView() {
     );
   }
 
-  // 여행 전이면 안내 메시지 표시
-  if (travelStatus?.status === 'BEFORE_TRIP') {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-blue-50 rounded-2xl p-6 shadow-lg border border-blue-200"
-      >
-        <div className="flex items-center gap-3">
-          <MapPin className="w-5 h-5 text-blue-600" />
-          <div>
-            <h3 className="font-semibold text-gray-800 mb-1">
-              실시간 지도
-            </h3>
-            <p className="text-sm text-gray-600">
-              여행이 시작되면 현재 위치와 목적지를 지도에서 확인할 수 있습니다.
-            </p>
-          </div>
-        </div>
-      </motion.div>
-    );
-  }
+  // 여행 전에는 전체 일정 미리보기로 센터 설정
+  useEffect(() => {
+    if (travelStatus?.status === 'BEFORE_TRIP' && allLocations.length > 0) {
+      // 첫 번째 위치로 센터 설정
+      const firstLocation = allLocations[0].activity.location;
+      if (firstLocation) {
+        setCenter({
+          lat: firstLocation.latitude,
+          lng: firstLocation.longitude,
+        });
+      }
+    }
+  }, [travelStatus?.status, allLocations]);
 
   // 로딩 중
   if (!isLoaded) {
@@ -220,11 +211,18 @@ export function MapView() {
       className="bg-white rounded-2xl p-4 shadow-lg border border-gray-200"
     >
       {/* 헤더 */}
-      <div className="flex items-center gap-2 mb-4">
-        <MapPin className="w-5 h-5 text-primary" />
-        <h3 className="font-semibold text-gray-800">
-          실시간 지도
-        </h3>
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-2">
+          <MapPin className="w-5 h-5 text-primary" />
+          <h3 className="font-semibold text-gray-800">
+            {travelStatus?.status === 'BEFORE_TRIP' ? '여행 일정 지도' : '실시간 지도'}
+          </h3>
+        </div>
+        {travelStatus?.status === 'BEFORE_TRIP' && (
+          <p className="text-sm text-gray-600">
+            다낭 여행의 전체 일정을 미리 확인하세요
+          </p>
+        )}
       </div>
 
       {/* 지도 */}
@@ -236,8 +234,8 @@ export function MapView() {
         onUnmount={onUnmount}
         options={mapOptions}
       >
-        {/* 현재 위치 마커 */}
-        {position && (
+        {/* 현재 위치 마커 (여행 중일 때만) */}
+        {position && travelStatus?.status === 'IN_PROGRESS' && (
           <Marker
             position={{ lat: position.latitude, lng: position.longitude }}
             icon={{
@@ -317,14 +315,24 @@ export function MapView() {
       {/* 범례 */}
       <div className="mt-4">
         <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 bg-blue-500 rounded-full" />
-            <span className="text-gray-600">현재 위치</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 bg-red-500 rounded-full" />
-            <span className="text-gray-600">진행중</span>
-          </div>
+          {travelStatus?.status === 'IN_PROGRESS' && (
+            <>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 bg-blue-500 rounded-full" />
+                <span className="text-gray-600">현재 위치</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 bg-red-500 rounded-full" />
+                <span className="text-gray-600">진행중</span>
+              </div>
+            </>
+          )}
+          {travelStatus?.status === 'BEFORE_TRIP' && (
+            <div className="flex items-center gap-1.5">
+              <MapPin className="w-3 h-3 text-gray-600" />
+              <span className="text-gray-600">여행 일정</span>
+            </div>
+          )}
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 bg-orange-500 rounded-full" />
             <span className="text-gray-600">1일차</span>
