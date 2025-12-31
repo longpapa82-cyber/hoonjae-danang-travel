@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { GoogleMap, Marker, DirectionsRenderer, InfoWindow, Polyline } from '@react-google-maps/api';
 import { motion } from 'framer-motion';
 import { MapPin, Loader, AlertCircle } from 'lucide-react';
@@ -42,6 +42,7 @@ export function MapView() {
   const [center, setCenter] = useState(defaultCenter);
   const [selectedActivity, setSelectedActivity] = useState<Activity & { date: string } | null>(null);
   const [centerInitialized, setCenterInitialized] = useState(false);
+  const mapInitialized = useRef(false);
 
   // 모든 여행 일정의 위치 수집
   const allLocations = useMemo(() => {
@@ -98,14 +99,27 @@ export function MapView() {
 
   // 지도 로드 시 (초기 center와 zoom 레벨 설정)
   const onLoad = useCallback((map: google.maps.Map) => {
+    // 이미 초기화되었으면 건너뛰기 (리마운트 방지)
+    if (mapInitialized.current) {
+      console.log('MapView: 지도 이미 초기화됨, 건너뛰기');
+      return;
+    }
+
+    console.log('MapView: 지도 초기화 시작');
     setMap(map);
+
     // 초기 center와 zoom 레벨만 설정, 이후 사용자가 자유롭게 조작 가능
     map.setCenter(center);
     map.setZoom(12);
-  }, [center]);
+
+    mapInitialized.current = true;
+    console.log('MapView: 지도 초기화 완료');
+  }, []); // dependencies 완전 제거!
 
   const onUnmount = useCallback(() => {
+    console.log('MapView: 지도 언마운트');
     setMap(null);
+    mapInitialized.current = false;
   }, []);
 
   // 지도 중심 설정 (초기 로딩 시에만, 이후에는 사용자가 자유롭게 조작)
