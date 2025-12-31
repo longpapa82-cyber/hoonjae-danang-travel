@@ -30,6 +30,11 @@ const mapOptions: google.maps.MapOptions = {
 };
 
 export function MapView() {
+  // 리렌더링 추적
+  const renderCount = useRef(0);
+  renderCount.current += 1;
+  console.log(`🔄 MapView 렌더링 #${renderCount.current}`);
+
   const travelStatus = useTravelStatus();
   const { isLoaded, loadError } = useGoogleMaps();
 
@@ -101,19 +106,31 @@ export function MapView() {
   const onLoad = useCallback((map: google.maps.Map) => {
     // 이미 초기화되었으면 건너뛰기 (리마운트 방지)
     if (mapInitialized.current) {
-      console.log('MapView: 지도 이미 초기화됨, 건너뛰기');
+      console.log('⚠️ MapView: 지도 이미 초기화됨, onLoad 다시 호출됨! (리마운트 발생)');
       return;
     }
 
-    console.log('MapView: 지도 초기화 시작');
+    console.log('✅ MapView: 지도 초기화 시작');
     setMap(map);
 
     // 초기 center와 zoom 레벨만 설정, 이후 사용자가 자유롭게 조작 가능
     map.setCenter(center);
     map.setZoom(12);
 
+    // 줌 변경 이벤트 리스너 추가 (디버깅용)
+    map.addListener('zoom_changed', () => {
+      const currentZoom = map.getZoom();
+      console.log(`🔍 줌 변경됨: ${currentZoom}`);
+    });
+
+    // 드래그 이벤트 리스너 추가
+    map.addListener('dragend', () => {
+      const currentCenter = map.getCenter();
+      console.log(`📍 지도 이동됨: ${currentCenter?.lat()}, ${currentCenter?.lng()}`);
+    });
+
     mapInitialized.current = true;
-    console.log('MapView: 지도 초기화 완료');
+    console.log('✅ MapView: 지도 초기화 완료');
   }, []); // dependencies 완전 제거!
 
   const onUnmount = useCallback(() => {
@@ -162,6 +179,8 @@ export function MapView() {
 
   // 경로 계산 (여행 중일 때만)
   useEffect(() => {
+    console.log('🛣️ 경로 계산 useEffect 실행됨');
+
     // 여행 상태가 없거나, 여행 중이 아니면 실행 안 함
     if (!travelStatus || travelStatus.status !== 'IN_PROGRESS') {
       console.log('MapView: 경로 계산 건너뛰기 - 여행 전 또는 완료');
@@ -169,6 +188,12 @@ export function MapView() {
     }
 
     if (!position || !isLoaded || !window.google || !destination) {
+      console.log('MapView: 경로 계산 건너뛰기 - 필수 조건 미충족', {
+        position: !!position,
+        isLoaded,
+        google: !!window.google,
+        destination: !!destination
+      });
       return;
     }
 
@@ -188,7 +213,7 @@ export function MapView() {
       return;
     }
 
-    console.log(`MapView: 경로 계산 시작 - 거리 ${distance.toFixed(1)}km`);
+    console.log(`🛣️ MapView: 경로 계산 시작 - 거리 ${distance.toFixed(1)}km`);
     const directionsService = new google.maps.DirectionsService();
 
     directionsService.route(
