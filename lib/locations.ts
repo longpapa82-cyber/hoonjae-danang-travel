@@ -83,11 +83,11 @@ export const LOCATIONS: Record<string, Location> = {
     address: 'Chợ Hàn (Han Market)',
   },
 
-  // 호텔 (다낭 시내 대략적 위치)
+  // 호텔
   DANANG_HOTEL: {
-    latitude: 16.0544,
-    longitude: 108.2022,
-    address: 'Da Nang City Center',
+    latitude: 16.0583,
+    longitude: 108.2226,
+    address: '다낭 윈덤솔레일 (Wyndham Soleil Danang)',
   },
 };
 

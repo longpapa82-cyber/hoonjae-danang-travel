@@ -38,6 +38,13 @@ export const travelData: TravelData = {
         },
         {
           id: '1-5',
+          time: '22:00',
+          title: '호텔 도착',
+          description: '다낭 윈덤솔레일',
+          location: LOCATIONS.DANANG_HOTEL,
+        },
+        {
+          id: '1-6',
           time: '23:00',
           title: '야식/휴식',
           location: LOCATIONS.DANANG_HOTEL,
