@@ -332,21 +332,24 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
     );
   }
 
-  // 여행 전에는 다낭 중심으로 지도 표시 (map 객체 직접 조작)
+  // 여행 전에는 첫 번째 일정 위치로 지도 표시 (map 객체 직접 조작)
   useEffect(() => {
     if (!map || travelStatus?.status !== 'BEFORE_TRIP') return;
 
-    // 다낭 공항이나 다낭 지역 위치를 찾아서 센터 설정
-    const danangLocation = allLocations.find(
-      loc => loc.activity.location && loc.activity.location.latitude > 15 && loc.activity.location.latitude < 17
+    // 첫 번째 location이 있는 일정을 찾아서 센터 설정
+    const firstLocation = allLocations.find(
+      loc => loc.activity.location
     );
 
-    if (danangLocation?.activity.location) {
-      console.log('📍 여행 전 - 다낭 위치로 지도 중심 설정');
+    if (firstLocation?.activity.location) {
+      console.log('📍 여행 전 - 첫 번째 일정 위치로 지도 중심 설정:', firstLocation.activity.title);
       map.setCenter({
-        lat: danangLocation.activity.location.latitude,
-        lng: danangLocation.activity.location.longitude,
+        lat: firstLocation.activity.location.latitude,
+        lng: firstLocation.activity.location.longitude,
       });
+      // 한국(인천공항)인 경우 줌 레벨 조정
+      const isKorea = firstLocation.activity.location.latitude > 33 && firstLocation.activity.location.latitude < 39;
+      map.setZoom(isKorea ? 10 : 12);
     } else {
       console.log('📍 여행 전 - 기본 다낭 중심으로 지도 설정');
       map.setCenter(defaultCenter);
