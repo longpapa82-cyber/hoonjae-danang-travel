@@ -453,7 +453,9 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
             icon={{
               path: window.google.maps.SymbolPath.CIRCLE,
               scale: 8,
-              fillColor: amenity.category === 'CONVENIENCE_STORE' ? '#10B981' : '#3B82F6',
+              fillColor: amenity.category === 'CAFE' ? '#F59E0B'
+                : amenity.category === 'CONVENIENCE_STORE' ? '#10B981'
+                : '#3B82F6',
               fillOpacity: 0.9,
               strokeColor: '#ffffff',
               strokeWeight: 2,
@@ -502,7 +504,9 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
             <div className="p-2 max-w-xs">
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-lg">
-                  {selectedAmenity.category === 'CONVENIENCE_STORE' ? '🏪' : '🛒'}
+                  {selectedAmenity.category === 'CAFE' ? '☕'
+                    : selectedAmenity.category === 'CONVENIENCE_STORE' ? '🏪'
+                    : '🛒'}
                 </span>
                 <h3 className="font-bold text-gray-800">{selectedAmenity.nameKo}</h3>
               </div>
@@ -592,6 +596,10 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
               <div className="flex items-center gap-1.5">
                 <div className="w-3 h-3 bg-blue-500 rounded-full border-2 border-white" />
                 <span className="text-gray-600">대형마트</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 bg-orange-500 rounded-full border-2 border-white" />
+                <span className="text-gray-600">카페</span>
               </div>
             </>
           )}

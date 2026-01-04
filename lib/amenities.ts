@@ -3,7 +3,7 @@
  * 호텔 위치: 16.0583, 108.2226 (Pham Van Dong St.)
  */
 
-import { Amenity, AmenityCategory } from '@/types/amenity';
+import { Amenity, AmenityCategory, CafeSubType } from '@/types/amenity';
 import { Location } from '@/types/travel';
 
 export const AMENITIES: Amenity[] = [
@@ -181,6 +181,179 @@ export const AMENITIES: Amenity[] = [
     openingHours: '07:00-21:00',
     description: '지역 슈퍼마켓',
   },
+
+  // ============ 카페 (스페셜티 & 체인점) ============
+  {
+    id: 'cafe-1',
+    name: 'XLIII Specialty Coffee',
+    nameKo: '43 스페셜티 커피',
+    category: 'CAFE',
+    subType: 'SPECIALTY',
+    location: {
+      latitude: 16.0480106,
+      longitude: 108.2460812,
+      address: 'Lot 422 Ngo Thi Si, My An, Ngu Hanh Son, Da Nang',
+    },
+    openingHours: '07:00-21:30',
+    description: '43 Factory Coffee Roaster 본점, 자체 로스팅 스페셜티 커피',
+  },
+  {
+    id: 'cafe-2',
+    name: 'Puna Specialty Coffee & Eatery',
+    nameKo: '푸나 스페셜티 커피',
+    category: 'CAFE',
+    subType: 'SPECIALTY',
+    location: {
+      latitude: 16.0485, // TODO: 정확한 좌표 확인 필요 (132 Lê Quang Đạo)
+      longitude: 108.2465,
+      address: '132 Lê Quang Đạo, Bắc Mỹ An, Ngũ Hành Sơn, Da Nang',
+    },
+    openingHours: '07:00-22:00',
+    description: '스페셜티 커피 & 브런치 카페',
+  },
+  {
+    id: 'cafe-3',
+    name: 'Zi Coffee & Roastery',
+    nameKo: 'Z! 커피 로스터리',
+    category: 'CAFE',
+    subType: 'ROASTERY',
+    location: {
+      latitude: 16.0490, // TODO: 정확한 좌표 확인 필요 (109 Hoàng Kế Viêm)
+      longitude: 108.2470,
+      address: '109 Hoàng Kế Viêm, Bắc Mỹ Phú, Ngũ Hành Sơn, Da Nang',
+    },
+    openingHours: '07:00-22:00',
+    description: '자체 로스팅 커피 & 호스텔',
+  },
+  {
+    id: 'cafe-4',
+    name: 'Roost Coffee Roasters',
+    nameKo: '루스트 커피 로스터스',
+    category: 'CAFE',
+    subType: 'ROASTERY',
+    location: {
+      latitude: 16.0475, // TODO: 정확한 좌표 확인 필요 (57 Bà Huyện Thanh Quan)
+      longitude: 108.2455,
+      address: '57 Bà Huyện Thanh Quan, Bắc Mỹ An, Ngũ Hành Sơn, Da Nang',
+    },
+    openingHours: '07:00-21:30',
+    description: '자가 농장 보유, 로스팅 전문 카페',
+  },
+  {
+    id: 'cafe-5',
+    name: 'SIX ON SIX CAFE',
+    nameKo: '식스 온 식스 카페',
+    category: 'CAFE',
+    subType: 'BRUNCH',
+    location: {
+      latitude: 16.0478, // TODO: 정확한 좌표 확인 필요 (64 Bà Huyện Thanh Quan)
+      longitude: 108.2458,
+      address: '64 Bà Huyện Thanh Quan, Phường Mỹ An, Ngũ Hành Sơn, Da Nang',
+    },
+    openingHours: '07:30-22:00',
+    phone: '+84 946 114 967',
+    description: '100% 아라비카 스페셜티 커피 & 브런치',
+  },
+  {
+    id: 'cafe-6',
+    name: 'Passion Café',
+    nameKo: '패션 카페',
+    category: 'CAFE',
+    subType: 'SPECIALTY',
+    location: {
+      latitude: 16.0470, // TODO: 정확한 주소 및 좌표 확인 필요
+      longitude: 108.2200,
+      address: 'Da Nang City Center',
+    },
+    openingHours: '08:00-22:00',
+    description: '조용한 분위기의 스페셜티 카페',
+  },
+  {
+    id: 'cafe-7',
+    name: 'The Cups Coffee Roastery',
+    nameKo: '더 컵스 커피 로스터리',
+    category: 'CAFE',
+    subType: 'ROASTERY',
+    location: {
+      latitude: 16.0470, // TODO: 정확한 좌표 확인 필요 (Lô B20, 22 Đường 2 Tháng 9)
+      longitude: 108.2215,
+      address: 'Lô B20, 22 Đường 2 Tháng 9, Hòa Thuận Đông, Hải Châu, Da Nang',
+    },
+    openingHours: '07:00-23:00',
+    description: '다낭 로컬 커피 체인, 용다리 & 한강 근처',
+  },
+
+  // Starbucks 5개 지점
+  {
+    id: 'cafe-8',
+    name: 'Starbucks Bach Dang',
+    nameKo: '스타벅스 바흐당',
+    category: 'CAFE',
+    subType: 'CHAIN',
+    location: {
+      latitude: 16.0700, // TODO: 정확한 좌표 확인 필요 (50 Bach Dang)
+      longitude: 108.2240,
+      address: '50 Bach Dang, Hoa Thuan Dong, Hai Chau, Da Nang (Hilton Complex)',
+    },
+    openingHours: '07:00-22:00',
+    description: '힐튼 다낭 호텔 내 위치, 2018년 다낭 첫 오픈',
+  },
+  {
+    id: 'cafe-9',
+    name: 'Starbucks Vincom Ngo Quyen',
+    nameKo: '스타벅스 빈컴 응오꾸옌',
+    category: 'CAFE',
+    subType: 'CHAIN',
+    location: {
+      latitude: 16.071857,
+      longitude: 108.23042,
+      address: '910A Ngo Quyen, Son Tra, Da Nang (Vincom Center L1)',
+    },
+    openingHours: '07:00-22:00',
+    description: 'Vincom Plaza 내 위치, 쇼핑 중 방문하기 좋음',
+  },
+  {
+    id: 'cafe-10',
+    name: 'Starbucks Trần Hưng Đạo',
+    nameKo: '스타벅스 쩐훙다오',
+    category: 'CAFE',
+    subType: 'CHAIN',
+    location: {
+      latitude: 16.0705, // TODO: 정확한 좌표 확인 필요 (218 Trần Hưng Đạo)
+      longitude: 108.2255,
+      address: '218 Trần Hưng Đạo, Quận Sơn Trà, Da Nang',
+    },
+    openingHours: '07:00-22:00',
+    description: '2023년 11월 오픈',
+  },
+  {
+    id: 'cafe-11',
+    name: 'Starbucks Nesta Hotel',
+    nameKo: '스타벅스 네스타 호텔',
+    category: 'CAFE',
+    subType: 'CHAIN',
+    location: {
+      latitude: 16.040422,
+      longitude: 108.25163,
+      address: '268 Vo Nguyen Giap, Ngu Hanh Son, Da Nang (Nesta Hotel)',
+    },
+    openingHours: '07:00-22:00',
+    description: '미케 비치 뷰, 2023년 7월 오픈',
+  },
+  {
+    id: 'cafe-12',
+    name: 'Starbucks Lotte Đà Nẵng',
+    nameKo: '스타벅스 롯데 다낭',
+    category: 'CAFE',
+    subType: 'CHAIN',
+    location: {
+      latitude: 16.03423,
+      longitude: 108.22931,
+      address: '6 Nai Nam, Hoa Cuong Bac, Hai Chau, Da Nang (Lotte Mart 2F)',
+    },
+    openingHours: '08:00-22:00',
+    description: '롯데마트 2층, 쇼핑과 함께',
+  },
 ];
 
 /**
@@ -234,10 +407,18 @@ export const AMENITY_CATEGORIES = [
     key: 'CONVENIENCE_STORE' as AmenityCategory,
     label: '24시간 편의점',
     icon: '🏪',
+    color: '#10B981', // green
   },
   {
     key: 'SUPERMARKET' as AmenityCategory,
     label: '대형마트',
     icon: '🛒',
+    color: '#3B82F6', // blue
+  },
+  {
+    key: 'CAFE' as AmenityCategory,
+    label: '카페',
+    icon: '☕',
+    color: '#F59E0B', // orange
   },
 ];
