@@ -9,6 +9,9 @@ import { useTravelStatus } from '@/hooks/useTravelStatus';
 import { useGoogleMaps } from '@/hooks/useGoogleMaps';
 import { travelData } from '@/lib/travelData';
 import { Activity } from '@/types/travel';
+import { Amenity } from '@/types/amenity';
+import { AMENITIES, sortAmenitiesByDistance } from '@/lib/amenities';
+import { LOCATIONS } from '@/lib/locations';
 
 const mapContainerStyle = {
   width: '100%',
@@ -30,7 +33,12 @@ const mapOptions: google.maps.MapOptions = {
   gestureHandling: 'greedy', // 스크롤 시 바로 지도 줌 가능 (ctrl 불필요)
 };
 
-export function MapView() {
+interface MapViewProps {
+  showAmenities?: boolean;
+  onAmenitySelect?: (amenity: Amenity) => void;
+}
+
+export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps = {}) {
   // 리렌더링 추적
   const renderCount = useRef(0);
   renderCount.current += 1;
@@ -76,8 +84,15 @@ export function MapView() {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const [selectedActivity, setSelectedActivity] = useState<Activity & { date: string } | null>(null);
+  const [selectedAmenity, setSelectedAmenity] = useState<Amenity | null>(null);
   const [centerInitialized, setCenterInitialized] = useState(false);
   const mapInitialized = useRef(false);
+
+  // 편의시설 목록 (호텔 기준 거리순 정렬)
+  const sortedAmenities = useMemo(() => {
+    if (!showAmenities) return [];
+    return sortAmenitiesByDistance(AMENITIES, LOCATIONS.DANANG_HOTEL);
+  }, [showAmenities]);
 
   // 모든 여행 일정의 위치 수집
   const allLocations = useMemo(() => {
@@ -427,7 +442,33 @@ export function MapView() {
           );
         })}
 
-        {/* 정보 창 */}
+        {/* 편의시설 마커 */}
+        {showAmenities && sortedAmenities.map((amenity) => (
+          <Marker
+            key={`amenity-${amenity.id}`}
+            position={{
+              lat: amenity.location.latitude,
+              lng: amenity.location.longitude,
+            }}
+            icon={{
+              path: window.google.maps.SymbolPath.CIRCLE,
+              scale: 8,
+              fillColor: amenity.category === 'CONVENIENCE_STORE' ? '#10B981' : '#3B82F6',
+              fillOpacity: 0.9,
+              strokeColor: '#ffffff',
+              strokeWeight: 2,
+            }}
+            title={amenity.nameKo}
+            onClick={() => {
+              setSelectedAmenity(amenity);
+              setSelectedActivity(null);
+              onAmenitySelect?.(amenity);
+            }}
+            zIndex={500}
+          />
+        ))}
+
+        {/* 여행 일정 정보 창 */}
         {selectedActivity && selectedActivity.location && (
           <InfoWindow
             position={{
@@ -445,6 +486,42 @@ export function MapView() {
                 <p className="text-sm text-gray-600 mb-1">{selectedActivity.description}</p>
               )}
               <p className="text-xs text-gray-500">{selectedActivity.location.address}</p>
+            </div>
+          </InfoWindow>
+        )}
+
+        {/* 편의시설 정보 창 */}
+        {selectedAmenity && (
+          <InfoWindow
+            position={{
+              lat: selectedAmenity.location.latitude,
+              lng: selectedAmenity.location.longitude,
+            }}
+            onCloseClick={() => setSelectedAmenity(null)}
+          >
+            <div className="p-2 max-w-xs">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg">
+                  {selectedAmenity.category === 'CONVENIENCE_STORE' ? '🏪' : '🛒'}
+                </span>
+                <h3 className="font-bold text-gray-800">{selectedAmenity.nameKo}</h3>
+              </div>
+              <p className="text-sm text-gray-600 mb-2">{selectedAmenity.name}</p>
+              <div className="space-y-1">
+                <p className="text-xs text-gray-500">
+                  <strong>영업시간:</strong> {selectedAmenity.openingHours}
+                </p>
+                {selectedAmenity.distance && (
+                  <p className="text-xs text-gray-500">
+                    <strong>거리:</strong> {selectedAmenity.distance < 1000
+                      ? `${Math.round(selectedAmenity.distance)}m`
+                      : `${(selectedAmenity.distance / 1000).toFixed(1)}km`}
+                  </p>
+                )}
+                {selectedAmenity.description && (
+                  <p className="text-xs text-gray-600 mt-1">{selectedAmenity.description}</p>
+                )}
+              </div>
             </div>
           </InfoWindow>
         )}
@@ -506,6 +583,18 @@ export function MapView() {
             <div className="w-3 h-3 bg-pink-500 rounded-full" />
             <span className="text-gray-600">5일차</span>
           </div>
+          {showAmenities && (
+            <>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
+                <span className="text-gray-600">편의점</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 bg-blue-500 rounded-full border-2 border-white" />
+                <span className="text-gray-600">대형마트</span>
+              </div>
+            </>
+          )}
         </div>
         <p className="text-center text-xs text-gray-500 mt-2">
           마커를 클릭하면 상세 정보를 볼 수 있습니다
