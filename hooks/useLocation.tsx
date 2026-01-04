@@ -91,19 +91,38 @@ export function useLocation(options: UseLocationOptions = {}): UseLocationReturn
     const testDateStr = typeof window !== 'undefined' ? localStorage.getItem('testDate') : null;
 
     if (testDateStr && autoStart) {
-      // 테스트 모드: 다낭 근처의 시뮬레이션 위치 제공
-      // 호텔(Wyndham Soleil Danang) 근처 위치
-      const testPosition: LocationPosition = {
-        latitude: 16.0583,
-        longitude: 108.2226,
-        accuracy: 10,
-        timestamp: 1704067200000, // 고정 timestamp (무한 루프 방지)
-      };
+      // 테스트 모드: 위치에 따라 다른 시뮬레이션 위치 제공
+      // 현재 시간 기준으로 위치 결정
+      const testDate = new Date(testDateStr);
+      const tripStartDate = new Date('2026-01-15T13:00:00+09:00');
+      const danangArrivalDate = new Date('2026-01-15T21:30:00+09:00');
+
+      let testPosition: LocationPosition;
+
+      // 다낭 도착 전이면 한국 근처, 도착 후면 다낭 근처
+      if (testDate < danangArrivalDate) {
+        // 한국(서울역) 시뮬레이션 위치 - 인천공항까지 약 48km
+        testPosition = {
+          latitude: 37.5547,  // 서울역
+          longitude: 126.9707,
+          accuracy: 10,
+          timestamp: 1704067200000,
+        };
+        console.log('테스트 모드: 시뮬레이션 위치 사용 (서울역)', testPosition);
+      } else {
+        // 다낭(호텔 근처) 시뮬레이션 위치
+        testPosition = {
+          latitude: 16.0583,
+          longitude: 108.2226,
+          accuracy: 10,
+          timestamp: 1704067200000,
+        };
+        console.log('테스트 모드: 시뮬레이션 위치 사용 (다낭 호텔)', testPosition);
+      }
 
       setPosition(testPosition);
       setPermission('granted');
       setIsTracking(true);
-      console.log('테스트 모드: 시뮬레이션 위치 사용 (다낭 호텔)', testPosition);
 
       // 테스트 모드에서는 실제 GPS 추적하지 않음
       return;

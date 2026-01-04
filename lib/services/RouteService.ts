@@ -57,23 +57,35 @@ class RouteService {
    * 경로 계산
    */
   async calculateRoute(
-    origin: LocationPosition | { lat: number; lng: number },
-    destination: { lat: number; lng: number },
+    origin: LocationPosition | { lat: number; lng: number } | string,
+    destination: { lat: number; lng: number } | string,
     options: RouteOptions = {}
   ): Promise<RouteInfo> {
     if (!this.directionsService) {
       throw new Error('RouteService not initialized. Call initialize() first.');
     }
 
-    const originLatLng =
-      'latitude' in origin
+    // origin이 문자열이면 그대로 사용, 객체면 LatLng로 변환
+    const originParam = typeof origin === 'string'
+      ? origin
+      : 'latitude' in origin
         ? { lat: origin.latitude, lng: origin.longitude }
         : origin;
 
+    // destination이 문자열이면 그대로 사용, 객체면 그대로 사용
+    const destinationParam = typeof destination === 'string'
+      ? destination
+      : destination;
+
+    // 한국 좌표 확인 (region=KR 파라미터 추가)
+    const isKoreaOrigin = typeof origin !== 'string' && 'latitude' in origin && origin.latitude > 33 && origin.latitude < 39;
+    const isKoreaDestination = typeof destination !== 'string' && destination.lat > 33 && destination.lat < 39;
+
     const request: google.maps.DirectionsRequest = {
-      origin: originLatLng,
-      destination: destination,
+      origin: originParam,
+      destination: destinationParam,
       travelMode: google.maps.TravelMode.DRIVING,
+      region: (isKoreaOrigin || isKoreaDestination) ? 'KR' : undefined, // 한국 지역 코드 추가
       drivingOptions: options.departureTime
         ? {
             departureTime: options.departureTime,
@@ -90,8 +102,18 @@ class RouteService {
       avoidFerries: options.avoidFerries,
     };
 
+    console.log('🚗 RouteService: Google Maps Directions API 요청', {
+      origin: originParam,
+      destination: destinationParam,
+      region: request.region,
+      travelMode: 'DRIVING',
+      options
+    });
+
     return new Promise((resolve, reject) => {
       this.directionsService!.route(request, (result, status) => {
+        console.log('📡 Google Maps Directions API 응답:', status);
+
         if (status === google.maps.DirectionsStatus.OK && result) {
           const route = result.routes[0];
           const leg = route.legs[0];

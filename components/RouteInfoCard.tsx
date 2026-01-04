@@ -77,13 +77,30 @@ export function RouteInfoCard() {
 
   // 경로 계산 (여행 중일 때만)
   useEffect(() => {
+    console.log('🗺️ RouteInfoCard useEffect', {
+      status: travelStatus?.status,
+      hasPosition: !!position,
+      position,
+      isLoaded,
+      hasActivity: !!travelStatus?.currentActivity,
+      activity: travelStatus?.currentActivity?.title,
+      hasDestination: !!destination,
+      destination
+    });
+
     // 여행 상태가 없거나, 여행 중이 아니면 실행 안 함
     if (!travelStatus || travelStatus.status !== 'IN_PROGRESS') {
-      console.log('RouteInfoCard: 경로 계산 건너뛰기 - 여행 전 또는 완료');
+      console.log('RouteInfoCard: 경로 계산 건너뛰기 - 여행 전 또는 완료', travelStatus?.status);
       return;
     }
 
     if (!position || !isLoaded || !travelStatus.currentActivity || !destination) {
+      console.log('RouteInfoCard: 경로 계산 건너뛰기 - 필수 조건 미충족', {
+        position: !!position,
+        isLoaded,
+        currentActivity: !!travelStatus.currentActivity,
+        destination: !!destination
+      });
       return;
     }
 
@@ -95,6 +112,11 @@ export function RouteInfoCard() {
       destination.lng
     );
 
+    console.log(`📏 거리 계산: ${distance.toFixed(1)}km`, {
+      from: `${position.latitude}, ${position.longitude}`,
+      to: `${destination.lat}, ${destination.lng}`
+    });
+
     if (distance > 100) {
       console.log(
         `RouteInfoCard: 경로 계산 건너뛰기 - 거리가 너무 멀음 (${distance.toFixed(0)}km)`
@@ -105,14 +127,45 @@ export function RouteInfoCard() {
       return;
     }
 
-    console.log(`RouteInfoCard: 경로 계산 시작 - 거리 ${distance.toFixed(1)}km`);
+    console.log(`🛣️ RouteInfoCard: 경로 계산 시작 - 거리 ${distance.toFixed(1)}km`);
 
     const calculateRoute = async () => {
       setIsCalculating(true);
       setError(null);
 
       try {
-        const route = await routeService.calculateRoute(position, destination, {
+        // 한국 좌표인 경우 주소 문자열로 변환 시도
+        const isKorea = position.latitude > 33 && position.latitude < 39;
+
+        let originParam: any = position;
+        let destinationParam: any = destination;
+
+        if (isKorea && travelStatus?.currentActivity) {
+          // 한국인 경우 주소 문자열 사용
+          // travelData에서 현재 활동 찾기
+          const currentDay = travelData.days.find(d => d.day === travelStatus.currentDay);
+          const currentActivity = currentDay?.activities.find(a => a.id === travelStatus.currentActivity?.id);
+
+          // 현재 활동에 location이 없으면 다음 활동 찾기
+          let targetActivity = currentActivity;
+          if (currentActivity && !currentActivity.location && currentDay) {
+            const currentIndex = currentDay.activities.indexOf(currentActivity);
+            for (let i = currentIndex + 1; i < currentDay.activities.length; i++) {
+              if (currentDay.activities[i].location) {
+                targetActivity = currentDay.activities[i];
+                break;
+              }
+            }
+          }
+
+          if (targetActivity?.location?.address) {
+            // 목적지에 주소가 있으면 주소 사용
+            console.log('🏠 한국 주소 사용:', targetActivity.location.address);
+            destinationParam = targetActivity.location.address;
+          }
+        }
+
+        const route = await routeService.calculateRoute(originParam, destinationParam, {
           departureTime: new Date(),
           trafficModel: 'best_guess',
         });

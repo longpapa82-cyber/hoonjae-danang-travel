@@ -225,11 +225,19 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
 
   // 경로 계산 (여행 중일 때만)
   useEffect(() => {
-    console.log('🛣️ 경로 계산 useEffect 실행됨');
+    console.log('🛣️ 경로 계산 useEffect 실행됨', {
+      status: travelStatus?.status,
+      hasPosition: !!position,
+      isLoaded,
+      hasGoogle: !!window.google,
+      hasDestination: !!destination,
+      position,
+      destination
+    });
 
     // 여행 상태가 없거나, 여행 중이 아니면 실행 안 함
     if (!travelStatus || travelStatus.status !== 'IN_PROGRESS') {
-      console.log('MapView: 경로 계산 건너뛰기 - 여행 전 또는 완료');
+      console.log('MapView: 경로 계산 건너뛰기 - 여행 전 또는 완료', travelStatus?.status);
       return;
     }
 
@@ -332,9 +340,17 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
     );
   }
 
-  // 여행 전에는 첫 번째 일정 위치로 지도 표시 (map 객체 직접 조작)
+  // 여행 전 또는 여행 시작 시점에는 첫 번째 일정 위치로 지도 표시 (map 객체 직접 조작)
   useEffect(() => {
-    if (!map || travelStatus?.status !== 'BEFORE_TRIP') return;
+    if (!map || !travelStatus) return;
+
+    // 여행 전 OR 여행 시작 직후 (1일차 첫 활동)인지 확인
+    const isTripStart = travelStatus.status === 'BEFORE_TRIP' ||
+      (travelStatus.status === 'IN_PROGRESS' &&
+       travelStatus.currentDay === 1 &&
+       travelStatus.currentActivity?.id === travelData.days[0].activities[0].id);
+
+    if (!isTripStart) return;
 
     // 첫 번째 location이 있는 일정을 찾아서 센터 설정
     const firstLocation = allLocations.find(
@@ -342,7 +358,7 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
     );
 
     if (firstLocation?.activity.location) {
-      console.log('📍 여행 전 - 첫 번째 일정 위치로 지도 중심 설정:', firstLocation.activity.title);
+      console.log('📍 여행 전/시작 - 첫 번째 일정 위치로 지도 중심 설정:', firstLocation.activity.title);
       map.setCenter({
         lat: firstLocation.activity.location.latitude,
         lng: firstLocation.activity.location.longitude,
@@ -351,10 +367,10 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
       const isKorea = firstLocation.activity.location.latitude > 33 && firstLocation.activity.location.latitude < 39;
       map.setZoom(isKorea ? 10 : 12);
     } else {
-      console.log('📍 여행 전 - 기본 다낭 중심으로 지도 설정');
+      console.log('📍 여행 전/시작 - 기본 다낭 중심으로 지도 설정');
       map.setCenter(defaultCenter);
     }
-  }, [map, travelStatus?.status, allLocations]);
+  }, [map, travelStatus?.status, travelStatus?.currentDay, travelStatus?.currentActivity?.id, allLocations]);
 
   // 로딩 중
   if (!isLoaded) {
