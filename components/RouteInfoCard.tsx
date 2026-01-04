@@ -246,13 +246,8 @@ export function RouteInfoCard() {
     );
   }
 
-  // 위치 정보 없음
-  if (!position) {
-    return null;
-  }
-
-  // 여행 전이면 표시하지 않음
-  if (travelStatus?.status === 'BEFORE_TRIP') {
+  // 위치 정보 없음 또는 여행 전
+  if (!position || travelStatus?.status === 'BEFORE_TRIP' || !travelStatus?.currentActivity) {
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -272,11 +267,6 @@ export function RouteInfoCard() {
         </div>
       </motion.div>
     );
-  }
-
-  // 현재 활동 없음
-  if (!travelStatus?.currentActivity) {
-    return null;
   }
 
   return (
