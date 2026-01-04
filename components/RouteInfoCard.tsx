@@ -187,8 +187,8 @@ export function RouteInfoCard() {
 
     calculateRoute();
 
-    // 30초마다 경로 재계산 (실시간 교통 정보 반영)
-    const interval = setInterval(calculateRoute, 30000);
+    // 60초마다 경로 재계산 (실시간 교통 정보 반영) - 떨림 방지를 위해 간격 증가
+    const interval = setInterval(calculateRoute, 60000);
     return () => clearInterval(interval);
   }, [position, isLoaded, travelStatus, destination]);
 
@@ -370,12 +370,12 @@ export function RouteInfoCard() {
 
           {/* 업데이트 시간 */}
           <p className="text-xs text-gray-400 text-center">
-            30초마다 자동 업데이트
+            60초마다 자동 업데이트
           </p>
         </div>
       )}
 
-      {/* 로딩 중 */}
+      {/* 첫 로딩 중 (routeInfo가 없을 때만) */}
       {!routeInfo && !error && isCalculating && (
         <div className="flex items-center justify-center py-8">
           <div className="text-center">
