@@ -7,6 +7,7 @@
 
 import { Activity } from '@/types/travel';
 import LocationService, { LocationPosition } from './LocationService';
+import { notificationService } from './NotificationService';
 
 export interface Geofence {
   id: string;
@@ -16,6 +17,7 @@ export interface Geofence {
   radius: number; // 미터
   isActive: boolean;
   enteredAt?: number; // 진입 시간 (timestamp)
+  approachingNotified?: boolean; // 접근 알림 발송 여부
 }
 
 export type GeofenceEnterCallback = (geofence: Geofence) => void;
@@ -172,25 +174,23 @@ class GeofenceService {
     // 햅틱 피드백
     this.playHapticFeedback('success');
 
-    // 알림 발송
-    this.sendNotification(`${activity.title}에 도착했습니다!`);
+    // 도착 알림 발송 (NotificationService 사용)
+    notificationService.sendArrivalNotification(activity.title);
 
     // TODO: 실제 체크인 로직 연동
   }
 
   /**
-   * 알림 발송
+   * 접근 알림 발송 (500m 반경)
    */
-  private sendNotification(message: string): void {
-    if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification('다낭 여행 트래커', {
-        body: message,
-        icon: '/icons/icon-192.png',
-        badge: '/icons/icon-192.png',
-        tag: 'geofence-arrival',
-        requireInteraction: false,
-      });
-    }
+  private sendApproachingAlert(activity: Activity, distance: number): void {
+    console.log(`📍 접근 중: ${activity.title} (${Math.round(distance)}m)`);
+
+    // 햅틱 피드백
+    this.playHapticFeedback('warning');
+
+    // 접근 알림 발송
+    notificationService.sendApproachingNotification(activity.title, distance);
   }
 
   /**
@@ -224,8 +224,15 @@ class GeofenceService {
 
       const isInside = distance <= geofence.radius;
       const wasInside = this.activeGeofences.has(geofence.id);
+      const isApproaching = distance <= 500 && distance > geofence.radius; // 500m 이내, 하지만 아직 도착 전
 
-      // 진입 감지
+      // 접근 알림 (500m 이내, 한 번만 발송)
+      if (isApproaching && !geofence.approachingNotified && !wasInside) {
+        geofence.approachingNotified = true;
+        this.sendApproachingAlert(geofence.activity, distance);
+      }
+
+      // 진입 감지 (도착)
       if (isInside && !wasInside) {
         geofence.enteredAt = Date.now();
         this.activeGeofences.add(geofence.id);
@@ -239,6 +246,11 @@ class GeofenceService {
       else if (!isInside && wasInside) {
         this.activeGeofences.delete(geofence.id);
         this.notifyExit(geofence);
+
+        // 멀어지면 접근 알림 플래그 리셋
+        if (distance > 600) {
+          geofence.approachingNotified = false;
+        }
       }
     });
   }

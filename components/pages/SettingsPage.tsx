@@ -11,9 +11,14 @@ import {
   ChevronRight,
   Calendar,
   RotateCcw,
+  Moon,
+  Sun,
+  Sparkles,
 } from 'lucide-react';
+import { useTheme, ThemeMode } from '@/contexts/ThemeContext';
 
 export function SettingsPage() {
+  const { mode, activeTheme, setMode } = useTheme();
   const [notifications, setNotifications] = useState(true);
   const [locationTracking, setLocationTracking] = useState(true);
   const [testMode, setTestMode] = useState(false);
@@ -85,12 +90,88 @@ export function SettingsPage() {
 
       {/* 설정 항목들 */}
       <div className="space-y-4">
-        {/* 알림 설정 */}
+        {/* 테마 설정 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200"
+          className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-indigo-100 dark:bg-indigo-900 rounded-lg">
+              {activeTheme === 'dark' ? (
+                <Moon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+              ) : (
+                <Sun className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+              )}
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-800 dark:text-gray-100">
+                테마
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                {mode === 'auto' ? '자동 (시간대별)' : mode === 'dark' ? '다크 모드' : '라이트 모드'}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2">
+            <button
+              onClick={() => setMode('light')}
+              className={`flex flex-col items-center gap-2 p-3 rounded-xl transition-all ${
+                mode === 'light'
+                  ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 shadow-md'
+                  : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600'
+              }`}
+            >
+              <Sun className="w-5 h-5" />
+              <span className="text-xs font-medium">라이트</span>
+            </button>
+
+            <button
+              onClick={() => setMode('dark')}
+              className={`flex flex-col items-center gap-2 p-3 rounded-xl transition-all ${
+                mode === 'dark'
+                  ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 shadow-md'
+                  : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600'
+              }`}
+            >
+              <Moon className="w-5 h-5" />
+              <span className="text-xs font-medium">다크</span>
+            </button>
+
+            <button
+              onClick={() => setMode('auto')}
+              className={`flex flex-col items-center gap-2 p-3 rounded-xl transition-all ${
+                mode === 'auto'
+                  ? 'bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 shadow-md'
+                  : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-600'
+              }`}
+            >
+              <Sparkles className="w-5 h-5" />
+              <span className="text-xs font-medium">자동</span>
+            </button>
+          </div>
+
+          {mode === 'auto' && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="mt-4 p-3 bg-indigo-50 dark:bg-indigo-950 rounded-lg"
+            >
+              <p className="text-sm text-indigo-700 dark:text-indigo-300">
+                💡 18:00 ~ 06:00 시간대에는 자동으로 다크 모드가 활성화됩니다.
+              </p>
+            </motion.div>
+          )}
+        </motion.div>
+
+        {/* 알림 설정 */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">

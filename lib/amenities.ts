@@ -7,6 +7,107 @@ import { Amenity, AmenityCategory, CafeSubType } from '@/types/amenity';
 import { Location } from '@/types/travel';
 
 export const AMENITIES: Amenity[] = [
+  // ============ 호텔 내부 시설 ============
+  {
+    id: 'hotel-checkin',
+    nameKo: '체크인 데스크',
+    name: 'Check-in Desk',
+    category: 'HOTEL_FACILITY',
+    openingHours: '24시간',
+    description: '체크인/체크아웃 및 컨시어지 서비스',
+    hotelFacility: {
+      floor: 1,
+      zone: '로비',
+    },
+  },
+  {
+    id: 'hotel-cafe-pronto',
+    nameKo: 'Café Pronto',
+    name: 'Café Pronto',
+    category: 'HOTEL_FACILITY',
+    openingHours: '07:00-23:00',
+    description: '커피, 페이스트리, 맥주 등 간단한 음료와 스낵',
+    hotelFacility: {
+      floor: 1,
+      zone: '로비',
+      features: ['커피', '페이스트리', '맥주', '간식'],
+    },
+  },
+  {
+    id: 'hotel-restaurant',
+    nameKo: 'Le Grande 레스토랑',
+    name: 'Le Grande Restaurant',
+    category: 'HOTEL_FACILITY',
+    openingHours: '06:00-10:00 (조식), 전일 (올데이 다이닝)',
+    description: '베트남 현지식부터 서양식까지 다양한 뷔페 메뉴 제공',
+    hotelFacility: {
+      floor: 3,
+      features: ['조식 뷔페', '올데이 다이닝', '현지식', '서양식'],
+    },
+  },
+  {
+    id: 'hotel-pool-outdoor',
+    nameKo: '야외 수영장',
+    name: 'Outdoor Swimming Pool',
+    category: 'HOTEL_FACILITY',
+    openingHours: '06:00-19:00',
+    description: '각 타워마다 있는 야외 수영장',
+    hotelFacility: {
+      floor: 4,
+      zone: '수영장 구역',
+      features: ['수영장', 'Pool Bar', '휴식 공간'],
+    },
+  },
+  {
+    id: 'hotel-pool-bar',
+    nameKo: 'Pool Bar',
+    name: 'Pool Bar',
+    category: 'HOTEL_FACILITY',
+    openingHours: '06:00-22:00',
+    description: '버거, 피자 등 가벼운 식사와 음료 제공',
+    hotelFacility: {
+      floor: 4,
+      zone: '수영장 옆',
+      features: ['버거', '피자', '음료', '수영장뷰'],
+    },
+  },
+  {
+    id: 'hotel-pool-rooftop',
+    nameKo: '루프탑 인피니티 풀',
+    name: 'Rooftop Infinity Pool',
+    category: 'HOTEL_FACILITY',
+    openingHours: '06:00-19:00',
+    description: '다낭 시내와 미케 비치를 한눈에 담을 수 있는 인피니티 풀',
+    hotelFacility: {
+      floor: '최상층',
+      features: ['인피니티 풀', '전망 명소', '포토존', '시티뷰', '오션뷰'],
+    },
+  },
+  {
+    id: 'hotel-gym',
+    nameKo: '피트니스 센터 & 스파',
+    name: 'Fitness Center & Spa',
+    category: 'HOTEL_FACILITY',
+    openingHours: '24시간',
+    description: '24시간 운영되는 헬스장 및 스파 시설',
+    hotelFacility: {
+      floor: 4,
+      features: ['24시간 운영', '헬스장', '스파', '사우나'],
+    },
+  },
+  {
+    id: 'hotel-kids-club',
+    nameKo: '키즈 클럽',
+    name: 'Kids Club',
+    category: 'HOTEL_FACILITY',
+    openingHours: '09:00-18:00',
+    description: '어린이 놀이방 및 다양한 활동 프로그램',
+    hotelFacility: {
+      floor: 4,
+      features: ['놀이 시설', '감독 있음', '어린이 프로그램'],
+    },
+  },
+
   // ============ 24시간 편의점 ============
   {
     id: 'convenience-1',
@@ -386,6 +487,7 @@ export function calculateDistance(
 
 /**
  * 편의시설 목록에 호텔로부터의 거리 추가 및 거리순 정렬
+ * 호텔 내부 시설(location 없음)은 거리 계산 제외
  */
 export function sortAmenitiesByDistance(
   amenities: Amenity[],
@@ -394,7 +496,9 @@ export function sortAmenitiesByDistance(
   return amenities
     .map((amenity) => ({
       ...amenity,
-      distance: calculateDistance(referenceLocation, amenity.location),
+      distance: amenity.location
+        ? calculateDistance(referenceLocation, amenity.location)
+        : undefined,
     }))
     .sort((a, b) => (a.distance || 0) - (b.distance || 0));
 }
@@ -403,6 +507,12 @@ export function sortAmenitiesByDistance(
  * 카테고리 정보
  */
 export const AMENITY_CATEGORIES = [
+  {
+    key: 'HOTEL_FACILITY' as AmenityCategory,
+    label: '호텔 시설',
+    icon: '🏨',
+    color: '#8B5CF6', // purple
+  },
   {
     key: 'CONVENIENCE_STORE' as AmenityCategory,
     label: '24시간 편의점',

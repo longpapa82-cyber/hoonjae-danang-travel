@@ -88,10 +88,12 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
   const [centerInitialized, setCenterInitialized] = useState(false);
   const mapInitialized = useRef(false);
 
-  // 편의시설 목록 (호텔 기준 거리순 정렬)
+  // 편의시설 목록 (지도에 표시할 외부 시설만, 호텔 기준 거리순 정렬)
   const sortedAmenities = useMemo(() => {
     if (!showAmenities) return [];
-    return sortAmenitiesByDistance(AMENITIES, LOCATIONS.DANANG_HOTEL);
+    // 호텔 내부 시설은 GPS 위치가 없으므로 지도에서 제외
+    const externalAmenities = AMENITIES.filter(a => a.category !== 'HOTEL_FACILITY' && a.location);
+    return sortAmenitiesByDistance(externalAmenities, LOCATIONS.DANANG_HOTEL);
   }, [showAmenities]);
 
   // 모든 여행 일정의 위치 수집
@@ -461,13 +463,13 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
           );
         })}
 
-        {/* 편의시설 마커 */}
-        {showAmenities && sortedAmenities.map((amenity) => (
+        {/* 편의시설 마커 (GPS 위치가 있는 외부 시설만) */}
+        {showAmenities && sortedAmenities.filter(a => a.location).map((amenity) => (
           <Marker
             key={`amenity-${amenity.id}`}
             position={{
-              lat: amenity.location.latitude,
-              lng: amenity.location.longitude,
+              lat: amenity.location!.latitude,
+              lng: amenity.location!.longitude,
             }}
             icon={{
               path: window.google.maps.SymbolPath.CIRCLE,
@@ -511,8 +513,8 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
           </InfoWindow>
         )}
 
-        {/* 편의시설 정보 창 */}
-        {selectedAmenity && (
+        {/* 편의시설 정보 창 (GPS 위치가 있는 경우만) */}
+        {selectedAmenity && selectedAmenity.location && (
           <InfoWindow
             position={{
               lat: selectedAmenity.location.latitude,

@@ -24,6 +24,18 @@ export function ImageModal({ imageUrl, title, isOpen, onClose }: ImageModalProps
     };
   }, [isOpen]);
 
+  // Escape 키로 모달 닫기
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -33,6 +45,9 @@ export function ImageModal({ imageUrl, title, isOpen, onClose }: ImageModalProps
           exit={{ opacity: 0 }}
           onClick={onClose}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="image-modal-title"
         >
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
@@ -44,9 +59,10 @@ export function ImageModal({ imageUrl, title, isOpen, onClose }: ImageModalProps
           >
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/90 hover:bg-white:bg-gray-700 transition-colors"
+              aria-label="이미지 닫기"
+              className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/90 hover:bg-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
             >
-              <X className="w-6 h-6 text-gray-800" />
+              <X className="w-6 h-6 text-gray-800" aria-hidden="true" />
             </button>
 
             <div className="relative w-full h-[70vh]">
@@ -61,7 +77,7 @@ export function ImageModal({ imageUrl, title, isOpen, onClose }: ImageModalProps
             </div>
 
             <div className="p-4 bg-white">
-              <h3 className="text-xl font-bold text-gray-800">
+              <h3 id="image-modal-title" className="text-xl font-bold text-gray-800">
                 {title}
               </h3>
             </div>

@@ -46,7 +46,7 @@ export function ActivityCard({ activity, status, index }: ActivityCardProps) {
       </div>
 
       {/* 제목 */}
-      <h3 className={`text-lg font-bold mb-2 ${isCompleted ? 'line-through text-gray-500' : 'text-gray-800'}`}>
+      <h3 className={`text-base sm:text-lg font-bold mb-2 leading-tight ${isCompleted ? 'line-through text-gray-500' : 'text-gray-800'}`}>
         {activity.title}
       </h3>
 
@@ -54,7 +54,7 @@ export function ActivityCard({ activity, status, index }: ActivityCardProps) {
       {activity.description && (
         <p id={`activity-${activity.id}-description`} className="text-sm text-gray-600 mb-2 flex items-start gap-2">
           <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" aria-hidden="true" />
-          {activity.description}
+          <span className="line-clamp-2">{activity.description}</span>
         </p>
       )}
 

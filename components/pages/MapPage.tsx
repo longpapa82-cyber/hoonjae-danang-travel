@@ -6,6 +6,7 @@ import { Map, MapPin, Navigation, Target, Store } from 'lucide-react';
 import { MapView } from '@/components/MapView';
 import { CurrentLocationCard } from '@/components/CurrentLocationCard';
 import { RouteInfoCard } from '@/components/RouteInfoCard';
+import { NextActivityCard } from '@/components/NextActivityCard';
 import { AmenitiesBottomSheet } from '@/components/AmenitiesBottomSheet';
 import { useLocation } from '@/hooks/useLocation';
 import { useTravelStatus } from '@/hooks/useTravelStatus';
@@ -105,11 +106,21 @@ export function MapPage() {
         <CurrentLocationCard />
       </motion.div>
 
-      {/* 경로 안내 */}
+      {/* 다음 일정 및 ETA */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
+        className="mb-6"
+      >
+        <NextActivityCard />
+      </motion.div>
+
+      {/* 경로 안내 */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
         className="mb-6"
       >
         <RouteInfoCard />
