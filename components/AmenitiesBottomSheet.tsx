@@ -54,7 +54,7 @@ export function AmenitiesBottomSheet({
     <>
       <BottomSheet isOpen={isOpen} onClose={onClose} title="🏪 편의시설">
         {/* 카테고리 탭 */}
-        <div className="flex gap-2 mb-4 sticky top-0 bg-white py-2 z-10" role="tablist" aria-label="편의시설 카테고리">
+        <div className="grid grid-cols-2 sm:flex gap-2 mb-4 sticky top-0 bg-white dark:bg-gray-900 py-2 z-10" role="tablist" aria-label="편의시설 카테고리">
           {AMENITY_CATEGORIES.map((category) => (
             <button
               key={category.key}
@@ -63,16 +63,17 @@ export function AmenitiesBottomSheet({
               aria-controls={`${category.key}-panel`}
               aria-label={`${category.label} 카테고리`}
               onClick={() => setActiveCategory(category.key)}
-              className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all touch-manipulation focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              className={`flex items-center justify-center gap-2 py-3 px-3 sm:px-4 min-h-[44px] sm:flex-1 rounded-xl font-medium transition-all duration-200 touch-manipulation focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                 activeCategory === category.key
-                  ? 'bg-blue-500 text-white shadow-lg scale-105'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-blue-500 text-white shadow-lg scale-[1.02]'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
               }`}
             >
-              <div className="flex items-center justify-center gap-2">
-                <span className="text-xl" aria-hidden="true">{category.icon}</span>
-                <span className="text-sm">{category.label}</span>
-              </div>
+              <span className="text-xl sm:text-2xl flex-shrink-0" aria-hidden="true">{category.icon}</span>
+              <span className="text-xs sm:text-sm font-medium whitespace-nowrap">
+                <span className="sm:hidden">{category.labelShort}</span>
+                <span className="hidden sm:inline">{category.label}</span>
+              </span>
             </button>
           ))}
         </div>

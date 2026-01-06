@@ -510,24 +510,28 @@ export const AMENITY_CATEGORIES = [
   {
     key: 'HOTEL_FACILITY' as AmenityCategory,
     label: '호텔 시설',
+    labelShort: '호텔',
     icon: '🏨',
     color: '#8B5CF6', // purple
   },
   {
     key: 'CONVENIENCE_STORE' as AmenityCategory,
     label: '24시간 편의점',
+    labelShort: '편의점',
     icon: '🏪',
     color: '#10B981', // green
   },
   {
     key: 'SUPERMARKET' as AmenityCategory,
     label: '대형마트',
+    labelShort: '마트',
     icon: '🛒',
     color: '#3B82F6', // blue
   },
   {
     key: 'CAFE' as AmenityCategory,
     label: '카페',
+    labelShort: '카페',
     icon: '☕',
     color: '#F59E0B', // orange
   },

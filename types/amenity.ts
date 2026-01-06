@@ -32,6 +32,7 @@ export interface Amenity {
 export interface AmenityCategoryInfo {
   key: AmenityCategory;
   label: string;
+  labelShort: string; // 모바일용 축약 레이블
   icon: string;
   color?: string; // 마커 색상
 }
