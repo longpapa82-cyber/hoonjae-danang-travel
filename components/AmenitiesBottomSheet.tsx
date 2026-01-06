@@ -65,7 +65,7 @@ export function AmenitiesBottomSheet({
               onClick={() => setActiveCategory(category.key)}
               className={`flex items-center justify-center gap-2 py-3 px-3 sm:px-4 min-h-[44px] sm:flex-1 rounded-xl font-medium transition-all duration-200 touch-manipulation focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
                 activeCategory === category.key
-                  ? 'bg-blue-500 text-white shadow-lg scale-[1.02]'
+                  ? 'bg-blue-500 text-white shadow-lg'
                   : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
               }`}
             >
