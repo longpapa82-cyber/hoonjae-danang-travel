@@ -21,6 +21,7 @@ const tabs = [
 export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationProps) {
   return (
     <motion.nav
+      data-testid="bottom-navigation"
       role="navigation"
       aria-label="주요 메뉴"
       initial={{ y: 100 }}
@@ -39,6 +40,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
             return (
               <button
                 key={tab.id}
+                data-testid={`tab-${tab.id}`}
                 role="tab"
                 aria-label={`${tab.label} 탭`}
                 aria-selected={isActive}

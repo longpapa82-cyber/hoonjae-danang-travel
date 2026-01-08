@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #ffffff; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #ffffff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+.header {
+  background: #5EA8A7;
+  padding: 30pt 40pt;
+  border-left: 8pt solid #FE4447;
+}
+.header h1 {
+  color: #ffffff;
+  font-size: 32pt;
+  margin: 0;
+}
+.content {
+  flex: 1;
+  padding: 25pt 40pt 40pt 40pt;
+  display: flex;
+  gap: 30pt;
+}
+.column {
+  flex: 1;
+}
+h2 {
+  color: #277884;
+  font-size: 18pt;
+  margin: 0 0 15pt 0;
+  
+  padding-bottom: 8pt;
+}
+ul {
+  margin: 0;
+  padding-left: 20pt;
+  color: #333333;
+  font-size: 12pt;
+  line-height: 1.6;
+}
+li {
+  margin-bottom: 6pt;
+}
+.badge {
+  display: inline-block;
+  background: #FE4447;
+  color: #ffffff;
+  padding: 3pt 8pt;
+  border-radius: 10pt;
+  font-size: 10pt;
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>기술 스택</h1>
+</div>
+<div class="content">
+  <div class="column">
+    <h2>Frontend</h2>
+    <ul>
+      <li>Next.js 15 / React 18</li>
+      <li>TypeScript</li>
+      <li>Tailwind CSS / Framer Motion</li>
+      <li>Google Maps API</li>
+      <li>date-fns / Lucide Icons</li>
+    </ul>
+  </div>
+
+  <div class="column">
+    <h2>Features</h2>
+    <ul>
+      <li>실시간 위치 추적 (Geolocation)</li>
+      <li>시차 자동 적용</li>
+      <li>로컬 스토리지 (체크인 데이터)</li>
+      <li>다크모드 (시간대별 자동)</li>
+      <li>PWA 지원 / 반응형 디자인</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #ffffff; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #ffffff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+.header {
+  background: #277884;
+  padding: 20pt 40pt;
+  border-left: 8pt solid #FE4447;
+}
+.header h1 {
+  color: #ffffff;
+  font-size: 26pt;
+  margin: 0;
+}
+.header p {
+  color: #ffffff;
+  font-size: 12pt;
+  margin: 4pt 0 0 0;
+  opacity: 0.9;
+}
+.content {
+  flex: 1;
+  padding: 20pt 40pt 40pt 40pt;
+  display: flex;
+  gap: 20pt;
+}
+.left {
+  flex: 1;
+}
+.right {
+  flex: 1;
+}
+h2 {
+  color: #277884;
+  font-size: 15pt;
+  margin: 0 0 10pt 0;
+  padding-bottom: 5pt;
+}
+ul {
+  margin: 0;
+  padding-left: 18pt;
+  color: #333333;
+  font-size: 12pt;
+  line-height: 1.6;
+}
+li {
+  margin-bottom: 5pt;
+}
+.feature-box {
+  background: #F5F5F5;
+  padding: 10pt;
+  border-radius: 8pt;
+  margin-top: 10pt;
+  border-left: 3pt solid #FE4447;
+}
+.feature-box p {
+  color: #333333;
+  font-size: 10pt;
+  margin: 0;
+  line-height: 1.4;
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>홈 화면</h1>
+  <p>메인 대시보드 - 여행 진행 상황 한눈에 확인</p>
+</div>
+<div class="content">
+  <div class="left">
+    <h2>주요 컴포넌트</h2>
+    <ul>
+      <li><b>CurrentLocationCard</b> - 현재 위치 표시</li>
+      <li><b>RouteInfoCard</b> - 다음 목적지까지 경로 정보</li>
+      <li><b>MapView</b> - Google Maps 통합</li>
+      <li><b>TravelProgress</b> - 진행률 원형 차트</li>
+    </ul>
+
+    <h2 style="margin-top: 14pt;">상태별 표시</h2>
+    <ul>
+      <li>여행 전: D-day 카운트다운</li>
+      <li>여행 중: 현재 활동 및 진행률</li>
+      <li>여행 후: 완료 메시지</li>
+    </ul>
+  </div>
+
+  <div class="right">
+    <h2>핵심 기능</h2>
+    <div class="feature-box">
+      <p><b>실시간 진행 상황</b></p>
+      <p>현재 시간을 기준으로 어떤 일정을 진행 중인지 자동 계산하여 표시</p>
+    </div>
+    <div class="feature-box">
+      <p><b>위치 기반 정보</b></p>
+      <p>사용자의 현재 위치와 다음 목적지까지의 거리, 예상 소요 시간 제공</p>
+    </div>
+    <div class="feature-box">
+      <p><b>시각적 진행률</b></p>
+      <p>원형 프로그레스 바로 전체 여행 일정 대비 현재 진행 상황을 직관적으로 표시</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

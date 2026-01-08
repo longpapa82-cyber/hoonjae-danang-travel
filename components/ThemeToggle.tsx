@@ -36,6 +36,7 @@ export function ThemeToggle() {
 
   return (
     <motion.button
+      data-testid="theme-toggle"
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
       onClick={toggleTheme}

@@ -51,7 +51,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
     // localStorage 저장
     if (typeof window !== 'undefined') {
-      localStorage.setItem('theme_mode', newMode);
+      localStorage.setItem('themeMode', newMode);
     }
   };
 
@@ -66,7 +66,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     if (typeof window === 'undefined') return;
 
     // localStorage에서 설정 불러오기
-    const savedMode = localStorage.getItem('theme_mode') as ThemeMode | null;
+    const savedMode = localStorage.getItem('themeMode') as ThemeMode | null;
     const initialMode = savedMode || 'auto';
 
     setModeState(initialMode);

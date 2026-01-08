@@ -117,6 +117,7 @@ export function FloatingActionButton({ onTabChange }: FloatingActionButtonProps)
 
         {/* 메인 FAB 버튼 */}
         <motion.button
+          data-testid="fab"
           whileTap={{ scale: 0.9 }}
           onClick={() => setIsOpen(!isOpen)}
           onKeyDown={(e) => {

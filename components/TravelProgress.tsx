@@ -56,10 +56,11 @@ export function TravelProgress() {
   const { status, currentDay, currentActivity, completedActivities, totalActivities, progressPercentage, timeUntilStart } = enhancedProgress;
 
   return (
-    <div className="space-y-8">
+    <div data-testid="travel-progress" className="space-y-8">
       {/* 여행 전 */}
       {status === 'BEFORE_TRIP' && timeUntilStart && (
         <motion.div
+          data-testid="countdown-timer"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6 }}
@@ -86,6 +87,7 @@ export function TravelProgress() {
       {/* 여행 중 */}
       {status === 'IN_PROGRESS' && (
         <motion.div
+          data-testid="progress-status"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -97,7 +99,7 @@ export function TravelProgress() {
           <h2 className="text-3xl font-bold text-gray-800 mb-4">
             여행 진행 중
           </h2>
-          <ProgressRing progress={progressPercentage} className="mx-auto mb-6" />
+          <ProgressRing progress={progressPercentage} className="mx-auto mb-6" data-testid="progress-ring" />
           <div className="text-lg text-gray-600">
             <p className="mb-2">
               {completedActivities} / {totalActivities} 활동 완료
@@ -108,7 +110,7 @@ export function TravelProgress() {
               </p>
             )}
             {currentActivity && (
-              <p className="mt-4 text-xl font-bold text-warning">
+              <p data-testid="current-activity" className="mt-4 text-xl font-bold text-warning">
                 지금: {currentActivity.title}
               </p>
             )}

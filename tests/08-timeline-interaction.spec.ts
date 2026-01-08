@@ -95,17 +95,22 @@ test.describe('타임라인 인터랙션', () => {
   });
 
   test('일차별 확장/축소가 동작해야 함', async ({ page }) => {
-    // 일차 헤더 찾기 (토글 가능한 경우)
-    const dayHeader = page.locator('text=/1일차/i, button:has-text("1일차")').first();
+    // 일정 탭으로 이동
+    await page.locator('[role="tab"]').filter({ hasText: '일정' }).first().click();
+    await page.waitForTimeout(500);
 
-    if (await dayHeader.isVisible()) {
-      // 클릭 시도
-      await dayHeader.click();
-      await page.waitForTimeout(500);
+    // 일차 헤더 찾기 (data-testid 사용)
+    const day1Header = page.locator('[data-testid="day-1"]').first();
 
-      // 상태 변화 확인 (aria-expanded 또는 시각적 변화)
-      await page.screenshot({ path: '/tmp/playwright-day-toggled.png', fullPage: true });
-    }
+    // 일차 헤더가 존재하는지 확인
+    await expect(day1Header).toBeVisible();
+
+    // 클릭 시도
+    await day1Header.click();
+    await page.waitForTimeout(500);
+
+    // 스크린샷
+    await page.screenshot({ path: '/tmp/playwright-day-toggled.png', fullPage: true });
   });
 
   test('마우스 호버 시 카드가 강조되어야 함', async ({ page }) => {
@@ -163,20 +168,20 @@ test.describe('타임라인 인터랙션', () => {
   });
 
   test('완료된 활동은 시각적으로 구분되어야 함', async ({ page }) => {
-    // 여행 중으로 시간 설정
+    // 여행 중으로 시간 설정 (localStorage 사용)
     await page.addInitScript(() => {
-      const mockDate = new Date('2026-01-16T15:00:00+07:00');
-      Date.now = () => mockDate.getTime();
+      localStorage.setItem('testDate', '2026-01-16T15:00:00+07:00');
     });
 
     await page.goto('/');
     await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(1500); // useCurrentTime 업데이트 대기
 
-    await page.locator('[role="tab"][aria-label*="일정"]').click();
+    await page.locator('[role="tab"]').filter({ hasText: '일정' }).first().click();
     await page.waitForTimeout(500);
 
-    // 완료 표시 확인 (체크 마크 또는 스타일)
-    const completedItems = await page.locator('[data-status="completed"], .completed, text=/✓|✔/').count();
+    // 완료 표시 확인 (data-status 속성 사용)
+    const completedItems = await page.locator('[data-status=completed]').count();
 
     if (completedItems > 0) {
       await page.screenshot({ path: '/tmp/playwright-completed-visual.png', fullPage: true });

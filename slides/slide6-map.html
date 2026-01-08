@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #ffffff; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #ffffff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+.header {
+  background: #277884;
+  padding: 18pt 40pt;
+  border-left: 8pt solid #FE4447;
+}
+.header h1 {
+  color: #ffffff;
+  font-size: 26pt;
+  margin: 0;
+}
+.header p {
+  color: #ffffff;
+  font-size: 12pt;
+  margin: 4pt 0 0 0;
+  opacity: 0.9;
+}
+.content {
+  flex: 1;
+  padding: 18pt 40pt 40pt 40pt;
+  display: flex;
+  gap: 20pt;
+}
+.left {
+  flex: 1;
+}
+.right {
+  flex: 1;
+}
+h2 {
+  color: #277884;
+  font-size: 15pt;
+  margin: 0 0 10pt 0;
+  padding-bottom: 5pt;
+}
+ul {
+  margin: 0;
+  padding-left: 18pt;
+  color: #333333;
+  font-size: 11pt;
+  line-height: 1.5;
+}
+li {
+  margin-bottom: 4pt;
+}
+.feature-box {
+  background: #F5F5F5;
+  padding: 9pt;
+  border-radius: 6pt;
+  margin-top: 9pt;
+  border-left: 3pt solid #5EA8A7;
+}
+.feature-box p {
+  color: #333333;
+  font-size: 10pt;
+  margin: 0 0 4pt 0;
+  line-height: 1.3;
+}
+.feature-box p:last-child {
+  margin-bottom: 0;
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>지도 화면</h1>
+  <p>실시간 위치 추적 및 경로 안내</p>
+</div>
+<div class="content">
+  <div class="left">
+    <h2>지도 기능</h2>
+    <ul>
+      <li><b>Google Maps 통합</b> - 실시간 지도 표시</li>
+      <li><b>위치 추적</b> - Geolocation API 활용</li>
+      <li><b>마커 표시</b> - 여행지 위치 마킹</li>
+      <li><b>경로 그리기</b> - Polyline으로 이동 경로</li>
+      <li><b>편의시설</b> - 주변 호텔/편의점/마트/카페</li>
+    </ul>
+
+    <h2 style="margin-top: 12pt;">편의시설</h2>
+    <ul>
+      <li>호텔 시설, 24시간 편의점</li>
+      <li>대형마트, 카페</li>
+    </ul>
+  </div>
+
+  <div class="right">
+    <h2>사용자 인터랙션</h2>
+    <div class="feature-box">
+      <p><b>위치 추적 토글</b></p>
+      <p>버튼 클릭으로 실시간 위치 추적 활성화/비활성화</p>
+    </div>
+    <div class="feature-box">
+      <p><b>편의시설 필터</b></p>
+      <p>카테고리별 편의시설 표시/숨기기. 바텀시트로 상세 목록 확인 가능</p>
+    </div>
+    <div class="feature-box">
+      <p><b>마커 클릭</b></p>
+      <p>지도의 마커를 클릭하면 InfoWindow로 장소 정보 표시</p>
+    </div>
+    <div class="feature-box">
+      <p><b>다음 일정 안내</b></p>
+      <p>현재 위치에서 다음 목적지까지의 거리와 예상 도착 시간(ETA) 제공</p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

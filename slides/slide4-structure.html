@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+html { background: #ffffff; }
+body {
+  width: 720pt; height: 405pt; margin: 0; padding: 0;
+  background: #ffffff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+.header {
+  background: #5EA8A7;
+  padding: 30pt 40pt;
+  border-left: 8pt solid #FE4447;
+}
+.header h1 {
+  color: #ffffff;
+  font-size: 32pt;
+  margin: 0;
+}
+.content {
+  flex: 1;
+  padding: 25pt 40pt 40pt 40pt;
+}
+.nav-tabs {
+  display: flex;
+  gap: 15pt;
+  margin-bottom: 25pt;
+}
+.tab {
+  flex: 1;
+  background: #5EA8A7;
+  color: #ffffff;
+  padding: 15pt;
+  border-radius: 8pt;
+  text-align: center;
+}
+.tab h3 {
+  font-size: 16pt;
+  margin: 0 0 8pt 0;
+}
+.tab p {
+  font-size: 11pt;
+  margin: 0;
+  opacity: 0.9;
+}
+.flow {
+  text-align: center;
+  margin-top: 15pt;
+}
+.flow p {
+  color: #277884;
+  font-size: 12pt;
+  margin: 8pt 0;
+  line-height: 1.4;
+}
+.arrow {
+  color: #FE4447;
+  font-size: 16pt;
+  margin: 3pt 0;
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>앱 구조</h1>
+</div>
+<div class="content">
+  <div class="nav-tabs">
+    <div class="tab">
+      <h3>홈</h3>
+      <p>현재 위치 및<br/>여행 진행 상황</p>
+    </div>
+    <div class="tab">
+      <h3>지도</h3>
+      <p>실시간 위치 및<br/>경로 안내</p>
+    </div>
+    <div class="tab">
+      <h3>일정</h3>
+      <p>전체 여행 일정<br/>체크인 관리</p>
+    </div>
+    <div class="tab">
+      <h3>설정</h3>
+      <p>테마 및 환경<br/>설정</p>
+    </div>
+  </div>
+
+  <div class="flow">
+    <p><b>사용자 플로우</b></p>
+    <p class="arrow">↓</p>
+    <p>페이지 접속 → 여행 상태 판단 (여행 전/중/후)</p>
+    <p class="arrow">↓</p>
+    <p>하단 네비게이션으로 홈/지도/일정/설정 화면 전환</p>
+  </div>
+</div>
+</body>
+</html>

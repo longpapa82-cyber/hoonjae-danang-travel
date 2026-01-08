@@ -21,6 +21,8 @@ export function ActivityCard({ activity, status, index }: ActivityCardProps) {
 
   return (
     <motion.article
+      data-testid={`activity-${activity.id}`}
+      data-status={status.toLowerCase()}
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.4, delay: index * 0.05 }}

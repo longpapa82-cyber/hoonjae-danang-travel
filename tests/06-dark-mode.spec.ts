@@ -44,10 +44,17 @@ test.describe('다크모드', () => {
     await settingsTab.click();
     await page.waitForTimeout(500);
 
-    // 초기 상태 확인 (라이트 모드)
     const htmlElement = page.locator('html');
-    const initialClass = await htmlElement.getAttribute('class');
-    const isDarkInitially = initialClass?.includes('dark') || false;
+
+    // 먼저 라이트 모드로 명시적 설정
+    const lightButton = page.locator('button:has-text("라이트")').first();
+    await lightButton.click();
+    await page.waitForTimeout(300);
+
+    // 라이트 모드 확인
+    const lightClass = await htmlElement.getAttribute('class');
+    const isDarkAfterLight = lightClass?.includes('dark') || false;
+    expect(isDarkAfterLight).toBe(false);
 
     // 다크 모드 버튼 클릭
     const darkButton = page.locator('button:has-text("다크")').first();
@@ -55,11 +62,9 @@ test.describe('다크모드', () => {
     await page.waitForTimeout(500);
 
     // 다크모드 클래스 확인
-    const afterClass = await htmlElement.getAttribute('class');
-    const isDarkAfter = afterClass?.includes('dark') || false;
-
-    // 상태가 변경되었는지 확인
-    expect(isDarkAfter).not.toBe(isDarkInitially);
+    const darkClass = await htmlElement.getAttribute('class');
+    const isDarkAfterDark = darkClass?.includes('dark') || false;
+    expect(isDarkAfterDark).toBe(true);
 
     await page.screenshot({ path: '/tmp/playwright-dark-mode-enabled.png', fullPage: true });
   });
@@ -74,22 +79,23 @@ test.describe('다크모드', () => {
     const darkButton = page.locator('button:has-text("다크")').first();
     const lightButton = page.locator('button:has-text("라이트")').first();
 
-    // 초기 상태
-    const initialClass = await htmlElement.getAttribute('class');
+    // 라이트 모드로 명시적 설정
+    await lightButton.click();
+    await page.waitForTimeout(300);
+    const lightClass = await htmlElement.getAttribute('class');
+    expect(lightClass?.includes('dark')).toBe(false);
 
     // 다크 모드로 전환
     await darkButton.click();
     await page.waitForTimeout(300);
-    const afterFirstToggle = await htmlElement.getAttribute('class');
+    const darkClass = await htmlElement.getAttribute('class');
+    expect(darkClass?.includes('dark')).toBe(true);
 
-    // 라이트 모드로 전환
+    // 다시 라이트 모드로 전환
     await lightButton.click();
     await page.waitForTimeout(300);
-    const afterSecondToggle = await htmlElement.getAttribute('class');
-
-    // 변경 확인
-    expect(afterFirstToggle).not.toBe(initialClass);
-    expect(afterSecondToggle).not.toBe(afterFirstToggle);
+    const lightClass2 = await htmlElement.getAttribute('class');
+    expect(lightClass2?.includes('dark')).toBe(false);
   });
 
   test('다크모드 설정이 localStorage에 저장되어야 함', async ({ page }) => {
@@ -105,7 +111,7 @@ test.describe('다크모드', () => {
 
     // localStorage 확인
     const themeMode = await page.evaluate(() => localStorage.getItem('themeMode'));
-    expect(themeMode).toBeTruthy();
+    expect(themeMode).toBe('dark');
   });
 
   test('페이지 새로고침 후에도 테마가 유지되어야 함', async ({ page }) => {
