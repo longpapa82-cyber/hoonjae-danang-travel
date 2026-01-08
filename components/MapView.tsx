@@ -232,6 +232,36 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
     );
   }, [position, isLoaded, travelStatus, destination]);
 
+  // 여행 전 또는 여행 시작 시점에는 첫 번째 일정 위치로 지도 표시 (map 객체 직접 조작)
+  useEffect(() => {
+    if (!map || !travelStatus) return;
+
+    // 여행 전 OR 여행 시작 직후 (1일차 첫 활동)인지 확인
+    const isTripStart = travelStatus.status === 'BEFORE_TRIP' ||
+      (travelStatus.status === 'IN_PROGRESS' &&
+       travelStatus.currentDay === 1 &&
+       travelStatus.currentActivity?.id === travelData.days[0].activities[0].id);
+
+    if (!isTripStart) return;
+
+    // 첫 번째 location이 있는 일정을 찾아서 센터 설정
+    const firstLocation = allLocations.find(
+      loc => loc.activity.location
+    );
+
+    if (firstLocation?.activity.location) {
+      map.setCenter({
+        lat: firstLocation.activity.location.latitude,
+        lng: firstLocation.activity.location.longitude,
+      });
+      // 한국(인천공항)인 경우 줌 레벨 조정
+      const isKorea = firstLocation.activity.location.latitude > 33 && firstLocation.activity.location.latitude < 39;
+      map.setZoom(isKorea ? 10 : 12);
+    } else {
+      map.setCenter(defaultCenter);
+    }
+  }, [map, travelStatus?.status, travelStatus?.currentDay, travelStatus?.currentActivity?.id, allLocations]);
+
   // API 키 누락
   if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ||
       process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY === 'YOUR_API_KEY_HERE') {
@@ -281,36 +311,6 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
       </motion.div>
     );
   }
-
-  // 여행 전 또는 여행 시작 시점에는 첫 번째 일정 위치로 지도 표시 (map 객체 직접 조작)
-  useEffect(() => {
-    if (!map || !travelStatus) return;
-
-    // 여행 전 OR 여행 시작 직후 (1일차 첫 활동)인지 확인
-    const isTripStart = travelStatus.status === 'BEFORE_TRIP' ||
-      (travelStatus.status === 'IN_PROGRESS' &&
-       travelStatus.currentDay === 1 &&
-       travelStatus.currentActivity?.id === travelData.days[0].activities[0].id);
-
-    if (!isTripStart) return;
-
-    // 첫 번째 location이 있는 일정을 찾아서 센터 설정
-    const firstLocation = allLocations.find(
-      loc => loc.activity.location
-    );
-
-    if (firstLocation?.activity.location) {
-      map.setCenter({
-        lat: firstLocation.activity.location.latitude,
-        lng: firstLocation.activity.location.longitude,
-      });
-      // 한국(인천공항)인 경우 줌 레벨 조정
-      const isKorea = firstLocation.activity.location.latitude > 33 && firstLocation.activity.location.latitude < 39;
-      map.setZoom(isKorea ? 10 : 12);
-    } else {
-      map.setCenter(defaultCenter);
-    }
-  }, [map, travelStatus?.status, travelStatus?.currentDay, travelStatus?.currentActivity?.id, allLocations]);
 
   // 로딩 중
   if (!isLoaded) {
