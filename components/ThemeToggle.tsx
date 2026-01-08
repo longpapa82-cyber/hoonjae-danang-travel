@@ -40,13 +40,14 @@ export function ThemeToggle() {
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
       onClick={toggleTheme}
-      className="fixed top-4 right-4 z-50 p-3 rounded-full bg-white shadow-lg border-2 border-gray-200 hover:border-primary:border-primary transition-colors"
-      aria-label="테마 전환"
+      className="fixed top-4 right-4 z-50 p-3 rounded-full bg-white shadow-lg border-2 border-gray-200 hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+      aria-label={isDark ? '라이트 모드로 전환' : '다크 모드로 전환'}
+      aria-pressed={isDark}
     >
       {isDark ? (
-        <Sun className="w-6 h-6 text-yellow-500" />
+        <Sun className="w-6 h-6 text-yellow-500" aria-hidden="true" />
       ) : (
-        <Moon className="w-6 h-6 text-indigo-600" />
+        <Moon className="w-6 h-6 text-indigo-600" aria-hidden="true" />
       )}
     </motion.button>
   );

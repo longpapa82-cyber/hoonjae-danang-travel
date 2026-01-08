@@ -57,6 +57,14 @@ export function TravelProgress() {
 
   return (
     <div data-testid="travel-progress" className="space-y-8">
+      {/* 스크린리더를 위한 실시간 상태 알림 */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {status === 'BEFORE_TRIP' && `여행 시작까지 ${timeUntilStart?.days}일 ${timeUntilStart?.hours}시간 남았습니다`}
+        {status === 'IN_PROGRESS' && `여행 진행률 ${progressPercentage}퍼센트, ${completedActivities}개 중 ${totalActivities}개 활동 완료`}
+        {status === 'IN_PROGRESS' && currentActivity && `, 현재 활동: ${currentActivity.title}`}
+        {status === 'COMPLETED' && '여행이 완료되었습니다'}
+      </div>
+
       {/* 여행 전 */}
       {status === 'BEFORE_TRIP' && timeUntilStart && (
         <motion.div
