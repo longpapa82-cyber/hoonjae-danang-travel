@@ -39,6 +39,10 @@
 # 의존성 설치
 npm install
 
+# 환경 변수 설정
+cp .env.local.example .env.local
+# .env.local 파일을 열어 Google Maps API 키 입력
+
 # 개발 서버 실행
 npm run dev
 
@@ -50,6 +54,85 @@ npm start
 ### 접속
 
 개발 서버: http://localhost:3000
+
+### 환경 변수 설정
+
+`.env.local` 파일을 생성하고 다음 환경 변수를 설정하세요:
+
+```env
+# Google Maps API Key (필수)
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
+
+# Next.js 설정
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
+# 타임존 설정 (선택사항)
+NEXT_PUBLIC_DEFAULT_TIMEZONE=Asia/Seoul
+```
+
+**Google Maps API 설정 방법**:
+1. [Google Cloud Console](https://console.cloud.google.com/google/maps-apis) 접속
+2. Maps JavaScript API, Directions API, Geocoding API 활성화
+3. API 키 생성 및 제한 설정
+4. `.env.local`에 API 키 추가
+
+## 🌐 Vercel 배포
+
+### 1. Vercel 계정 연결
+
+```bash
+# Vercel CLI 설치
+npm i -g vercel
+
+# Vercel 로그인
+vercel login
+
+# 프로젝트 연결
+vercel link
+```
+
+### 2. 환경 변수 설정
+
+Vercel 대시보드에서 환경 변수 추가:
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`
+- `NEXT_PUBLIC_BASE_URL` (배포된 도메인)
+
+### 3. 배포
+
+```bash
+# 프로덕션 배포
+vercel --prod
+
+# 또는 Git push만으로 자동 배포
+git push origin main
+```
+
+### 4. 도메인 설정
+
+Vercel 대시보드에서 커스텀 도메인 설정 가능
+
+### 배포 설정 (vercel.json)
+
+```json
+{
+  "regions": ["icn1"],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
+      ]
+    }
+  ]
+}
+```
 
 ## 🏗️ 기술 스택
 
