@@ -2,7 +2,6 @@
 
 import { Home, Map, Calendar, Settings } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useTravelStore } from '@/lib/store/useTravelStore';
 
 type NavItem = 'home' | 'map' | 'timeline' | 'settings';
 
