@@ -33,15 +33,11 @@ export function SchedulePage() {
           const isCurrentDay = travelStatus?.currentDay === day.day;
 
           return (
-            <motion.div
+            <DayTimeline
               key={day.day}
-              data-testid={`day-${day.day}`}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: dayIndex * 0.1 }}
-            >
-              <DayTimeline day={day} isCurrentDay={Boolean(isCurrentDay)} />
-            </motion.div>
+              day={day}
+              isCurrentDay={Boolean(isCurrentDay)}
+            />
           );
         })}
       </div>

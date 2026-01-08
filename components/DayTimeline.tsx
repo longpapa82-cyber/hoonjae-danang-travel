@@ -101,7 +101,7 @@ export function DayTimeline({ day, isCurrentDay }: DayTimelineProps) {
         >
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {day.activities.map((activity, index) => {
-              const status = getActivityStatus(activity, day.date, currentTime);
+              const status = getActivityStatus(activity, day.date, currentTime || new Date());
               return (
                 <ActivityCard
                   key={activity.id}
