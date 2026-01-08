@@ -39,10 +39,6 @@ interface MapViewProps {
 }
 
 export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps = {}) {
-  // 리렌더링 추적
-  const renderCount = useRef(0);
-  renderCount.current += 1;
-
   const travelStatusRaw = useTravelStatus();
   const { isLoaded, loadError } = useGoogleMaps();
 
@@ -65,21 +61,6 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
   // 여행 중일 때만 위치 추적 자동 시작
   const shouldTrackLocation = travelStatus?.status === 'IN_PROGRESS';
   const { position } = useLocation({ autoStart: shouldTrackLocation });
-
-  // 렌더링 원인 추적
-  const prevPositionRef = useRef(position);
-  const prevTravelStatusRef = useRef(travelStatus);
-
-  if (prevPositionRef.current !== position) {
-    console.log(`🔄 MapView 렌더링 #${renderCount.current} - position 변경:`,
-      prevPositionRef.current?.timestamp, '→', position?.timestamp);
-    prevPositionRef.current = position;
-  } else if (prevTravelStatusRef.current !== travelStatus) {
-    console.log(`🔄 MapView 렌더링 #${renderCount.current} - travelStatus 변경`);
-    prevTravelStatusRef.current = travelStatus;
-  } else {
-    console.log(`🔄 MapView 렌더링 #${renderCount.current} - 원인 불명`);
-  }
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
@@ -153,11 +134,9 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
   const onLoad = useCallback((map: google.maps.Map) => {
     // 이미 초기화되었으면 건너뛰기 (리마운트 방지)
     if (mapInitialized.current) {
-      console.log('⚠️ MapView: 지도 이미 초기화됨, onLoad 다시 호출됨! (리마운트 발생)');
       return;
     }
 
-    console.log('✅ MapView: 지도 초기화 시작');
     setMap(map);
 
     // 초기 center는 기본 다낭 중심, 이후 useEffect에서 실제 위치로 업데이트
@@ -165,24 +144,10 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
     map.setCenter(defaultCenter);
     map.setZoom(12);
 
-    // 줌 변경 이벤트 리스너 추가 (디버깅용)
-    map.addListener('zoom_changed', () => {
-      const currentZoom = map.getZoom();
-      console.log(`🔍 줌 변경됨: ${currentZoom}`);
-    });
-
-    // 드래그 이벤트 리스너 추가
-    map.addListener('dragend', () => {
-      const currentCenter = map.getCenter();
-      console.log(`📍 지도 이동됨: ${currentCenter?.lat()}, ${currentCenter?.lng()}`);
-    });
-
     mapInitialized.current = true;
-    console.log('✅ MapView: 지도 초기화 완료');
   }, []); // dependencies 완전 제거!
 
   const onUnmount = useCallback(() => {
-    console.log('MapView: 지도 언마운트');
     setMap(null);
     mapInitialized.current = false;
   }, []);
@@ -192,14 +157,12 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
     if (!map || centerInitialized) return;
 
     if (position) {
-      console.log('📍 지도 중심을 현재 위치로 업데이트');
       map.setCenter({
         lat: position.latitude,
         lng: position.longitude,
       });
       setCenterInitialized(true);
     } else if (destination && travelStatus?.status === 'IN_PROGRESS') {
-      console.log('📍 지도 중심을 목적지로 업데이트');
       map.setCenter(destination);
       setCenterInitialized(true);
     }
@@ -227,29 +190,12 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
 
   // 경로 계산 (여행 중일 때만)
   useEffect(() => {
-    console.log('🛣️ 경로 계산 useEffect 실행됨', {
-      status: travelStatus?.status,
-      hasPosition: !!position,
-      isLoaded,
-      hasGoogle: !!window.google,
-      hasDestination: !!destination,
-      position,
-      destination
-    });
-
     // 여행 상태가 없거나, 여행 중이 아니면 실행 안 함
     if (!travelStatus || travelStatus.status !== 'IN_PROGRESS') {
-      console.log('MapView: 경로 계산 건너뛰기 - 여행 전 또는 완료', travelStatus?.status);
       return;
     }
 
     if (!position || !isLoaded || !window.google || !destination) {
-      console.log('MapView: 경로 계산 건너뛰기 - 필수 조건 미충족', {
-        position: !!position,
-        isLoaded,
-        google: !!window.google,
-        destination: !!destination
-      });
       return;
     }
 
@@ -262,14 +208,10 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
     );
 
     if (distance > 100) {
-      console.log(
-        `MapView: 경로 계산 건너뛰기 - 거리가 너무 멀음 (${distance.toFixed(0)}km)`
-      );
       setDirections(null);
       return;
     }
 
-    console.log(`🛣️ MapView: 경로 계산 시작 - 거리 ${distance.toFixed(1)}km`);
     const directionsService = new google.maps.DirectionsService();
 
     directionsService.route(
@@ -285,8 +227,6 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
       (result, status) => {
         if (status === google.maps.DirectionsStatus.OK && result) {
           setDirections(result);
-        } else {
-          console.log(`MapView: 경로 계산 실패 - ${status}`);
         }
       }
     );
@@ -360,7 +300,6 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
     );
 
     if (firstLocation?.activity.location) {
-      console.log('📍 여행 전/시작 - 첫 번째 일정 위치로 지도 중심 설정:', firstLocation.activity.title);
       map.setCenter({
         lat: firstLocation.activity.location.latitude,
         lng: firstLocation.activity.location.longitude,
@@ -369,7 +308,6 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
       const isKorea = firstLocation.activity.location.latitude > 33 && firstLocation.activity.location.latitude < 39;
       map.setZoom(isKorea ? 10 : 12);
     } else {
-      console.log('📍 여행 전/시작 - 기본 다낭 중심으로 지도 설정');
       map.setCenter(defaultCenter);
     }
   }, [map, travelStatus?.status, travelStatus?.currentDay, travelStatus?.currentActivity?.id, allLocations]);
@@ -396,6 +334,7 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
 
   return (
     <motion.div
+      data-testid="map-view"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="bg-white rounded-2xl p-4 shadow-lg border border-gray-200"
@@ -416,13 +355,14 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
       </div>
 
       {/* 지도 */}
-      <GoogleMap
-        key="travel-map"
-        mapContainerStyle={mapContainerStyle}
-        onLoad={onLoad}
-        onUnmount={onUnmount}
-        options={mapOptions}
-      >
+      <div data-testid="google-map">
+        <GoogleMap
+          key="travel-map"
+          mapContainerStyle={mapContainerStyle}
+          onLoad={onLoad}
+          onUnmount={onUnmount}
+          options={mapOptions}
+        >
         {/* 현재 위치 마커 (여행 중일 때만) */}
         {position && travelStatus?.status === 'IN_PROGRESS' && (
           <Marker
@@ -565,7 +505,8 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
             }}
           />
         )}
-      </GoogleMap>
+        </GoogleMap>
+      </div>
 
       {/* 범례 */}
       <div className="mt-4">
