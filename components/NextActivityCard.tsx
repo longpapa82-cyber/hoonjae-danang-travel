@@ -96,21 +96,25 @@ export function NextActivityCard() {
         <div className="flex gap-1 bg-white/20 rounded-lg p-1">
           <button
             onClick={() => setTransportMode('WALKING')}
-            className={`px-3 py-1 rounded text-xs font-medium transition-all ${
+            className={`px-3 py-1 rounded text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-500 ${
               transportMode === 'WALKING'
                 ? 'bg-white text-blue-600'
                 : 'text-white/80 hover:text-white'
             }`}
+            aria-label="도보 이동 수단 선택"
+            aria-pressed={transportMode === 'WALKING'}
           >
             🚶 도보
           </button>
           <button
             onClick={() => setTransportMode('DRIVING')}
-            className={`px-3 py-1 rounded text-xs font-medium transition-all ${
+            className={`px-3 py-1 rounded text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-500 ${
               transportMode === 'DRIVING'
                 ? 'bg-white text-blue-600'
                 : 'text-white/80 hover:text-white'
             }`}
+            aria-label="차량 이동 수단 선택"
+            aria-pressed={transportMode === 'DRIVING'}
           >
             🚗 차량
           </button>

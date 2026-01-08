@@ -103,7 +103,7 @@ export function CurrentLocationCard() {
         ) : (
           <button
             onClick={handleStartTracking}
-            className="text-sm text-primary hover:text-blue-600 font-medium"
+            className="text-sm text-primary hover:text-blue-600 font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2 py-1"
           >
             추적 시작
           </button>
@@ -164,7 +164,7 @@ export function CurrentLocationCard() {
                 </p>
                 <button
                   onClick={handleStartTracking}
-                  className="text-sm text-primary hover:text-blue-600 font-medium underline"
+                  className="text-sm text-primary hover:text-blue-600 font-medium underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2 py-1"
                 >
                   추적 시작하기
                 </button>

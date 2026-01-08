@@ -213,7 +213,7 @@ export function RouteInfoCard() {
               href="https://console.cloud.google.com/google/maps-apis"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-primary hover:text-blue-600 underline"
+              className="text-sm text-primary hover:text-blue-600 underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-1 py-0.5"
             >
               API 키 발급받기 →
             </a>
@@ -359,7 +359,7 @@ export function RouteInfoCard() {
             )}
 
           {/* 업데이트 시간 */}
-          <p className="text-xs text-gray-400 text-center">
+          <p className="text-xs text-gray-500 text-center">
             60초마다 자동 업데이트
           </p>
         </div>

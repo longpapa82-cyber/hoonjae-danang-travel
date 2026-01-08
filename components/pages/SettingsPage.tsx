@@ -265,7 +265,7 @@ export function SettingsPage() {
                 </p>
               </div>
             </div>
-            <ChevronRight className="w-5 h-5 text-gray-400" />
+            <ChevronRight className="w-5 h-5 text-gray-500 dark:text-gray-400" />
           </button>
         </motion.div>
 

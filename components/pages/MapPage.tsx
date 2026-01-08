@@ -78,13 +78,15 @@ export function MapPage() {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleLocationToggle}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-500 ${
                 isTracking
                   ? 'bg-white text-blue-600'
                   : 'bg-blue-600 text-white border-2 border-white'
               }`}
+              aria-label={isTracking ? '위치 추적 중지' : '위치 추적 시작'}
+              aria-pressed={isTracking}
             >
-              <Target className={`w-4 h-4 ${isTracking ? 'animate-pulse' : ''}`} />
+              <Target className={`w-4 h-4 ${isTracking ? 'animate-pulse' : ''}`} aria-hidden="true" />
               <span className="text-sm">{isTracking ? '추적 중' : '위치 추적'}</span>
             </motion.button>
           )}
@@ -95,13 +97,15 @@ export function MapPage() {
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={handleAmenitiesToggle}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-500 ${
               showAmenities
                 ? 'bg-white text-blue-600 shadow-lg'
                 : 'bg-blue-400/50 text-white hover:bg-blue-400/70'
             }`}
+            aria-label={showAmenities ? '편의시설 숨기기' : '편의시설 보기'}
+            aria-pressed={showAmenities}
           >
-            <Store className="w-4 h-4" />
+            <Store className="w-4 h-4" aria-hidden="true" />
             <span className="text-sm">
               {showAmenities ? '편의시설 숨기기' : '편의시설 보기'}
             </span>
