@@ -21,6 +21,7 @@ export function DayTimeline({ day, isCurrentDay }: DayTimelineProps) {
 
   // 체크인을 반영한 진행률 계산
   const dayProgress = useMemo(() => {
+    // currentTime이 아직 null이어도 기본 진행률 계산이 가능하도록 처리
     if (!currentTime || !isHydrated) {
       return calculateDayProgress(day.activities, day.date, currentTime || new Date());
     }
@@ -35,7 +36,9 @@ export function DayTimeline({ day, isCurrentDay }: DayTimelineProps) {
     return Math.round((completedCount / day.activities.length) * 100);
   }, [day, currentTime, isHydrated, isCheckedIn]);
 
-  if (!currentTime) return null;
+  // currentTime이 아직 초기화되지 않은 경우에도
+  // 테스트 및 레이아웃을 위해 Day 컨테이너는 항상 렌더링되도록 유지합니다.
+  // 내부 ActivityCard는 currentTime이 준비된 후 상태를 계산합니다.
 
   return (
     <motion.div

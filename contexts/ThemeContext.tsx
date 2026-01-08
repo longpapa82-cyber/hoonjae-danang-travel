@@ -66,13 +66,15 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     if (typeof window === 'undefined') return;
 
     // localStorage에서 설정 불러오기
-    const savedMode = localStorage.getItem('themeMode') as ThemeMode | null;
-    const initialMode = savedMode || 'auto';
+    const savedMode = localStorage.getItem('themeMode');
+    const initialMode: ThemeMode = savedMode === 'light' || savedMode === 'dark' || savedMode === 'auto'
+      ? savedMode
+      : 'auto';
 
     setModeState(initialMode);
     setActiveTheme(calculateActiveTheme(initialMode));
 
-    // 시스템 다크모드 변경 감지
+    // 시스템 다크모드 변경 감지 (auto 모드일 때만 반영)
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = () => {
       if (mode === 'auto') {
@@ -82,7 +84,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
+  }, [mode]);
 
   // auto 모드일 때 1분마다 시간대 확인
   useEffect(() => {
