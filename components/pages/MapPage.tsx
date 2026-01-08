@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Map, MapPin, Navigation, Target, Store } from 'lucide-react';
-import { MapView } from '@/components/MapView';
 import { CurrentLocationCard } from '@/components/CurrentLocationCard';
 import { RouteInfoCard } from '@/components/RouteInfoCard';
 import { NextActivityCard } from '@/components/NextActivityCard';
@@ -11,6 +10,20 @@ import { AmenitiesBottomSheet } from '@/components/AmenitiesBottomSheet';
 import { useLocation } from '@/hooks/useLocation';
 import { useTravelStatus } from '@/hooks/useTravelStatus';
 import { Amenity } from '@/types/amenity';
+import dynamic from 'next/dynamic';
+
+// 동적 import로 MapView 로드 (지도 탭에서만 필요)
+const MapView = dynamic(() => import('@/components/MapView').then(mod => ({ default: mod.MapView })), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[400px] bg-gray-100 rounded-2xl flex items-center justify-center">
+      <div className="text-center">
+        <Map className="w-12 h-12 text-gray-400 mx-auto mb-2 animate-pulse" />
+        <p className="text-gray-500">지도 로딩 중...</p>
+      </div>
+    </div>
+  ),
+});
 
 export function MapPage() {
   const { isTracking, startTracking, stopTracking, permission } = useLocation({ autoStart: false });
