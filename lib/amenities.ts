@@ -355,20 +355,7 @@ export const AMENITIES: Amenity[] = [
     phone: '+84 946 114 967',
     description: '100% 아라비카 스페셜티 커피 & 브런치',
   },
-  {
-    id: 'cafe-6',
-    name: 'Passion Café',
-    nameKo: '패션 카페',
-    category: 'CAFE',
-    subType: 'SPECIALTY',
-    location: {
-      latitude: 16.0470, // TODO: 정확한 주소 및 좌표 확인 필요
-      longitude: 108.2200,
-      address: 'Da Nang City Center',
-    },
-    openingHours: '08:00-22:00',
-    description: '조용한 분위기의 스페셜티 카페',
-  },
+  // Passion Café 제거됨 (2025년 기준 Da Nang에서 존재 확인 안 됨)
   {
     id: 'cafe-7',
     name: 'The Cups Coffee Roastery',
