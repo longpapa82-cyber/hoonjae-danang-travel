@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { CurrentLocationCard } from '@/components/CurrentLocationCard';
 import { RouteInfoCard } from '@/components/RouteInfoCard';
 import { TravelProgress } from '@/components/TravelProgress';
@@ -19,7 +20,8 @@ const MapView = dynamic(() => import('@/components/MapView').then(mod => ({ defa
   ),
 });
 
-export function HomePage() {
+// React.memo로 불필요한 리렌더링 방지
+export const HomePage = memo(function HomePage() {
   return (
     <>
       {/* 현재 위치 카드 */}
@@ -43,4 +45,4 @@ export function HomePage() {
       </div>
     </>
   );
-}
+});

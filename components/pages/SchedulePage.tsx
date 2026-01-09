@@ -1,12 +1,14 @@
 'use client';
 
+import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, MapPin, Clock, Utensils, CheckCircle2, Circle, Check } from 'lucide-react';
 import { travelData } from '@/lib/travelData';
 import { useTravelStatus } from '@/hooks/useTravelStatus';
 import { DayTimeline } from '@/components/DayTimeline';
 
-export function SchedulePage() {
+// React.memo로 불필요한 리렌더링 방지
+export const SchedulePage = memo(function SchedulePage() {
   const travelStatus = useTravelStatus();
 
   return (
@@ -43,4 +45,4 @@ export function SchedulePage() {
       </div>
     </div>
   );
-}
+});

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { motion } from 'framer-motion';
 import { Map, MapPin, Navigation, Target, Store } from 'lucide-react';
 import { CurrentLocationCard } from '@/components/CurrentLocationCard';
@@ -25,7 +25,8 @@ const MapView = dynamic(() => import('@/components/MapView').then(mod => ({ defa
   ),
 });
 
-export function MapPage() {
+// React.memo로 불필요한 리렌더링 방지
+export const MapPage = memo(function MapPage() {
   const { isTracking, startTracking, stopTracking, permission } = useLocation({ autoStart: false });
   const travelStatus = useTravelStatus();
   const [showAmenities, setShowAmenities] = useState(false);
@@ -166,4 +167,4 @@ export function MapPage() {
       />
     </div>
   );
-}
+});

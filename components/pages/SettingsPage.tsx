@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { motion } from 'framer-motion';
 import {
   Settings,
@@ -17,7 +17,8 @@ import {
 } from 'lucide-react';
 import { useTheme, ThemeMode } from '@/contexts/ThemeContext';
 
-export function SettingsPage() {
+// React.memo로 불필요한 리렌더링 방지
+export const SettingsPage = memo(function SettingsPage() {
   const { mode, activeTheme, setMode } = useTheme();
   const [notifications, setNotifications] = useState(true);
   const [locationTracking, setLocationTracking] = useState(true);
@@ -372,4 +373,4 @@ export function SettingsPage() {
       </div>
     </div>
   );
-}
+});

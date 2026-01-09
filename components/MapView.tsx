@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef, memo } from 'react';
 import { GoogleMap, Marker, DirectionsRenderer, InfoWindow, Polyline } from '@react-google-maps/api';
 import { motion } from 'framer-motion';
 import { MapPin, Loader, AlertCircle } from 'lucide-react';
@@ -38,7 +38,8 @@ interface MapViewProps {
   onAmenitySelect?: (amenity: Amenity) => void;
 }
 
-export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps = {}) {
+// React.memo로 불필요한 리렌더링 방지
+export const MapView = memo(function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps = {}) {
   const travelStatusRaw = useTravelStatus();
   const { isLoaded, loadError } = useGoogleMaps();
 
@@ -568,4 +569,4 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
       </div>
     </motion.div>
   );
-}
+});
