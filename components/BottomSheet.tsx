@@ -54,6 +54,9 @@ export function BottomSheet({
 
           {/* Bottom Sheet */}
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label={title || 'Bottom Sheet'}
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}

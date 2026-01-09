@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
  * 목적: Vercel 프로덕션 환경에서 핵심 기능이 정상 작동하는지 확인
  */
 
-const PRODUCTION_URL = 'https://danang-travel-tracker.vercel.app';
+const PRODUCTION_URL = 'https://hoonjae-danang-travel.vercel.app';
 
 test.describe('프로덕션 환경 검증', () => {
 
