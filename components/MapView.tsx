@@ -52,11 +52,7 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
       currentActivity: travelStatusRaw.currentActivity,
       // 다른 필요한 필드들만 추가
     };
-  }, [
-    travelStatusRaw?.status,
-    travelStatusRaw?.currentDay,
-    travelStatusRaw?.currentActivity?.id, // id만 비교
-  ]);
+  }, [travelStatusRaw]); // travelStatusRaw 전체를 dependency로 포함
 
   // 여행 중일 때만 위치 추적 자동 시작
   const shouldTrackLocation = travelStatus?.status === 'IN_PROGRESS';
@@ -260,7 +256,7 @@ export function MapView({ showAmenities = false, onAmenitySelect }: MapViewProps
     } else {
       map.setCenter(defaultCenter);
     }
-  }, [map, travelStatus?.status, travelStatus?.currentDay, travelStatus?.currentActivity?.id, allLocations]);
+  }, [map, travelStatus, allLocations]); // travelStatus 전체를 dependency로 포함
 
   // API 키 누락
   if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ||

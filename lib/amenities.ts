@@ -208,8 +208,8 @@ export const AMENITIES: Amenity[] = [
     nameKo: '롯데마트',
     category: 'SUPERMARKET',
     location: {
-      latitude: 16.0472,
-      longitude: 108.2200,
+      latitude: 16.03423, // ✅ 스타벅스 롯데와 동일 건물 좌표로 수정
+      longitude: 108.22931,
       address: '06 Nai Nam, Hoa Cuong Bac, Hai Chau, Da Nang',
     },
     openingHours: '08:00-22:00',
@@ -305,8 +305,8 @@ export const AMENITIES: Amenity[] = [
     category: 'CAFE',
     subType: 'SPECIALTY',
     location: {
-      latitude: 16.0485, // TODO: 정확한 좌표 확인 필요 (132 Lê Quang Đạo)
-      longitude: 108.2465,
+      latitude: 16.0477441, // ✅ 정확한 좌표 확인됨
+      longitude: 108.2432242,
       address: '132 Lê Quang Đạo, Bắc Mỹ An, Ngũ Hành Sơn, Da Nang',
     },
     openingHours: '07:00-22:00',
@@ -333,8 +333,8 @@ export const AMENITIES: Amenity[] = [
     category: 'CAFE',
     subType: 'ROASTERY',
     location: {
-      latitude: 16.0475, // TODO: 정확한 좌표 확인 필요 (57 Bà Huyện Thanh Quan)
-      longitude: 108.2455,
+      latitude: 16.0434661, // ✅ 정확한 좌표 확인됨
+      longitude: 108.2439784,
       address: '57 Bà Huyện Thanh Quan, Bắc Mỹ An, Ngũ Hành Sơn, Da Nang',
     },
     openingHours: '07:00-21:30',
