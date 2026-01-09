@@ -21,6 +21,7 @@ export function BottomSheet({
 }: BottomSheetProps) {
   const y = useMotionValue(0);
 
+  // 바디 스크롤 제어
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -31,6 +32,23 @@ export function BottomSheet({
       document.body.style.overflow = 'unset';
     };
   }, [isOpen]);
+
+  // Escape 키로 닫기 (WCAG 2.1.2 No Keyboard Trap)
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen, onClose]);
 
   const handleDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     // 아래로 200px 이상 드래그하면 닫기
