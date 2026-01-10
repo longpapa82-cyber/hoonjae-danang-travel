@@ -5,6 +5,7 @@ import { ActivityCard } from './ActivityCard';
 import { getActivityStatus, calculateDayProgress } from '@/lib/progressCalculator';
 import { useCurrentTime } from '@/hooks/useCurrentTime';
 import { useCheckins } from '@/hooks/useCheckins';
+import { useWeather } from '@/hooks/useWeather';
 import { motion } from 'framer-motion';
 import { Calendar, Utensils } from 'lucide-react';
 import { useState, useMemo } from 'react';
@@ -17,7 +18,13 @@ interface DayTimelineProps {
 export function DayTimeline({ day, isCurrentDay }: DayTimelineProps) {
   const currentTime = useCurrentTime();
   const { isCheckedIn, isHydrated } = useCheckins();
+  const { forecast } = useWeather();
   const [isExpanded, setIsExpanded] = useState(isCurrentDay);
+
+  // 해당 날짜의 날씨 예보 찾기
+  const dayWeather = useMemo(() => {
+    return forecast.find(f => f.date === day.date) || null;
+  }, [forecast, day.date]);
 
   // 체크인을 반영한 진행률 계산
   const dayProgress = useMemo(() => {
@@ -61,11 +68,22 @@ export function DayTimeline({ day, isCurrentDay }: DayTimelineProps) {
           <div className="flex items-center gap-2 min-w-0 flex-1">
             <Calendar className={`w-5 h-5 flex-shrink-0 ${isCurrentDay ? 'text-primary' : 'text-gray-500'}`} />
             <div className="min-w-0 flex-1">
-              <h2 className="text-sm sm:text-base md:text-lg font-bold text-gray-800 leading-tight truncate">
-                {day.day}일차 - {day.date} ({day.dayOfWeek})
-              </h2>
+              <div className="flex items-center gap-2 mb-1">
+                <h2 className="text-sm sm:text-base md:text-lg font-bold text-gray-800 leading-tight truncate">
+                  {day.day}일차 - {day.date} ({day.dayOfWeek})
+                </h2>
+                {/* 날씨 정보 */}
+                {dayWeather && (
+                  <div className="flex items-center gap-1 text-xs sm:text-sm flex-shrink-0">
+                    <span className="text-lg" aria-hidden="true">{dayWeather.icon}</span>
+                    <span className="text-gray-700 font-medium whitespace-nowrap">
+                      {dayWeather.tempMax}°
+                    </span>
+                  </div>
+                )}
+              </div>
               {day.meals.length > 0 && (
-                <div className="flex items-center gap-1 mt-1 text-xs text-gray-600 overflow-hidden">
+                <div className="flex items-center gap-1 text-xs text-gray-600 overflow-hidden">
                   <Utensils className="w-3 h-3 flex-shrink-0" />
                   <span className="truncate block">
                     {day.meals.map(meal => `${meal.type}: ${meal.menu}`).join(' | ')}

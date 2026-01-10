@@ -21,6 +21,16 @@ html {
   .text-balance {
     text-wrap: balance;
   }
+
+  /* 스크롤바 숨김 (날씨 예보 가로 스크롤 등) */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari, Opera */
+  }
 }
 
 /* 스크롤바 스타일링 */
