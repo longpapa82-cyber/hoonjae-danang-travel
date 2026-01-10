@@ -47,18 +47,11 @@ export async function GET(request: NextRequest) {
 
     if (!apiKey) {
       console.error('[Weather API] ❌ API key not configured');
-      console.error('[Weather API] 🔍 Available env keys:', Object.keys(process.env).filter(k => k.includes('WEATHER') || k.includes('DANANG') || k.includes('VERCEL_ENV')));
       return NextResponse.json(
         {
           success: false,
           error: 'Weather API key not configured',
           message: 'OPENWEATHERMAP_API_KEY 환경 변수가 설정되지 않았습니다.',
-          debug: {
-            env: process.env.VERCEL_ENV,
-            hasPublicLat: !!process.env.NEXT_PUBLIC_DANANG_LAT,
-            hasPublicLon: !!process.env.NEXT_PUBLIC_DANANG_LON,
-            allWeatherKeys: Object.keys(process.env).filter(k => k.includes('WEATHER')),
-          },
         },
         { status: 500 }
       );
