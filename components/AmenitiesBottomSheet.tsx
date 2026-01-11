@@ -8,6 +8,7 @@ import { Amenity, AmenityCategory } from '@/types/amenity';
 import { AMENITIES, AMENITY_CATEGORIES, sortAmenitiesByDistance } from '@/lib/amenities';
 import { LOCATIONS } from '@/lib/locations';
 import { navigateToLocation, NavigationApp, formatDistance, estimateWalkingTime, NAVIGATION_APPS } from '@/lib/navigation';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface AmenitiesBottomSheetProps {
   isOpen: boolean;
@@ -23,6 +24,7 @@ export function AmenitiesBottomSheet({
   const [activeCategory, setActiveCategory] = useState<AmenityCategory>('HOTEL_FACILITY');
   const [selectedAmenity, setSelectedAmenity] = useState<Amenity | null>(null);
   const [showNavigationModal, setShowNavigationModal] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   // 호텔 위치 기준으로 편의시설 정렬 (호텔 내부 시설은 정렬 불필요)
   const sortedAmenities = useMemo(() => {
@@ -195,15 +197,20 @@ export function AmenitiesBottomSheet({
         <div
           className="fixed inset-0 bg-black/50 z-[60] flex items-center justify-center p-4"
           onClick={() => setShowNavigationModal(false)}
+          aria-hidden="true"
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="nav-modal-title"
+            initial={prefersReducedMotion ? {} : { scale: 0.9, opacity: 0 }}
+            animate={prefersReducedMotion ? {} : { scale: 1, opacity: 1 }}
+            exit={prefersReducedMotion ? {} : { scale: 0.9, opacity: 0 }}
+            transition={prefersReducedMotion ? { duration: 0 } : undefined}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl"
+            className="bg-white dark:bg-gray-900 rounded-3xl p-6 max-w-sm w-full shadow-2xl"
           >
-            <h3 className="text-xl font-bold text-gray-800 mb-2">
+            <h3 id="nav-modal-title" className="text-xl font-bold text-gray-800 dark:text-white mb-2">
               길찾기 앱 선택
             </h3>
             <p className="text-sm text-gray-600 mb-6">
@@ -215,17 +222,19 @@ export function AmenitiesBottomSheet({
                 <button
                   key={app.id}
                   onClick={() => handleNavigationAppSelect(app.id)}
-                  className="w-full flex items-center gap-3 p-4 bg-gray-50 hover:bg-gray-100 rounded-xl transition-colors touch-manipulation"
+                  aria-label={`${app.name}으로 ${selectedAmenity.nameKo} 길찾기`}
+                  className="w-full flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors touch-manipulation focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 >
-                  <span className="text-2xl">{app.icon}</span>
-                  <span className="font-medium text-gray-800">{app.name}</span>
+                  <span className="text-2xl" aria-hidden="true">{app.icon}</span>
+                  <span className="font-medium text-gray-800 dark:text-white">{app.name}</span>
                 </button>
               ))}
             </div>
 
             <button
               onClick={() => setShowNavigationModal(false)}
-              className="w-full mt-4 py-3 text-gray-600 font-medium"
+              aria-label="길찾기 앱 선택 모달 닫기"
+              className="w-full mt-4 py-3 text-gray-600 dark:text-gray-300 font-medium hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
               취소
             </button>

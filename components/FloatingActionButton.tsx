@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Home, Map, Calendar, Plus, X } from 'lucide-react';
 import { useState } from 'react';
 import { TabType } from './BottomNavigation';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface FABAction {
   id: string;
@@ -19,6 +20,7 @@ interface FloatingActionButtonProps {
 
 export function FloatingActionButton({ onTabChange }: FloatingActionButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   const actions: FABAction[] = [
     {
@@ -75,9 +77,10 @@ export function FloatingActionButton({ onTabChange }: FloatingActionButtonProps)
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
+              initial={prefersReducedMotion ? {} : { opacity: 0, scale: 0.8 }}
+              animate={prefersReducedMotion ? {} : { opacity: 1, scale: 1 }}
+              exit={prefersReducedMotion ? {} : { opacity: 0, scale: 0.8 }}
+              transition={prefersReducedMotion ? { duration: 0 } : undefined}
               className="flex flex-col gap-3 mb-3"
               role="menu"
               aria-orientation="vertical"
@@ -89,10 +92,10 @@ export function FloatingActionButton({ onTabChange }: FloatingActionButtonProps)
                     key={action.id}
                     role="menuitem"
                     aria-label={action.label}
-                    initial={{ x: 100, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: 100, opacity: 0 }}
-                    transition={{ delay: index * 0.05 }}
+                    initial={prefersReducedMotion ? {} : { x: 100, opacity: 0 }}
+                    animate={prefersReducedMotion ? {} : { x: 0, opacity: 1 }}
+                    exit={prefersReducedMotion ? {} : { x: 100, opacity: 0 }}
+                    transition={prefersReducedMotion ? { duration: 0 } : { delay: index * 0.05 }}
                     onClick={action.onClick}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
@@ -118,7 +121,7 @@ export function FloatingActionButton({ onTabChange }: FloatingActionButtonProps)
         {/* 메인 FAB 버튼 */}
         <motion.button
           data-testid="fab"
-          whileTap={{ scale: 0.9 }}
+          whileTap={prefersReducedMotion ? {} : { scale: 0.9 }}
           onClick={() => setIsOpen(!isOpen)}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {

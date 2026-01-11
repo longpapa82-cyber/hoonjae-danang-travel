@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { X, Download, Share2, ZoomIn, ZoomOut } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface ImageModalProps {
   imageUrl: string;
@@ -14,6 +15,7 @@ interface ImageModalProps {
 
 export function ImageModal({ imageUrl, title, isOpen, onClose }: ImageModalProps) {
   const [zoom, setZoom] = useState(1);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (isOpen) {
@@ -80,9 +82,10 @@ export function ImageModal({ imageUrl, title, isOpen, onClose }: ImageModalProps
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          initial={prefersReducedMotion ? {} : { opacity: 0 }}
+          animate={prefersReducedMotion ? {} : { opacity: 1 }}
+          exit={prefersReducedMotion ? {} : { opacity: 0 }}
+          transition={prefersReducedMotion ? { duration: 0 } : undefined}
           onClick={onClose}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
           role="dialog"
@@ -90,10 +93,10 @@ export function ImageModal({ imageUrl, title, isOpen, onClose }: ImageModalProps
           aria-labelledby="image-modal-title"
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            transition={{ type: 'spring', duration: 0.3 }}
+            initial={prefersReducedMotion ? {} : { scale: 0.9, opacity: 0 }}
+            animate={prefersReducedMotion ? {} : { scale: 1, opacity: 1 }}
+            exit={prefersReducedMotion ? {} : { scale: 0.9, opacity: 0 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { type: 'spring', duration: 0.3 }}
             onClick={(e) => e.stopPropagation()}
             className="relative max-w-4xl w-full bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-2xl"
           >

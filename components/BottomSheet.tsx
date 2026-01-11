@@ -3,6 +3,7 @@
 import { motion, AnimatePresence, PanInfo, useMotionValue } from 'framer-motion';
 import { useEffect } from 'react';
 import { X } from 'lucide-react';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface BottomSheetProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export function BottomSheet({
   snapPoints = [90], // 기본 90% 높이
 }: BottomSheetProps) {
   const y = useMotionValue(0);
+  const prefersReducedMotion = useReducedMotion();
 
   // 바디 스크롤 제어
   useEffect(() => {
@@ -75,16 +77,16 @@ export function BottomSheet({
             role="dialog"
             aria-modal="true"
             aria-label={title || 'Bottom Sheet'}
-            initial={{ y: '100%' }}
+            initial={prefersReducedMotion ? { y: 0 } : { y: '100%' }}
             animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 30, stiffness: 300, duration: 0.3 }}
-            drag="y"
+            exit={prefersReducedMotion ? { y: 0 } : { y: '100%' }}
+            transition={prefersReducedMotion ? { duration: 0 } : { type: 'spring', damping: 30, stiffness: 300, duration: 0.3 }}
+            drag={prefersReducedMotion ? false : "y"}
             dragConstraints={{ top: 0 }}
             dragElastic={0.2}
             onDragEnd={handleDragEnd}
             style={{ y }}
-            className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-50 max-h-[90vh] flex flex-col"
+            className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 rounded-t-3xl shadow-2xl z-50 max-h-[90vh] flex flex-col"
           >
             {/* 드래그 핸들 */}
             <div className="flex flex-col items-center pt-3 pb-2 px-4">

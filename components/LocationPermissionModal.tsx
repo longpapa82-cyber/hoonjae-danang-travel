@@ -4,11 +4,13 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Navigation, AlertCircle, Check } from 'lucide-react';
 import { locationService } from '@/lib/services/LocationService';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 export function LocationPermissionModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [permissionState, setPermissionState] = useState<PermissionState>('prompt');
   const [isRequesting, setIsRequesting] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     checkPermission();
@@ -62,28 +64,32 @@ export function LocationPermissionModal() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            aria-hidden="true"
           />
 
           {/* 모달 */}
           <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              transition={{ type: 'spring', duration: 0.5 }}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="permission-modal-title"
+              initial={prefersReducedMotion ? {} : { scale: 0.9, opacity: 0, y: 20 }}
+              animate={prefersReducedMotion ? {} : { scale: 1, opacity: 1, y: 0 }}
+              exit={prefersReducedMotion ? {} : { scale: 0.9, opacity: 0, y: 20 }}
+              transition={prefersReducedMotion ? { duration: 0 } : { type: 'spring', duration: 0.5 }}
               className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden"
             >
               {/* 아이콘 헤더 */}
               <div className="bg-gradient-to-br from-primary to-blue-600 p-8 text-center">
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+                  initial={prefersReducedMotion ? {} : { scale: 0 }}
+                  animate={prefersReducedMotion ? {} : { scale: 1 }}
+                  transition={prefersReducedMotion ? { duration: 0 } : { delay: 0.2, type: 'spring', stiffness: 200 }}
                   className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full shadow-lg mb-4"
                 >
-                  <Navigation className="w-10 h-10 text-primary" />
+                  <Navigation className="w-10 h-10 text-primary" aria-hidden="true" />
                 </motion.div>
-                <h2 className="text-2xl font-bold text-white mb-2">
+                <h2 id="permission-modal-title" className="text-2xl font-bold text-white mb-2">
                   위치 권한이 필요합니다
                 </h2>
                 <p className="text-blue-100">
@@ -138,14 +144,17 @@ export function LocationPermissionModal() {
                   <button
                     onClick={handleDeny}
                     disabled={isRequesting}
-                    className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200:bg-gray-600 transition-colors disabled:opacity-50 touch-manipulation"
+                    aria-label="위치 권한 요청 나중에 하기"
+                    className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 touch-manipulation focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                   >
                     나중에
                   </button>
                   <button
                     onClick={handleRequestPermission}
                     disabled={isRequesting}
-                    className="flex-1 px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-blue-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 touch-manipulation"
+                    aria-label={isRequesting ? '위치 권한 요청 중' : '위치 권한 허용하기'}
+                    aria-busy={isRequesting}
+                    className="flex-1 px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-blue-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 touch-manipulation focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                   >
                     {isRequesting ? (
                       <>

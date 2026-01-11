@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Home, Map, Calendar, Settings } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 export type TabType = 'home' | 'map' | 'schedule' | 'settings';
 
@@ -19,6 +20,7 @@ const tabs = [
 ];
 
 export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationProps) {
+  const prefersReducedMotion = useReducedMotion();
   const tabRefs = useRef<Record<TabType, HTMLButtonElement | null>>({
     home: null,
     map: null,
@@ -94,9 +96,9 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                 tabIndex={0}
                 onClick={() => onTabChange(tab.id)}
                 onKeyDown={(e) => handleKeyDown(e, tab.id)}
-                whileTap={{ scale: 0.9 }}
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                whileTap={prefersReducedMotion ? {} : { scale: 0.9 }}
+                whileHover={prefersReducedMotion ? {} : { scale: 1.05 }}
+                transition={prefersReducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 400, damping: 17 }}
                 className="flex flex-col items-center gap-1 py-2 px-4 relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-xl"
               >
                 {/* 활성 표시 */}
@@ -111,11 +113,13 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                 {/* 아이콘 */}
                 <motion.div
                   animate={
-                    isActive
+                    prefersReducedMotion
+                      ? {}
+                      : isActive
                       ? { scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }
                       : { scale: 1, rotate: 0 }
                   }
-                  transition={{ duration: 0.4, type: 'spring' }}
+                  transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4, type: 'spring' }}
                   className="relative z-10"
                 >
                   <Icon
