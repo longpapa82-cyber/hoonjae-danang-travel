@@ -141,12 +141,22 @@ export function WeatherCard() {
             role="list"
             aria-label="5일 날씨 예보"
           >
-            {forecast.slice(0, 5).map((day) => (
+            {forecast.slice(0, 5).map((day) => {
+              // 날짜를 "MM/DD" 형식으로 변환
+              const dateObj = new Date(day.date);
+              const monthDay = `${dateObj.getMonth() + 1}/${dateObj.getDate()}`;
+
+              return (
               <div
                 key={day.date}
                 className="flex-shrink-0 bg-white/50 rounded-xl p-3 min-w-[90px]"
                 role="listitem"
               >
+                {/* 날짜 */}
+                <p className="text-xs text-gray-500 text-center mb-1">
+                  {monthDay}
+                </p>
+
                 {/* 요일 */}
                 <p className="text-xs font-semibold text-gray-700 text-center mb-2">
                   {day.dayOfWeek}요일
@@ -174,7 +184,8 @@ export function WeatherCard() {
                   </p>
                 )}
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

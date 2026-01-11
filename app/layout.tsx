@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { Noto_Sans_KR } from 'next/font/google';
 import './globals.css';
 import ServiceWorkerRegister from '@/components/ServiceWorkerRegister';
 import NetworkStatusIndicator from '@/components/NetworkStatusIndicator';
@@ -6,6 +7,16 @@ import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+
+// Google Fonts 최적화 (Noto Sans KR)
+const notoSansKR = Noto_Sans_KR({
+  subsets: ['latin'],
+  weight: ['400', '500', '700', '900'],
+  display: 'swap',
+  preload: true,
+  fallback: ['system-ui', 'arial'],
+  variable: '--font-noto-sans-kr',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
@@ -109,8 +120,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
-      <body className="antialiased">
+    <html lang="ko" className={notoSansKR.variable}>
+      <body className={`${notoSansKR.className} antialiased`}>
         <ThemeProvider>
           <ServiceWorkerRegister />
           <NetworkStatusIndicator />
