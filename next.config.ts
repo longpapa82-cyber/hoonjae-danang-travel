@@ -1,6 +1,10 @@
 import type { NextConfig } from 'next';
+import path from 'path';
 
 const nextConfig: NextConfig = {
+  // Workspace root 경고 해결
+  outputFileTracingRoot: path.join(__dirname),
+
   images: {
     remotePatterns: [],
     formats: ['image/avif', 'image/webp'],
