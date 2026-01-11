@@ -10,19 +10,29 @@
 
 ## 🚀 빠른 시작 (사용자용)
 
+**배포 URL**: https://hoonjae-danang-travel-090723s-projects.vercel.app
+**배포 상태**: ✅ 프로덕션 배포 완료 (2026-01-11)
+**테스트 결과**: 19/19 통과 (100%)
+
 ### 📱 PWA 앱으로 설치하기
 
 #### Android (Chrome/Samsung Internet)
-1. https://hoonjae-danang-travel.vercel.app 접속
+1. https://hoonjae-danang-travel-090723s-projects.vercel.app 접속
 2. 화면 하단에 나타나는 "앱으로 설치" 배너 클릭
 3. 또는 브라우저 메뉴 (⋮) → "홈 화면에 추가"
 4. 홈 화면에서 앱 아이콘으로 바로 실행
 
+**QR 코드로 간편 접속**:
+모바일 기기로 아래 QR 코드를 스캔하여 바로 접속하세요.
+(QR 코드는 claudedocs/mobile-device-testing-checklist.md 참조)
+
 #### iOS (Safari)
-1. https://hoonjae-danang-travel.vercel.app 접속
+1. https://hoonjae-danang-travel-090723s-projects.vercel.app 접속
 2. 공유 버튼 (□↑) 터치
 3. "홈 화면에 추가" 선택
 4. 홈 화면에서 앱 아이콘으로 실행
+
+**⚠️ 중요**: iOS에서는 Safari 브라우저만 PWA 설치 지원 (Chrome/Firefox 불가)
 
 ### 🌐 오프라인 모드 사용법
 
@@ -79,7 +89,11 @@
 - **부드러운 애니메이션**: Framer Motion 기반 인터랙티브 효과
 - **반응형 디자인**: 모바일/태블릿/데스크탑 최적화
 - **이미지 갤러리**: 관광지 이미지 클릭 시 모달 확대 보기
-- **접근성**: WCAG 2.1 AA 수준 준수, 키보드 네비게이션 지원
+- **접근성**: WCAG 2.3.3 (AAA) 준수
+  - prefers-reduced-motion 지원 (전정 장애 사용자 배려)
+  - 키보드 네비게이션 완전 지원
+  - ARIA 속성 및 스크린 리더 최적화
+  - 색상 대비 4.5:1 이상, 터치 타겟 44x44px
 
 ## 🚀 시작하기
 
@@ -508,5 +522,35 @@ export const travelData: TravelData = {
 
 ---
 
-**만든이**: 2025년 다낭 여행을 위한 맞춤 트래커 🌴✈️
-# Force rebuild: Sat Jan 10 18:52:05 KST 2026
+## 📅 최근 업데이트
+
+### 2026-01-11 (D-4일) - 프로덕션 배포
+- ✅ Vercel 프로덕션 배포 완료
+- ✅ 검증 테스트 19/19 통과 (100%)
+- ✅ WCAG 2.3.3 접근성 개선 (prefers-reduced-motion 지원)
+- ✅ 모바일 테스트 가이드 작성
+- ✅ Vercel Analytics & Speed Insights 활성화
+
+### 2026-01-10 - UI/UX 개선 Phase 4
+- BottomNavigation 마이크로 인터랙션 개선
+- AnimatedRoute 지도 경로 애니메이션 (Polarsteps 스타일)
+- 날씨 예보 날짜 표시 및 Font 최적화
+- React.memo 및 Next.js 성능 최적화
+
+### 2026-01-09 - 날씨 기능 추가
+- OpenWeatherMap API 연동 (현재 날씨 + 5일 예보)
+- 3-Tier 캐싱 시스템 (서버/클라이언트/localStorage)
+- 오프라인 캐시 지원
+- Vercel 환경 변수 설정 완료
+
+### 2026-01-08 - 접근성 및 PWA 개선
+- WCAG 2.1 AA 준수 (Lighthouse 95/100)
+- 키보드 네비게이션 완전 구현
+- Service Worker 오프라인 지원
+- PWA 설치 프롬프트 구현
+
+---
+
+**만든이**: 2026년 다낭 여행을 위한 맞춤 트래커 🌴✈️
+**배포 상태**: 🟢 프로덕션 운영 중
+**여행 출발**: 2026-01-15 (목) 13:00 (D-4일)
