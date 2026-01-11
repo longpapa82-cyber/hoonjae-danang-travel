@@ -93,6 +93,46 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
     return locations;
   }, []);
 
+  // 전체 여행 경로 (완료된 경로 vs 남은 경로)
+  const routePaths = useMemo(() => {
+    if (!travelStatus || allLocations.length === 0) {
+      return { completed: [], remaining: [] };
+    }
+
+    const coordinates = allLocations.map(loc => ({
+      lat: loc.activity.location!.latitude,
+      lng: loc.activity.location!.longitude,
+      id: loc.activity.id,
+    }));
+
+    // 현재 활동의 인덱스 찾기
+    const currentIndex = coordinates.findIndex(
+      coord => coord.id === travelStatus.currentActivity?.id
+    );
+
+    if (currentIndex === -1 || travelStatus.status === 'BEFORE_TRIP') {
+      // 여행 전이거나 현재 활동을 찾을 수 없으면 모두 회색으로 표시
+      return {
+        completed: [],
+        remaining: coordinates.map(c => ({ lat: c.lat, lng: c.lng })),
+      };
+    }
+
+    if (travelStatus.status === 'COMPLETED') {
+      // 여행 완료 시 모두 파란색으로 표시
+      return {
+        completed: coordinates.map(c => ({ lat: c.lat, lng: c.lng })),
+        remaining: [],
+      };
+    }
+
+    // 여행 중: 현재 활동까지는 파란색, 이후는 회색
+    return {
+      completed: coordinates.slice(0, currentIndex + 1).map(c => ({ lat: c.lat, lng: c.lng })),
+      remaining: coordinates.slice(currentIndex).map(c => ({ lat: c.lat, lng: c.lng })),
+    };
+  }, [allLocations, travelStatus]);
+
   // 현재 활동의 목적지 좌표 (현재 활동에 location이 없으면 다음 활동 찾기)
   const destination = useMemo(() => {
     if (!travelStatus || travelStatus.status !== 'IN_PROGRESS') return null;
@@ -360,6 +400,30 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
           onUnmount={onUnmount}
           options={mapOptions}
         >
+        {/* 전체 여행 경로 (Polyline) - Polarsteps 스타일 */}
+        {routePaths.remaining.length > 0 && (
+          <Polyline
+            path={routePaths.remaining}
+            options={{
+              strokeColor: '#D1D5DB',
+              strokeWeight: 3,
+              strokeOpacity: 0.6,
+              geodesic: true,
+            }}
+          />
+        )}
+        {routePaths.completed.length > 0 && (
+          <Polyline
+            path={routePaths.completed}
+            options={{
+              strokeColor: '#3B82F6',
+              strokeWeight: 4,
+              strokeOpacity: 0.9,
+              geodesic: true,
+            }}
+          />
+        )}
+
         {/* 현재 위치 마커 (여행 중일 때만) */}
         {position && travelStatus?.status === 'IN_PROGRESS' && (
           <Marker
