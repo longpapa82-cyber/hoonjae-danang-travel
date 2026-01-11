@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { motion } from 'framer-motion';
 
 interface ProgressRingProps {
@@ -9,7 +10,7 @@ interface ProgressRingProps {
   className?: string;
 }
 
-export function ProgressRing({
+export const ProgressRing = memo(function ProgressRing({
   progress,
   size = 200,
   strokeWidth = 12,
@@ -63,4 +64,4 @@ export function ProgressRing({
       </div>
     </div>
   );
-}
+});

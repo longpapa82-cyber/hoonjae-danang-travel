@@ -1,11 +1,11 @@
 'use client';
 
+import { memo, useState } from 'react';
 import { Activity, ActivityStatus } from '@/types/travel';
 import { StatusBadge } from './StatusBadge';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { MapPin, Clock, DollarSign, Maximize2 } from 'lucide-react';
-import { useState } from 'react';
 import dynamic from 'next/dynamic';
 
 // 동적 import로 ImageModal 로드 (사용자가 이미지를 클릭할 때만 로드)
@@ -19,7 +19,7 @@ interface ActivityCardProps {
   index: number;
 }
 
-export function ActivityCard({ activity, status, index }: ActivityCardProps) {
+export const ActivityCard = memo(function ActivityCard({ activity, status, index }: ActivityCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isCompleted = status === 'COMPLETED';
   const isInProgress = status === 'IN_PROGRESS';
@@ -113,4 +113,4 @@ export function ActivityCard({ activity, status, index }: ActivityCardProps) {
       )}
     </motion.article>
   );
-}
+});

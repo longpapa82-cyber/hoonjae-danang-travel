@@ -1,5 +1,6 @@
 'use client';
 
+import { memo, useState, useMemo } from 'react';
 import { TravelDay } from '@/types/travel';
 import { ActivityCard } from './ActivityCard';
 import { getActivityStatus, calculateDayProgress } from '@/lib/progressCalculator';
@@ -8,14 +9,13 @@ import { useCheckins } from '@/hooks/useCheckins';
 import { useWeather } from '@/hooks/useWeather';
 import { motion } from 'framer-motion';
 import { Calendar, Utensils } from 'lucide-react';
-import { useState, useMemo } from 'react';
 
 interface DayTimelineProps {
   day: TravelDay;
   isCurrentDay: boolean;
 }
 
-export function DayTimeline({ day, isCurrentDay }: DayTimelineProps) {
+export const DayTimeline = memo(function DayTimeline({ day, isCurrentDay }: DayTimelineProps) {
   const currentTime = useCurrentTime();
   const { isCheckedIn, isHydrated } = useCheckins();
   const { forecast } = useWeather();
@@ -134,4 +134,4 @@ export function DayTimeline({ day, isCurrentDay }: DayTimelineProps) {
       )}
     </motion.div>
   );
-}
+});

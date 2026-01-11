@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { motion } from 'framer-motion';
 
 interface CountdownTimerProps {
@@ -9,7 +10,7 @@ interface CountdownTimerProps {
   seconds: number;
 }
 
-export function CountdownTimer({ days, hours, minutes, seconds }: CountdownTimerProps) {
+export const CountdownTimer = memo(function CountdownTimer({ days, hours, minutes, seconds }: CountdownTimerProps) {
   const timeUnits = [
     { label: '시간', value: hours },
     { label: '분', value: minutes },
@@ -66,4 +67,4 @@ export function CountdownTimer({ days, hours, minutes, seconds }: CountdownTimer
       </div>
     </div>
   );
-}
+});

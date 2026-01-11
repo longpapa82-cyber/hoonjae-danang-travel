@@ -1,8 +1,8 @@
 'use client';
 
+import { memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { TravelDay } from '@/types/travel';
-import { useMemo } from 'react';
 import { useCurrentTime } from '@/hooks/useCurrentTime';
 import { useCheckins } from '@/hooks/useCheckins';
 import { getActivityStatus } from '@/lib/progressCalculator';
@@ -23,7 +23,7 @@ interface LiveProgressBarProps {
  * 사용 예시:
  * <LiveProgressBar days={travelData.days} currentDay={2} />
  */
-export function LiveProgressBar({ days, currentDay }: LiveProgressBarProps) {
+export const LiveProgressBar = memo(function LiveProgressBar({ days, currentDay }: LiveProgressBarProps) {
   const currentTime = useCurrentTime();
   const { isCheckedIn, isHydrated } = useCheckins();
 
@@ -163,4 +163,4 @@ export function LiveProgressBar({ days, currentDay }: LiveProgressBarProps) {
       )}
     </motion.div>
   );
-}
+});
