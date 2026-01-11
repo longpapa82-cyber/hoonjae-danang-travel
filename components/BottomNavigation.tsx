@@ -103,20 +103,30 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                 {isActive && (
                   <motion.div
                     layoutId="activeTab"
-                    className="absolute inset-0 bg-primary/10 rounded-xl"
+                    className="absolute inset-0 bg-primary/10 dark:bg-primary/20 rounded-xl shadow-[0_0_20px_rgba(59,130,246,0.3)]"
                     transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                   />
                 )}
 
                 {/* 아이콘 */}
-                <Icon
-                  className={`w-6 h-6 relative z-10 transition-colors ${
+                <motion.div
+                  animate={
                     isActive
-                      ? 'text-primary'
-                      : 'text-gray-600 dark:text-gray-400'
-                  }`}
-                  aria-hidden="true"
-                />
+                      ? { scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }
+                      : { scale: 1, rotate: 0 }
+                  }
+                  transition={{ duration: 0.4, type: 'spring' }}
+                  className="relative z-10"
+                >
+                  <Icon
+                    className={`w-6 h-6 transition-colors ${
+                      isActive
+                        ? 'text-primary'
+                        : 'text-gray-600 dark:text-gray-400'
+                    }`}
+                    aria-hidden="true"
+                  />
+                </motion.div>
 
                 {/* 라벨 */}
                 <span
