@@ -10,14 +10,14 @@
 
 ## 🚀 빠른 시작 (사용자용)
 
-**배포 URL**: https://hoonjae-danang-travel-090723s-projects.vercel.app
+**배포 URL**: https://hoonjae-danang-travel.vercel.app ⭐
 **배포 상태**: ✅ 프로덕션 배포 완료 (2026-01-11)
 **테스트 결과**: 19/19 통과 (100%)
 
 ### 📱 PWA 앱으로 설치하기
 
 #### Android (Chrome/Samsung Internet)
-1. https://hoonjae-danang-travel-090723s-projects.vercel.app 접속
+1. https://hoonjae-danang-travel.vercel.app 접속
 2. 화면 하단에 나타나는 "앱으로 설치" 배너 클릭
 3. 또는 브라우저 메뉴 (⋮) → "홈 화면에 추가"
 4. 홈 화면에서 앱 아이콘으로 바로 실행
@@ -27,7 +27,7 @@
 (QR 코드는 claudedocs/mobile-device-testing-checklist.md 참조)
 
 #### iOS (Safari)
-1. https://hoonjae-danang-travel-090723s-projects.vercel.app 접속
+1. https://hoonjae-danang-travel.vercel.app 접속
 2. 공유 버튼 (□↑) 터치
 3. "홈 화면에 추가" 선택
 4. 홈 화면에서 앱 아이콘으로 실행

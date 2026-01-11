@@ -19,7 +19,7 @@
 **절차**:
 1. 백업 도구 접속
    ```
-   https://hoonjae-danang-travel-090723s-projects.vercel.app/backup-restore.html
+   https://hoonjae-danang-travel.vercel.app/backup-restore.html
    ```
    또는 로컬 파일:
    ```
@@ -52,7 +52,7 @@
 **절차**:
 1. 앱 접속 (WiFi 연결 상태에서)
    ```
-   https://hoonjae-danang-travel-090723s-projects.vercel.app
+   https://hoonjae-danang-travel.vercel.app
    ```
 
 2. 날씨 탭 클릭하여 5일 예보 확인
@@ -307,8 +307,8 @@
 ### 6.2 앱 접속 정보 저장
 
 **즐겨찾기 추가**:
-- 프로덕션 URL: https://hoonjae-danang-travel-090723s-projects.vercel.app
-- 백업/복구 도구: https://hoonjae-danang-travel-090723s-projects.vercel.app/backup-restore.html
+- 프로덕션 URL: https://hoonjae-danang-travel.vercel.app ⭐
+- 백업/복구 도구: https://hoonjae-danang-travel.vercel.app/backup-restore.html
 
 **QR 코드 저장** (선택사항):
 - QR 코드 스크린샷 저장

@@ -12,8 +12,8 @@
 ### ✅ 배포 성공
 
 **배포 URL**:
-- Production: `https://hoonjae-danang-travel-pn55rmr3a-090723s-projects.vercel.app`
-- Alias: `https://hoonjae-danang-travel-090723s-projects.vercel.app`
+- Production: `https://hoonjae-danang-travel.vercel.app` ⭐ (권장)
+- Legacy: `https://hoonjae-danang-travel-090723s-projects.vercel.app`
 
 **배포 플랫폼**: Vercel
 **배포 환경**: Production
@@ -242,8 +242,8 @@ Route (app)                                 Size  First Load JS
 ### 1. Vercel 도메인 401 인증 오류
 
 **증상**:
-- `https://hoonjae-danang-travel-090723s-projects.vercel.app` 접속 시 401 Unauthorized
-- Password Protection 설정으로 인한 것으로 추정
+- 일부 도메인 접속 시 401 Unauthorized (Password Protection)
+- 현재 `https://hoonjae-danang-travel.vercel.app` 정상 접속 가능 ✅
 
 **해결 방법**:
 1. Vercel 대시보드 접속
@@ -377,7 +377,8 @@ Detected additional lockfiles:
 
 ### 도구 및 링크
 
-- **배포 URL**: https://hoonjae-danang-travel-090723s-projects.vercel.app
+- **배포 URL**: https://hoonjae-danang-travel.vercel.app ⭐
+- **백업/복구 도구**: https://hoonjae-danang-travel.vercel.app/backup-restore.html
 - **QR 코드**: `/tmp/generate-qr.html` (브라우저로 열어서 스캔)
 - **Vercel 대시보드**: https://vercel.com/090723s-projects/hoonjae-danang-travel
 - **GitHub 저장소**: https://github.com/longpapa82-cyber/hoonjae-danang-travel
