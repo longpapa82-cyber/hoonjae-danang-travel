@@ -169,7 +169,15 @@ export function RouteInfoCard() {
           departureTime: new Date(),
           trafficModel: 'best_guess',
         });
-        setRouteInfo(route);
+
+        // route가 null인 경우 (ZERO_RESULTS) 처리
+        if (route === null) {
+          console.warn('⚠️ 경로를 찾을 수 없습니다 (비행기/배 구간일 수 있음)');
+          setRouteInfo(null);
+          setError(null);
+        } else {
+          setRouteInfo(route);
+        }
       } catch (err: any) {
         console.error('Route calculation failed:', err);
 

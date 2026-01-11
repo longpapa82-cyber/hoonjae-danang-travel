@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import lighthouse from 'lighthouse';
-import chromeLauncher from 'chrome-launcher';
+import * as chromeLauncher from 'chrome-launcher';
 
 /**
  * Lighthouse 성능 측정 테스트

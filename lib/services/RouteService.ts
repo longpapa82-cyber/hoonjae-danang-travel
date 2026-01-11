@@ -139,7 +139,13 @@ class RouteService {
           };
 
           resolve(routeInfo);
+        } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
+          // 경로를 찾을 수 없는 경우 (예: 비행기 구간)
+          console.warn('⚠️ 도로 경로를 찾을 수 없습니다 (비행기/배 구간일 수 있음)');
+          // null을 반환하여 호출자가 처리하도록 함
+          resolve(null as any);
         } else {
+          console.error('❌ Directions API 오류:', status);
           reject(new Error(`Directions request failed: ${status}`));
         }
       });

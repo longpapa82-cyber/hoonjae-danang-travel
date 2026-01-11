@@ -71,7 +71,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
       aria-label="주요 메뉴"
       initial={{ y: 100 }}
       animate={{ y: 0 }}
-      className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 z-50 transition-colors"
+      className="fixed bottom-0 left-0 right-0 backdrop-blur-xl bg-white/70 dark:bg-gray-900/70 border-t border-white/20 dark:border-gray-700/50 z-50 transition-all shadow-[0_-4px_16px_0_rgba(0,0,0,0.1)] dark:shadow-[0_-4px_16px_0_rgba(0,0,0,0.3)]"
       style={{
         paddingBottom: 'env(safe-area-inset-bottom)',
       }}
@@ -83,7 +83,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
             const isActive = activeTab === tab.id;
 
             return (
-              <button
+              <motion.button
                 key={tab.id}
                 ref={(el) => { tabRefs.current[tab.id] = el; }}
                 data-testid={`tab-${tab.id}`}
@@ -94,6 +94,9 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                 tabIndex={0}
                 onClick={() => onTabChange(tab.id)}
                 onKeyDown={(e) => handleKeyDown(e, tab.id)}
+                whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                 className="flex flex-col items-center gap-1 py-2 px-4 relative focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-xl"
               >
                 {/* 활성 표시 */}
@@ -125,7 +128,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
                 >
                   {tab.label}
                 </span>
-              </button>
+              </motion.button>
             );
           })}
         </div>

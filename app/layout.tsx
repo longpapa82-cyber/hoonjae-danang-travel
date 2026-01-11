@@ -1,7 +1,11 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
-import { ServiceWorkerRegister } from '@/components/ServiceWorkerRegister';
+import ServiceWorkerRegister from '@/components/ServiceWorkerRegister';
+import NetworkStatusIndicator from '@/components/NetworkStatusIndicator';
+import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import { ThemeProvider } from '@/contexts/ThemeContext';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
@@ -109,8 +113,12 @@ export default function RootLayout({
       <body className="antialiased">
         <ThemeProvider>
           <ServiceWorkerRegister />
+          <NetworkStatusIndicator />
+          <PWAInstallPrompt />
           {children}
         </ThemeProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

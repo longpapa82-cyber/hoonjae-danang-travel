@@ -3,6 +3,8 @@
 import { motion } from 'framer-motion';
 import { Cloud, Droplets, Wind, RefreshCw, AlertCircle } from 'lucide-react';
 import { useWeather } from '@/hooks/useWeather';
+import { GlassCard } from '@/components/ui/GlassCard';
+import { WeatherSkeleton } from '@/components/ui/WeatherSkeleton';
 
 /**
  * 다낭 현재 날씨 카드 컴포넌트
@@ -22,20 +24,9 @@ import { useWeather } from '@/hooks/useWeather';
 export function WeatherCard() {
   const { current, forecast, loading, error, lastUpdated } = useWeather();
 
-  // 로딩 상태
+  // 로딩 상태 - Skeleton Loader 사용
   if (loading && !current) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-blue-50 to-sky-50 rounded-2xl p-6 shadow-lg border border-blue-100"
-      >
-        <div className="flex items-center justify-center gap-3 py-8">
-          <RefreshCw className="w-5 h-5 text-blue-500 animate-spin" />
-          <p className="text-gray-600">날씨 정보를 불러오는 중...</p>
-        </div>
-      </motion.div>
-    );
+    return <WeatherSkeleton />;
   }
 
   // 에러 상태
@@ -63,13 +54,13 @@ export function WeatherCard() {
   if (!current) return null;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-gradient-to-br from-blue-50 to-sky-50 rounded-2xl p-6 shadow-lg border border-blue-100"
-      role="region"
-      aria-label="다낭 날씨 정보"
+    <GlassCard
+      variant="default"
+      blur="xl"
+      animated={true}
+      className="p-6 bg-gradient-to-br from-blue-50/80 to-sky-50/80 dark:from-blue-900/30 dark:to-sky-900/30"
     >
+      <div role="region" aria-label="다낭 날씨 정보">
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
@@ -187,6 +178,7 @@ export function WeatherCard() {
           </div>
         </div>
       )}
-    </motion.div>
+      </div>
+    </GlassCard>
   );
 }

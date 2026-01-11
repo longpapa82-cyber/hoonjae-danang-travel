@@ -6,6 +6,8 @@ import { CountdownTimer } from './CountdownTimer';
 import { ProgressRing } from './ProgressRing';
 import { DayTimeline } from './DayTimeline';
 import { LoadingSkeleton } from './LoadingSkeleton';
+import { LiveProgressBar } from './ui/LiveProgressBar';
+import { TrackerTimeline } from './ui/TrackerTimeline';
 import { travelData } from '@/lib/travelData';
 import { motion } from 'framer-motion';
 import { Plane, MapPin, CheckCircle } from 'lucide-react';
@@ -94,36 +96,48 @@ export function TravelProgress() {
 
       {/* 여행 중 */}
       {status === 'IN_PROGRESS' && (
-        <motion.div
-          data-testid="progress-status"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center"
-        >
-          <div className="flex justify-center mb-6">
-            <MapPin className="w-16 h-16 text-warning animate-pulse" />
-          </div>
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">
-            여행 진행 중
-          </h2>
-          <ProgressRing progress={progressPercentage} className="mx-auto mb-6" data-testid="progress-ring" />
-          <div className="text-lg text-gray-600">
-            <p className="mb-2">
-              {completedActivities} / {totalActivities} 활동 완료
-            </p>
-            {currentDay && (
-              <p className="font-semibold text-primary">
-                현재: {currentDay}일차
+        <>
+          <motion.div
+            data-testid="progress-status"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center"
+          >
+            <div className="flex justify-center mb-6">
+              <MapPin className="w-16 h-16 text-warning animate-pulse" />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">
+              여행 진행 중
+            </h2>
+            <ProgressRing progress={progressPercentage} className="mx-auto mb-6" data-testid="progress-ring" />
+            <div className="text-lg text-gray-600">
+              <p className="mb-2">
+                {completedActivities} / {totalActivities} 활동 완료
               </p>
-            )}
-            {currentActivity && (
-              <p data-testid="current-activity" className="mt-4 text-xl font-bold text-warning">
-                지금: {currentActivity.title}
-              </p>
-            )}
-          </div>
-        </motion.div>
+              {currentDay && (
+                <p className="font-semibold text-primary">
+                  현재: {currentDay}일차
+                </p>
+              )}
+              {currentActivity && (
+                <p data-testid="current-activity" className="mt-4 text-xl font-bold text-warning">
+                  지금: {currentActivity.title}
+                </p>
+              )}
+            </div>
+          </motion.div>
+
+          {/* Phase 2: Live Progress Bar (United Airlines 스타일) */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mt-8"
+          >
+            <LiveProgressBar days={travelData.days} currentDay={currentDay || undefined} />
+          </motion.div>
+        </>
       )}
 
       {/* 여행 완료 */}
