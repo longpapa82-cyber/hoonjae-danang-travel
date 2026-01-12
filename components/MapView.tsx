@@ -93,13 +93,45 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
     return locations;
   }, []);
 
-  // 전체 여행 경로 (완료된 경로 vs 남은 경로)
+  // 표시할 날짜 범위 필터링 (전날 + 현재 + 다음날)
+  const filteredLocations = useMemo(() => {
+    if (!travelStatus) return allLocations;
+
+    // 여행 전: 1일차만 표시
+    if (travelStatus.status === 'BEFORE_TRIP') {
+      return allLocations.filter(loc => loc.dayIndex === 0);
+    }
+
+    // 여행 완료: 모든 일정 표시
+    if (travelStatus.status === 'COMPLETED') {
+      return allLocations;
+    }
+
+    // 여행 중: 전날 + 현재 + 다음날만 표시
+    if (!travelStatus.currentDay) return allLocations;
+
+    const currentDayIndex = travelStatus.currentDay - 1;
+    return allLocations.filter(loc => {
+      // 바로 전날
+      if (loc.dayIndex === currentDayIndex - 1) return true;
+
+      // 현재 날짜
+      if (loc.dayIndex === currentDayIndex) return true;
+
+      // 다음 날짜
+      if (loc.dayIndex === currentDayIndex + 1) return true;
+
+      return false;
+    });
+  }, [allLocations, travelStatus]);
+
+  // 전체 여행 경로 (완료된 경로 vs 남은 경로) - 필터링된 위치 기준
   const routePaths = useMemo(() => {
-    if (!travelStatus || allLocations.length === 0) {
+    if (!travelStatus || filteredLocations.length === 0) {
       return { completed: [], remaining: [] };
     }
 
-    const coordinates = allLocations.map(loc => ({
+    const coordinates = filteredLocations.map(loc => ({
       lat: loc.activity.location!.latitude,
       lng: loc.activity.location!.longitude,
       id: loc.activity.id,
@@ -131,7 +163,7 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
       completed: coordinates.slice(0, currentIndex + 1).map(c => ({ lat: c.lat, lng: c.lng })),
       remaining: coordinates.slice(currentIndex).map(c => ({ lat: c.lat, lng: c.lng })),
     };
-  }, [allLocations, travelStatus]);
+  }, [filteredLocations, travelStatus]);
 
   // 현재 활동의 목적지 좌표 (현재 활동에 location이 없으면 다음 활동 찾기)
   const destination = useMemo(() => {
@@ -281,8 +313,8 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
 
     if (!isTripStart) return;
 
-    // 첫 번째 location이 있는 일정을 찾아서 센터 설정
-    const firstLocation = allLocations.find(
+    // 필터링된 위치 중 첫 번째 location이 있는 일정을 찾아서 센터 설정
+    const firstLocation = filteredLocations.find(
       loc => loc.activity.location
     );
 
@@ -297,7 +329,7 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
     } else {
       map.setCenter(defaultCenter);
     }
-  }, [map, travelStatus, allLocations]); // travelStatus 전체를 dependency로 포함
+  }, [map, travelStatus, filteredLocations]); // travelStatus 전체를 dependency로 포함
 
   // API 키 누락
   if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ||
@@ -436,8 +468,8 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
           />
         )}
 
-        {/* 모든 여행 일정 마커 */}
-        {allLocations.map((loc, index) => {
+        {/* 필터링된 여행 일정 마커 (완료 + 현재 + 다음 날짜) */}
+        {filteredLocations.map((loc, index) => {
           const isCurrent = travelStatus?.currentActivity?.id === loc.activity.id;
           const position = {
             lat: loc.activity.location!.latitude,
