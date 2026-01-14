@@ -35,17 +35,17 @@ export const ActivityCard = memo(function ActivityCard({ activity, status, index
       aria-describedby={`activity-${activity.id}-description`}
       className={`relative p-4 rounded-xl border-2 transition-all ${
         isInProgress
-          ? 'border-warning bg-warning/5 shadow-lg scale-105'
+          ? 'border-warning dark:border-orange-400 bg-warning/5 dark:bg-orange-900/20 shadow-lg scale-105'
           : isCompleted
-          ? 'border-success/30 bg-success/5 opacity-70'
-          : 'border-gray-200 bg-white'
+          ? 'border-success/30 dark:border-green-600/30 bg-success/5 dark:bg-green-900/10 opacity-70'
+          : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'
       }`}
     >
       {/* 상태 표시 */}
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-center gap-2">
-          <Clock className="w-4 h-4 text-gray-500" />
-          <span className="text-sm font-semibold text-gray-700">
+          <Clock className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+          <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">
             {activity.time}
           </span>
         </div>
@@ -53,13 +53,13 @@ export const ActivityCard = memo(function ActivityCard({ activity, status, index
       </div>
 
       {/* 제목 */}
-      <h3 className={`text-base sm:text-lg font-bold mb-2 leading-tight ${isCompleted ? 'line-through text-gray-500' : 'text-gray-800'}`}>
+      <h3 className={`text-base sm:text-lg font-bold mb-2 leading-tight ${isCompleted ? 'line-through text-gray-500 dark:text-gray-400' : 'text-gray-800 dark:text-gray-100'}`}>
         {activity.title}
       </h3>
 
       {/* 설명 */}
       {activity.description && (
-        <p id={`activity-${activity.id}-description`} className="text-sm text-gray-600 mb-2 flex items-start gap-2">
+        <p id={`activity-${activity.id}-description`} className="text-sm text-gray-600 dark:text-gray-300 mb-2 flex items-start gap-2">
           <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" aria-hidden="true" />
           <span className="line-clamp-2">{activity.description}</span>
         </p>
@@ -67,7 +67,7 @@ export const ActivityCard = memo(function ActivityCard({ activity, status, index
 
       {/* 팁 정보 */}
       {activity.tip && (
-        <p className="text-sm text-warning font-medium mb-2 flex items-center gap-2">
+        <p className="text-sm text-warning dark:text-orange-400 font-medium mb-2 flex items-center gap-2">
           <DollarSign className="w-4 h-4" />
           {activity.tip}
         </p>

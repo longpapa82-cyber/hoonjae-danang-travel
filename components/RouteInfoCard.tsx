@@ -281,13 +281,13 @@ export function RouteInfoCard() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200"
+      className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
     >
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Navigation className="w-5 h-5 text-primary" />
-          <h3 className="font-semibold text-gray-800">
+          <Navigation className="w-5 h-5 text-primary dark:text-blue-400" />
+          <h3 className="font-semibold text-gray-800 dark:text-gray-100">
             경로 안내
           </h3>
         </div>
@@ -309,10 +309,10 @@ export function RouteInfoCard() {
         <div className="space-y-4">
           {/* 목적지 */}
           <div>
-            <p className="text-sm text-gray-500 mb-1">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
               다음 목적지
             </p>
-            <p className="font-bold text-lg text-gray-800">
+            <p className="font-bold text-lg text-gray-800 dark:text-gray-100">
               {travelStatus.currentActivity.title}
             </p>
           </div>
@@ -320,27 +320,27 @@ export function RouteInfoCard() {
           {/* 거리 & 소요시간 */}
           <div className="grid grid-cols-2 gap-4">
             {/* 거리 */}
-            <div className="bg-primary/10 rounded-xl p-4 border border-primary/20">
+            <div className="bg-primary/10 dark:bg-blue-500/20 rounded-xl p-4 border border-primary/20 dark:border-blue-400/30">
               <div className="flex items-center gap-2 mb-1">
-                <TrendingUp className="w-4 h-4 text-primary" />
-                <p className="text-sm text-gray-600">
+                <TrendingUp className="w-4 h-4 text-primary dark:text-blue-400" />
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   거리
                 </p>
               </div>
-              <p className="text-2xl font-bold text-primary">
+              <p className="text-2xl font-bold text-primary dark:text-blue-400">
                 {routeService.formatDistance(routeInfo.distance)}
               </p>
             </div>
 
             {/* 소요시간 */}
-            <div className="bg-success/10 rounded-xl p-4 border border-success/20">
+            <div className="bg-success/10 dark:bg-green-500/20 rounded-xl p-4 border border-success/20 dark:border-green-400/30">
               <div className="flex items-center gap-2 mb-1">
-                <Clock className="w-4 h-4 text-success" />
-                <p className="text-sm text-gray-600">
+                <Clock className="w-4 h-4 text-success dark:text-green-400" />
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   소요시간
                 </p>
               </div>
-              <p className="text-2xl font-bold text-success">
+              <p className="text-2xl font-bold text-success dark:text-green-400">
                 {routeService.formatDuration(
                   routeInfo.durationInTraffic || routeInfo.duration
                 )}

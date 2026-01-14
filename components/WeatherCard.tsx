@@ -64,11 +64,11 @@ export function WeatherCard() {
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
-          <Cloud className="w-5 h-5 text-blue-500" />
-          <h2 className="text-lg font-bold text-gray-800">다낭 날씨</h2>
+          <Cloud className="w-5 h-5 text-blue-500 dark:text-blue-400" />
+          <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">다낭 날씨</h2>
         </div>
         {lastUpdated && (
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
             {new Date(lastUpdated).toLocaleTimeString('ko-KR', {
               hour: '2-digit',
               minute: '2-digit',
@@ -86,12 +86,12 @@ export function WeatherCard() {
           </div>
           <div>
             <div className="flex items-baseline gap-1">
-              <span className="text-5xl font-bold text-gray-800">
+              <span className="text-5xl font-bold text-gray-800 dark:text-gray-100">
                 {current.temp}
               </span>
-              <span className="text-2xl text-gray-600">°C</span>
+              <span className="text-2xl text-gray-600 dark:text-gray-300">°C</span>
             </div>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
               체감 {current.feelsLike}°C
             </p>
           </div>
@@ -99,7 +99,7 @@ export function WeatherCard() {
 
         {/* 날씨 상태 */}
         <div className="text-right">
-          <p className="text-xl font-semibold text-gray-800 mb-1">
+          <p className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-1">
             {current.condition}
           </p>
         </div>
@@ -108,22 +108,22 @@ export function WeatherCard() {
       {/* 상세 정보 */}
       <div className="grid grid-cols-2 gap-4 mb-6">
         {/* 습도 */}
-        <div className="flex items-center gap-2 bg-white/50 rounded-xl p-3">
-          <Droplets className="w-4 h-4 text-blue-500" aria-hidden="true" />
+        <div className="flex items-center gap-2 bg-white/50 dark:bg-white/10 rounded-xl p-3">
+          <Droplets className="w-4 h-4 text-blue-500 dark:text-blue-400" aria-hidden="true" />
           <div>
-            <p className="text-xs text-gray-600">습도</p>
-            <p className="text-sm font-semibold text-gray-800">
+            <p className="text-xs text-gray-600 dark:text-gray-300">습도</p>
+            <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">
               {current.humidity}%
             </p>
           </div>
         </div>
 
         {/* 풍속 */}
-        <div className="flex items-center gap-2 bg-white/50 rounded-xl p-3">
-          <Wind className="w-4 h-4 text-blue-500" aria-hidden="true" />
+        <div className="flex items-center gap-2 bg-white/50 dark:bg-white/10 rounded-xl p-3">
+          <Wind className="w-4 h-4 text-blue-500 dark:text-blue-400" aria-hidden="true" />
           <div>
-            <p className="text-xs text-gray-600">풍속</p>
-            <p className="text-sm font-semibold text-gray-800">
+            <p className="text-xs text-gray-600 dark:text-gray-300">풍속</p>
+            <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">
               {current.windSpeed} m/s
             </p>
           </div>
@@ -133,7 +133,7 @@ export function WeatherCard() {
       {/* 5일 예보 미리보기 */}
       {forecast.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">
             주간 예보
           </h3>
           <div
@@ -149,16 +149,16 @@ export function WeatherCard() {
               return (
               <div
                 key={day.date}
-                className="flex-shrink-0 bg-white/50 rounded-xl p-3 min-w-[90px]"
+                className="flex-shrink-0 bg-white/50 dark:bg-white/10 rounded-xl p-3 min-w-[90px]"
                 role="listitem"
               >
                 {/* 날짜 */}
-                <p className="text-xs text-gray-500 text-center mb-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 text-center mb-1">
                   {monthDay}
                 </p>
 
                 {/* 요일 */}
-                <p className="text-xs font-semibold text-gray-700 text-center mb-2">
+                <p className="text-xs font-semibold text-gray-700 dark:text-gray-200 text-center mb-2">
                   {day.dayOfWeek}요일
                 </p>
 
@@ -169,17 +169,17 @@ export function WeatherCard() {
 
                 {/* 온도 */}
                 <div className="text-center">
-                  <p className="text-sm font-bold text-gray-800">
+                  <p className="text-sm font-bold text-gray-800 dark:text-gray-100">
                     {day.tempMax}°
                   </p>
-                  <p className="text-xs text-gray-600">
+                  <p className="text-xs text-gray-600 dark:text-gray-300">
                     {day.tempMin}°
                   </p>
                 </div>
 
                 {/* 강수 확률 */}
                 {day.precipitation > 0 && (
-                  <p className="text-xs text-blue-600 text-center mt-1">
+                  <p className="text-xs text-blue-600 dark:text-blue-400 text-center mt-1">
                     💧 {day.precipitation}%
                   </p>
                 )}

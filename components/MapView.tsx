@@ -33,6 +33,57 @@ const mapOptions: google.maps.MapOptions = {
   gestureHandling: 'greedy', // 스크롤 시 바로 지도 줌 가능 (ctrl 불필요)
 };
 
+// 커스텀 마커 SVG 아이콘 생성 함수
+const createCustomMarkerIcon = (color: string, size: number, isCurrent: boolean = false): string => {
+  // 색상별 진한 테두리 색상 매핑
+  const borderColors: Record<string, string> = {
+    red: '#991B1B',      // 빨강 - 매우 진한 빨강
+    green: '#065F46',    // 초록 - 매우 진한 초록
+    orange: '#9A3412',   // 주황 - 매우 진한 주황
+    purple: '#581C87',   // 보라 - 매우 진한 보라
+    blue: '#1E3A8A',     // 파랑 - 매우 진한 파랑
+  };
+
+  const fillColors: Record<string, string> = {
+    red: '#EF4444',      // 밝은 빨강
+    green: '#10B981',    // 밝은 초록
+    orange: '#F97316',   // 밝은 주황
+    purple: '#A855F7',   // 밝은 보라
+    blue: '#3B82F6',     // 밝은 파랑
+  };
+
+  const borderColor = borderColors[color] || '#000000';
+  const fillColor = fillColors[color] || color;
+
+  // 현재 진행중이면 펄스 효과 링 추가
+  const pulseRing = isCurrent ? `
+    <circle cx="${size/2}" cy="${size/2}" r="${size/2 - 2}"
+      fill="none" stroke="${fillColor}" stroke-width="3" opacity="0.5">
+      <animate attributeName="r" from="${size/2 - 2}" to="${size/2 + 5}"
+        dur="1.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" from="0.5" to="0"
+        dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+  ` : '';
+
+  const svg = `
+    <svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
+      ${pulseRing}
+      <!-- 외부 테두리 (진한 색) -->
+      <circle cx="${size/2}" cy="${size/2}" r="${size/2 - 2}"
+        fill="${borderColor}" />
+      <!-- 내부 원 (밝은 색) -->
+      <circle cx="${size/2}" cy="${size/2}" r="${size/2 - 5}"
+        fill="${fillColor}" />
+      <!-- 중앙 하이라이트 -->
+      <circle cx="${size/2 - size/8}" cy="${size/2 - size/8}" r="${size/6}"
+        fill="white" opacity="0.4" />
+    </svg>
+  `;
+
+  return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+};
+
 interface MapViewProps {
   showAmenities?: boolean;
   onAmenitySelect?: (amenity: Amenity) => void;
@@ -406,18 +457,18 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
       data-testid="map-view"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-2xl p-4 shadow-lg border border-gray-200"
+      className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-lg border border-gray-200 dark:border-gray-700"
     >
       {/* 헤더 */}
       <div className="mb-4">
         <div className="flex items-center gap-2 mb-2">
-          <MapPin className="w-5 h-5 text-primary" />
-          <h3 className="font-semibold text-gray-800">
+          <MapPin className="w-5 h-5 text-primary dark:text-primary-light" />
+          <h3 className="font-semibold text-gray-800 dark:text-gray-100">
             {travelStatus?.status === 'BEFORE_TRIP' ? '여행 일정 지도' : '실시간 지도'}
           </h3>
         </div>
         {travelStatus?.status === 'BEFORE_TRIP' && (
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
             다낭 여행의 전체 일정을 미리 확인하세요
           </p>
         )}
@@ -461,10 +512,12 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
           <Marker
             position={{ lat: position.latitude, lng: position.longitude }}
             icon={{
-              url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+              url: createCustomMarkerIcon('blue', 40, false),
               scaledSize: new window.google.maps.Size(40, 40),
+              anchor: new window.google.maps.Point(20, 20),
             }}
             title="현재 위치"
+            zIndex={1100}
           />
         )}
 
@@ -476,22 +529,52 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
             lng: loc.activity.location!.longitude,
           };
 
-          // 마커 색상: 현재 활동은 빨간색, 나머지는 일차별 색상
-          const markerColor = isCurrent
-            ? 'red'
-            : ['orange', 'yellow', 'green', 'purple', 'pink'][loc.dayIndex % 5];
+          // 현재 날짜 기준으로 어제/오늘/내일 구분
+          const currentDayIndex = travelStatus?.currentDay ? travelStatus.currentDay - 1 : -1;
+          const isYesterday = loc.dayIndex === currentDayIndex - 1;
+          const isToday = loc.dayIndex === currentDayIndex;
+          const isTomorrow = loc.dayIndex === currentDayIndex + 1;
+
+          // 마커 색상: 현재 활동 > 오늘 > 어제 > 내일/기타
+          // 색상을 명확하게 구분: 어제(보라) - 오늘(초록) - 내일(주황) - 현재(빨강)
+          // 크기를 크게 하여 구분을 더 명확하게
+          let markerColor: string;
+          let markerSize: number;
+
+          if (isCurrent) {
+            // 현재 진행중인 활동: 빨간색, 가장 크게
+            markerColor = 'red';
+            markerSize = 50;
+          } else if (isToday) {
+            // 오늘의 다른 일정: 초록색 (진행 중)
+            markerColor = 'green';
+            markerSize = 44;
+          } else if (isYesterday) {
+            // 어제 완료된 일정: 보라색 (완료)
+            markerColor = 'purple';
+            markerSize = 38;
+          } else if (isTomorrow) {
+            // 내일 예정 일정: 주황색 (예정)
+            markerColor = 'orange';
+            markerSize = 42;
+          } else {
+            // 그 외: 일차별 색상
+            markerColor = ['orange', 'yellow', 'green', 'purple', 'pink'][loc.dayIndex % 5];
+            markerSize = 36;
+          }
 
           return (
             <Marker
               key={`${loc.activity.id}-${index}`}
               position={position}
               icon={{
-                url: `https://maps.google.com/mapfiles/ms/icons/${markerColor}-dot.png`,
-                scaledSize: new window.google.maps.Size(isCurrent ? 45 : 35, isCurrent ? 45 : 35),
+                url: createCustomMarkerIcon(markerColor, markerSize, isCurrent),
+                scaledSize: new window.google.maps.Size(markerSize, markerSize),
+                anchor: new window.google.maps.Point(markerSize / 2, markerSize / 2),
               }}
               title={loc.activity.title}
               onClick={() => setSelectedActivity({ ...loc.activity, date: loc.date })}
-              zIndex={isCurrent ? 1000 : index}
+              zIndex={isCurrent ? 1000 : isToday ? 900 : isYesterday ? 800 : index}
             />
           );
         })}
@@ -603,64 +686,86 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
 
       {/* 범례 */}
       <div className="mt-4">
-        <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
+        <div className="flex flex-wrap items-center justify-center gap-3 text-xs">
           {travelStatus?.status === 'IN_PROGRESS' && (
             <>
-              <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 bg-blue-500 rounded-full" />
-                <span className="text-gray-600">현재 위치</span>
+              <div className="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-lg">
+                <div className="w-3 h-3 bg-blue-500 rounded-full border-2 border-blue-600" />
+                <span className="text-gray-700 dark:text-gray-200 font-medium">현재 위치</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 bg-red-500 rounded-full" />
-                <span className="text-gray-600">진행중</span>
+              <div className="flex items-center gap-1.5 bg-red-50 dark:bg-red-900/30 px-2 py-1 rounded-lg">
+                <div className="w-4 h-4 bg-red-500 rounded-full shadow-md border border-red-600" />
+                <span className="text-gray-800 dark:text-gray-100 font-bold">진행중</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-lg">
+                <div className="w-3.5 h-3.5 bg-green-500 rounded-full border border-green-600" />
+                <span className="text-gray-800 dark:text-gray-100 font-semibold">오늘</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-purple-50 dark:bg-purple-900/30 px-2 py-1 rounded-lg">
+                <div className="w-3 h-3 bg-purple-500 rounded-full border border-purple-600" />
+                <span className="text-gray-700 dark:text-gray-200">어제</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-orange-50 dark:bg-orange-900/30 px-2 py-1 rounded-lg">
+                <div className="w-3.5 h-3.5 bg-orange-500 rounded-full border border-orange-600" />
+                <span className="text-gray-700 dark:text-gray-200 font-medium">내일</span>
               </div>
             </>
           )}
           {travelStatus?.status === 'BEFORE_TRIP' && (
-            <div className="flex items-center gap-1.5">
-              <MapPin className="w-3 h-3 text-gray-600" />
-              <span className="text-gray-600">여행 일정</span>
-            </div>
+            <>
+              <div className="flex items-center gap-1.5">
+                <MapPin className="w-3 h-3 text-gray-600 dark:text-gray-300" />
+                <span className="text-gray-600 dark:text-gray-300">여행 일정</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 bg-orange-500 rounded-full" />
+                <span className="text-gray-600 dark:text-gray-300">1일차</span>
+              </div>
+            </>
           )}
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 bg-orange-500 rounded-full" />
-            <span className="text-gray-600">1일차</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 bg-yellow-500 rounded-full" />
-            <span className="text-gray-600">2일차</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 bg-green-500 rounded-full" />
-            <span className="text-gray-600">3일차</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 bg-purple-500 rounded-full" />
-            <span className="text-gray-600">4일차</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 bg-pink-500 rounded-full" />
-            <span className="text-gray-600">5일차</span>
-          </div>
+          {travelStatus?.status === 'COMPLETED' && (
+            <>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 bg-orange-500 rounded-full" />
+                <span className="text-gray-600 dark:text-gray-300">1일차</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 bg-yellow-500 rounded-full" />
+                <span className="text-gray-600 dark:text-gray-300">2일차</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 bg-green-500 rounded-full" />
+                <span className="text-gray-600 dark:text-gray-300">3일차</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 bg-purple-500 rounded-full" />
+                <span className="text-gray-600 dark:text-gray-300">4일차</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 bg-pink-500 rounded-full" />
+                <span className="text-gray-600 dark:text-gray-300">5일차</span>
+              </div>
+            </>
+          )}
           {showAmenities && (
             <>
               <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
-                <span className="text-gray-600">편의점</span>
+                <div className="w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-gray-700" />
+                <span className="text-gray-600 dark:text-gray-300">편의점</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 bg-blue-500 rounded-full border-2 border-white" />
-                <span className="text-gray-600">대형마트</span>
+                <div className="w-3 h-3 bg-blue-500 rounded-full border-2 border-white dark:border-gray-700" />
+                <span className="text-gray-600 dark:text-gray-300">대형마트</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 bg-orange-500 rounded-full border-2 border-white" />
-                <span className="text-gray-600">카페</span>
+                <div className="w-3 h-3 bg-orange-500 rounded-full border-2 border-white dark:border-gray-700" />
+                <span className="text-gray-600 dark:text-gray-300">카페</span>
               </div>
             </>
           )}
         </div>
-        <p className="text-center text-xs text-gray-500 mt-2">
-          마커를 클릭하면 상세 정보를 볼 수 있습니다
+        <p className="text-center text-xs text-gray-500 dark:text-gray-400 mt-3">
+          💡 마커를 클릭하면 상세 정보를 볼 수 있습니다
         </p>
       </div>
     </motion.div>

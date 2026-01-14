@@ -83,13 +83,13 @@ export function CurrentLocationCard() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200"
+      className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
     >
       {/* 헤더 */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <MapPin className="w-5 h-5 text-primary" />
-          <h3 className="font-semibold text-gray-800">
+          <MapPin className="w-5 h-5 text-primary dark:text-blue-400" />
+          <h3 className="font-semibold text-gray-800 dark:text-gray-100">
             현재 위치
           </h3>
         </div>
@@ -114,7 +114,7 @@ export function CurrentLocationCard() {
       {position ? (
         <div className="space-y-3">
           {/* 좌표 */}
-          <div className="text-sm text-gray-600">
+          <div className="text-sm text-gray-600 dark:text-gray-300">
             <div>위도: {position.latitude.toFixed(6)}</div>
             <div>경도: {position.longitude.toFixed(6)}</div>
             <div>정확도: ±{Math.round(position.accuracy)}m</div>
@@ -125,18 +125,18 @@ export function CurrentLocationCard() {
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="bg-primary/10 rounded-xl p-4 border border-primary/20"
+              className="bg-primary/10 dark:bg-blue-500/20 rounded-xl p-4 border border-primary/20 dark:border-blue-400/30"
             >
               <div className="flex items-center gap-3">
-                <Navigation className="w-6 h-6 text-primary flex-shrink-0" />
+                <Navigation className="w-6 h-6 text-primary dark:text-blue-400 flex-shrink-0" />
                 <div className="flex-1">
-                  <div className="text-sm text-gray-600 mb-1">
+                  <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">
                     다음 목적지
                   </div>
-                  <div className="font-bold text-gray-800">
+                  <div className="font-bold text-gray-800 dark:text-gray-100">
                     {travelStatus.currentActivity.title}
                   </div>
-                  <div className="text-sm text-primary font-semibold mt-1">
+                  <div className="text-sm text-primary dark:text-blue-400 font-semibold mt-1">
                     {distanceToNext >= 1000
                       ? `${(distanceToNext / 1000).toFixed(1)} km`
                       : `${distanceToNext} m`}

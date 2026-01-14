@@ -55,35 +55,35 @@ export const DayTimeline = memo(function DayTimeline({ day, isCurrentDay }: DayT
       transition={{ duration: 0.5 }}
       className={`mb-6 rounded-2xl border-2 overflow-hidden ${
         isCurrentDay
-          ? 'border-primary bg-primary/5 shadow-xl'
-          : 'border-gray-200 bg-white'
+          ? 'border-primary dark:border-blue-400 bg-primary/5 dark:bg-blue-900/20 shadow-xl'
+          : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'
       }`}
     >
       {/* 날짜 헤더 */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full p-4 sm:p-6 text-left hover:bg-gray-50 transition-colors"
+        className="w-full p-4 sm:p-6 text-left hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
       >
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 min-w-0 flex-1">
-            <Calendar className={`w-5 h-5 flex-shrink-0 ${isCurrentDay ? 'text-primary' : 'text-gray-500'}`} />
+            <Calendar className={`w-5 h-5 flex-shrink-0 ${isCurrentDay ? 'text-primary dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`} />
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <h2 className="text-sm sm:text-base md:text-lg font-bold text-gray-800 leading-tight truncate">
+                <h2 className="text-sm sm:text-base md:text-lg font-bold text-gray-800 dark:text-gray-100 leading-tight truncate">
                   {day.day}일차 - {day.date} ({day.dayOfWeek})
                 </h2>
                 {/* 날씨 정보 */}
                 {dayWeather && (
                   <div className="flex items-center gap-1 text-xs sm:text-sm flex-shrink-0">
                     <span className="text-lg" aria-hidden="true">{dayWeather.icon}</span>
-                    <span className="text-gray-700 font-medium whitespace-nowrap">
+                    <span className="text-gray-700 dark:text-gray-200 font-medium whitespace-nowrap">
                       {dayWeather.tempMax}°
                     </span>
                   </div>
                 )}
               </div>
               {day.meals.length > 0 && (
-                <div className="flex items-center gap-1 text-xs text-gray-600 overflow-hidden">
+                <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-300 overflow-hidden">
                   <Utensils className="w-3 h-3 flex-shrink-0" />
                   <span className="truncate block">
                     {day.meals.map(meal => `${meal.type}: ${meal.menu}`).join(' | ')}
@@ -94,8 +94,8 @@ export const DayTimeline = memo(function DayTimeline({ day, isCurrentDay }: DayT
           </div>
           <div className="flex items-center gap-2 flex-shrink-0 ml-2">
             <div className="text-right min-w-[60px]">
-              <div className="text-xs text-gray-500 whitespace-nowrap">진행률</div>
-              <div className="text-lg sm:text-xl font-bold text-primary whitespace-nowrap">{dayProgress}%</div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">진행률</div>
+              <div className="text-lg sm:text-xl font-bold text-primary dark:text-blue-400 whitespace-nowrap">{dayProgress}%</div>
             </div>
             <motion.div
               animate={{ rotate: isExpanded ? 180 : 0 }}
