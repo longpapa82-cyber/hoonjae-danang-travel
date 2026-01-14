@@ -8,6 +8,7 @@ import { BottomNavigation, TabType } from '@/components/BottomNavigation';
 import { HomePage } from '@/components/pages/HomePage';
 import { MapPage } from '@/components/pages/MapPage';
 import { SchedulePage } from '@/components/pages/SchedulePage';
+import { VietnamesePage } from '@/components/pages/VietnamesePage';
 import { SettingsPage } from '@/components/pages/SettingsPage';
 
 export default function Home() {
@@ -34,6 +35,7 @@ export default function Home() {
             {activeTab === 'home' && <HomePage />}
             {activeTab === 'map' && <MapPage />}
             {activeTab === 'schedule' && <SchedulePage />}
+            {activeTab === 'vietnamese' && <VietnamesePage />}
             {activeTab === 'settings' && <SettingsPage />}
           </main>
         </div>

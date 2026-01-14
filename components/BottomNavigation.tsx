@@ -1,11 +1,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Home, Map, Calendar, Settings } from 'lucide-react';
+import { Home, Map, Calendar, Settings, BookText } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
-export type TabType = 'home' | 'map' | 'schedule' | 'settings';
+export type TabType = 'home' | 'map' | 'schedule' | 'vietnamese' | 'settings';
 
 interface BottomNavigationProps {
   activeTab: TabType;
@@ -16,6 +16,7 @@ const tabs = [
   { id: 'home' as TabType, label: '홈', icon: Home },
   { id: 'map' as TabType, label: '지도', icon: Map },
   { id: 'schedule' as TabType, label: '일정', icon: Calendar },
+  { id: 'vietnamese' as TabType, label: '베트남어', icon: BookText },
   { id: 'settings' as TabType, label: '설정', icon: Settings },
 ];
 
@@ -25,6 +26,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     home: null,
     map: null,
     schedule: null,
+    vietnamese: null,
     settings: null,
   });
 
