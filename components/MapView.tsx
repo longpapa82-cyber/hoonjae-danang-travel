@@ -12,6 +12,7 @@ import { Activity } from '@/types/travel';
 import { Amenity } from '@/types/amenity';
 import { AMENITIES, sortAmenitiesByDistance } from '@/lib/amenities';
 import { LOCATIONS } from '@/lib/locations';
+import { combineDateAndTime, KOREA_TIMEZONE } from '@/lib/timeUtils';
 
 const mapContainerStyle = {
   width: '100%',
@@ -290,34 +291,54 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
     };
   }, [filteredLocations, travelStatus]);
 
-  // 현재 활동의 목적지 좌표 (현재 활동에 location이 없으면 다음 활동 찾기)
+  // 다음 목적지 찾기 (현재 활동 또는 다음 예정 활동) - RouteInfoCard와 동일한 로직
   const destination = useMemo(() => {
-    if (!travelStatus || travelStatus.status !== 'IN_PROGRESS') return null;
+    if (!travelStatus) return null;
 
-    // 현재 활동에 location이 있으면 사용
-    if (travelStatus.currentActivity?.location) {
-      return {
-        lat: travelStatus.currentActivity.location.latitude,
-        lng: travelStatus.currentActivity.location.longitude,
-      };
+    // 여행 중인 경우: 현재 활동의 목적지
+    if (travelStatus.status === 'IN_PROGRESS') {
+      // 현재 활동에 location이 있으면 사용
+      if (travelStatus.currentActivity?.location) {
+        return {
+          lat: travelStatus.currentActivity.location.latitude,
+          lng: travelStatus.currentActivity.location.longitude,
+        };
+      }
+
+      // 현재 활동에 location이 없으면 같은 날의 다음 활동 찾기
+      const currentDay = travelData.days.find(day => day.day === travelStatus.currentDay);
+      if (currentDay) {
+        const currentActivityIndex = currentDay.activities.findIndex(
+          a => a.id === travelStatus.currentActivity?.id
+        );
+
+        for (let i = currentActivityIndex + 1; i < currentDay.activities.length; i++) {
+          const activity = currentDay.activities[i];
+          if (activity.location) {
+            return {
+              lat: activity.location.latitude,
+              lng: activity.location.longitude,
+            };
+          }
+        }
+      }
     }
 
-    // 현재 활동에 location이 없으면 다음 활동 찾기
-    const currentDay = travelData.days.find(day => day.day === travelStatus.currentDay);
-    if (!currentDay) return null;
+    // 여행 시작 전: 전체 일정에서 다음 예정 활동 찾기
+    for (const day of travelData.days) {
+      for (const activity of day.activities) {
+        if (!activity.location) continue;
 
-    const currentActivityIndex = currentDay.activities.findIndex(
-      a => a.id === travelStatus.currentActivity?.id
-    );
+        const activityStartTime = combineDateAndTime(day.date, activity.time, KOREA_TIMEZONE);
+        const now = new Date();
 
-    // 같은 날의 다음 활동 중 location이 있는 것 찾기
-    for (let i = currentActivityIndex + 1; i < currentDay.activities.length; i++) {
-      const activity = currentDay.activities[i];
-      if (activity.location) {
-        return {
-          lat: activity.location.latitude,
-          lng: activity.location.longitude,
-        };
+        // 아직 시작하지 않은 활동 중 location이 있는 첫 번째 활동
+        if (now < activityStartTime) {
+          return {
+            lat: activity.location.latitude,
+            lng: activity.location.longitude,
+          };
+        }
       }
     }
 
