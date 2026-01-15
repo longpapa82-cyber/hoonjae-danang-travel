@@ -114,6 +114,13 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
   const [selectedActivity, setSelectedActivity] = useState<Activity & { date: string } | null>(null);
   const [selectedAmenity, setSelectedAmenity] = useState<Amenity | null>(null);
+  const [selectedTransitStop, setSelectedTransitStop] = useState<{
+    name: string;
+    lineName: string;
+    lineColor?: string;
+    type: 'departure' | 'arrival';
+    location: { lat: number; lng: number };
+  } | null>(null);
   const [centerInitialized, setCenterInitialized] = useState(false);
   const mapInitialized = useRef(false);
 
@@ -175,6 +182,73 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
       return false;
     });
   }, [allLocations, travelStatus]);
+
+  // 대중교통 정류장 추출
+  const transitStops = useMemo(() => {
+    if (!directions) {
+      console.log('🚏 No directions available');
+      return [];
+    }
+
+    const stops: Array<{
+      name: string;
+      lineName: string;
+      lineColor?: string;
+      type: 'departure' | 'arrival';
+      location: { lat: number; lng: number };
+      stepIndex: number;
+    }> = [];
+
+    const leg = directions.routes[0]?.legs[0];
+    if (!leg) {
+      console.log('🚏 No leg data in directions');
+      return [];
+    }
+
+    console.log('🚏 Analyzing directions steps:', {
+      totalSteps: leg.steps.length,
+      travelMode: directions.request?.travelMode,
+    });
+
+    leg.steps.forEach((step, index) => {
+      console.log(`  Step ${index}:`, {
+        travelMode: step.travel_mode,
+        hasTransit: !!step.transit,
+        instructions: step.instructions?.substring(0, 50),
+      });
+
+      if (step.transit) {
+        // 승차 정류장
+        stops.push({
+          name: step.transit.departure_stop.name,
+          lineName: step.transit.line.short_name || step.transit.line.name,
+          lineColor: step.transit.line.color,
+          type: 'departure',
+          location: {
+            lat: step.transit.departure_stop.location.lat(),
+            lng: step.transit.departure_stop.location.lng(),
+          },
+          stepIndex: index,
+        });
+
+        // 하차 정류장
+        stops.push({
+          name: step.transit.arrival_stop.name,
+          lineName: step.transit.line.short_name || step.transit.line.name,
+          lineColor: step.transit.line.color,
+          type: 'arrival',
+          location: {
+            lat: step.transit.arrival_stop.location.lat(),
+            lng: step.transit.arrival_stop.location.lng(),
+          },
+          stepIndex: index,
+        });
+      }
+    });
+
+    console.log('🚏 Transit stops extracted:', stops.length, stops);
+    return stops;
+  }, [directions]);
 
   // 전체 여행 경로 (완료된 경로 vs 남은 경로) - 필터링된 위치 기준
   const routePaths = useMemo(() => {
@@ -341,13 +415,40 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
 
     const directionsService = new google.maps.DirectionsService();
 
-    // 경로 계산 시도 (DRIVING → TRANSIT → 실패)
-    const tryDirections = (travelMode: google.maps.TravelMode) => {
+    // 한국 좌표 확인 (33-39 위도)
+    const isKorea = position.latitude > 33 && position.latitude < 39;
+
+    // 베트남 좌표 확인 (8-24 위도, 102-110 경도)
+    const isVietnam =
+      position.latitude > 8 && position.latitude < 24 &&
+      position.longitude > 102 && position.longitude < 110;
+
+    // 국내 여행 여부 (한국 또는 베트남)
+    const isDomestic = isKorea || isVietnam;
+
+    console.log('[MapView] 위치 분석:', {
+      isKorea,
+      isVietnam,
+      isDomestic,
+      position: { lat: position.latitude, lng: position.longitude },
+    });
+
+    // 경로 계산 시도 (국내: TRANSIT → DRIVING, 해외: DRIVING만)
+    const tryDirections = (travelMode: google.maps.TravelMode, fallbackMode?: google.maps.TravelMode) => {
       const request: google.maps.DirectionsRequest = {
         origin: { lat: position.latitude, lng: position.longitude },
         destination: destination,
         travelMode: travelMode,
       };
+
+      // TRANSIT 모드일 때 region 설정
+      if (travelMode === google.maps.TravelMode.TRANSIT) {
+        if (isKorea) {
+          (request as any).region = 'KR';
+        } else if (isVietnam) {
+          (request as any).region = 'VN';
+        }
+      }
 
       // DRIVING 모드일 때만 실시간 교통 정보 추가
       if (travelMode === google.maps.TravelMode.DRIVING) {
@@ -364,10 +465,10 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
           console.log(`[MapView] 경로 계산 성공 (${travelMode})`);
           setDirections(result);
         } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
-          // DRIVING 실패 시 TRANSIT 시도
-          if (travelMode === google.maps.TravelMode.DRIVING) {
-            console.warn('[MapView] DRIVING 경로 없음 → TRANSIT 시도');
-            tryDirections(google.maps.TravelMode.TRANSIT);
+          // fallback 모드가 있으면 시도
+          if (fallbackMode) {
+            console.warn(`[MapView] ${travelMode} 경로 없음 → ${fallbackMode} 시도`);
+            tryDirections(fallbackMode);
           } else {
             console.error('[MapView] 모든 교통수단으로 경로를 찾을 수 없습니다');
             setDirections(null);
@@ -380,13 +481,27 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
             destination,
             distance: `${distance.toFixed(2)}km`,
           });
-          setDirections(null);
+
+          // fallback 모드가 있으면 재시도
+          if (fallbackMode) {
+            console.warn(`[MapView] ${travelMode} 실패 → ${fallbackMode} 재시도`);
+            tryDirections(fallbackMode);
+          } else {
+            setDirections(null);
+          }
         }
       });
     };
 
-    // DRIVING 모드로 먼저 시도
-    tryDirections(google.maps.TravelMode.DRIVING);
+    // 국내 여행: TRANSIT 우선 시도 → DRIVING fallback
+    // 해외 여행: DRIVING만 시도
+    if (isDomestic) {
+      console.log('[MapView] 🚆 국내 여행: TRANSIT 모드 우선 시도');
+      tryDirections(google.maps.TravelMode.TRANSIT, google.maps.TravelMode.DRIVING);
+    } else {
+      console.log('[MapView] 🚗 해외 여행: DRIVING 모드만 시도');
+      tryDirections(google.maps.TravelMode.DRIVING);
+    }
   }, [position, isLoaded, travelStatus, destination]);
 
   // 여행 전 또는 여행 시작 시점에는 첫 번째 일정 위치로 지도 표시 (map 객체 직접 조작)
@@ -644,6 +759,32 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
           />
         ))}
 
+        {/* 대중교통 정류장 마커 */}
+        {transitStops.map((stop, index) => (
+          <Marker
+            key={`transit-stop-${index}`}
+            position={stop.location}
+            icon={{
+              path: stop.type === 'departure'
+                ? window.google.maps.SymbolPath.FORWARD_CLOSED_ARROW
+                : window.google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
+              scale: 6,
+              fillColor: stop.type === 'departure' ? '#10B981' : '#EF4444',
+              fillOpacity: 1,
+              strokeColor: '#ffffff',
+              strokeWeight: 2,
+              rotation: stop.type === 'departure' ? 0 : 180,
+            }}
+            title={`${stop.type === 'departure' ? '승차' : '하차'}: ${stop.name}`}
+            onClick={() => {
+              setSelectedTransitStop(stop);
+              setSelectedActivity(null);
+              setSelectedAmenity(null);
+            }}
+            zIndex={600}
+          />
+        ))}
+
         {/* 여행 일정 정보 창 */}
         {selectedActivity && selectedActivity.location && (
           <InfoWindow
@@ -699,6 +840,34 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
                 {selectedAmenity.description && (
                   <p className="text-xs text-gray-600 mt-1">{selectedAmenity.description}</p>
                 )}
+              </div>
+            </div>
+          </InfoWindow>
+        )}
+
+        {/* 대중교통 정류장 정보 창 */}
+        {selectedTransitStop && (
+          <InfoWindow
+            position={selectedTransitStop.location}
+            onCloseClick={() => setSelectedTransitStop(null)}
+          >
+            <div className="p-2 max-w-xs">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg">
+                  {selectedTransitStop.type === 'departure' ? '🟢' : '🔴'}
+                </span>
+                <h3 className="font-bold text-gray-800">
+                  {selectedTransitStop.type === 'departure' ? '승차 정류장' : '하차 정류장'}
+                </h3>
+              </div>
+              <p className="text-sm font-medium text-gray-800 mb-2">{selectedTransitStop.name}</p>
+              <div className="flex items-center gap-2">
+                <span
+                  className="px-2 py-0.5 rounded text-xs font-bold text-white"
+                  style={{ backgroundColor: selectedTransitStop.lineColor || '#3B82F6' }}
+                >
+                  {selectedTransitStop.lineName}
+                </span>
               </div>
             </div>
           </InfoWindow>
@@ -797,6 +966,18 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
               <div className="flex items-center gap-1.5">
                 <div className="w-3 h-3 bg-orange-500 rounded-full border-2 border-white dark:border-gray-700" />
                 <span className="text-gray-600 dark:text-gray-300">카페</span>
+              </div>
+            </>
+          )}
+          {transitStops.length > 0 && (
+            <>
+              <div className="flex items-center gap-1.5 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-lg">
+                <span className="text-sm">🟢</span>
+                <span className="text-gray-700 dark:text-gray-200">승차 정류장</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-red-50 dark:bg-red-900/30 px-2 py-1 rounded-lg">
+                <span className="text-sm">🔴</span>
+                <span className="text-gray-700 dark:text-gray-200">하차 정류장</span>
               </div>
             </>
           )}
