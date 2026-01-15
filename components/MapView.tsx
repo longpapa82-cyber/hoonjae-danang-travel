@@ -382,13 +382,14 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
     return R * c;
   };
 
-  // 경로 계산 (여행 중일 때만)
+  // 경로 계산 (목적지가 있을 때)
   useEffect(() => {
-    // 여행 상태가 없거나, 여행 중이 아니면 실행 안 함
-    if (!travelStatus || travelStatus.status !== 'IN_PROGRESS') {
+    // 여행 상태가 없으면 실행 안 함
+    if (!travelStatus) {
       return;
     }
 
+    // 위치, 지도 로드, destination 확인
     if (!position || !isLoaded || !window.google || !destination) {
       return;
     }
