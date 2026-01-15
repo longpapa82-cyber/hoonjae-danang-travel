@@ -9,7 +9,7 @@ export const LOCATIONS: Record<string, Location> = {
   INCHEON_AIRPORT: {
     latitude: 37.4602,
     longitude: 126.4407,
-    address: 'Incheon International Airport Terminal 2, Jung-gu, Incheon, South Korea',
+    address: '인천광역시 중구 공항로 272 인천국제공항 제2여객터미널',
   },
   DANANG_AIRPORT: {
     latitude: 16.0439,

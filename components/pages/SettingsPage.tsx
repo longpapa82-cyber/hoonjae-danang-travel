@@ -14,6 +14,7 @@ import {
   Moon,
   Sun,
   Sparkles,
+  Trash2,
 } from 'lucide-react';
 import { useTheme, ThemeMode } from '@/contexts/ThemeContext';
 
@@ -53,7 +54,7 @@ export const SettingsPage = memo(function SettingsPage() {
   // 빠른 설정 함수
   const setQuickTest = (scenario: string) => {
     const scenarios: Record<string, string> = {
-      '1일차-시작': '2026-01-15T13:00:00+09:00',
+      '1일차-시작': '2026-01-15T10:00:00+09:00',
       '1일차-공항': '2026-01-15T15:00:00+09:00',
       '1일차-도착': '2026-01-15T22:00:00+09:00',
       '2일차-아침': '2026-01-16T09:00:00+09:00',
@@ -176,14 +177,14 @@ export const SettingsPage = memo(function SettingsPage() {
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Bell className="w-5 h-5 text-blue-600" />
+              <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
+                <Bell className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-800">
+                <h3 className="font-semibold text-gray-800 dark:text-gray-100">
                   알림
                 </h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   일정 알림 받기
                 </p>
               </div>
@@ -193,7 +194,7 @@ export const SettingsPage = memo(function SettingsPage() {
               className={`relative w-14 h-8 rounded-full transition-colors ${
                 notifications
                   ? 'bg-primary'
-                  : 'bg-gray-300'
+                  : 'bg-gray-300 dark:bg-gray-600'
               }`}
             >
               <motion.div
@@ -211,18 +212,18 @@ export const SettingsPage = memo(function SettingsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200"
+          className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <MapPin className="w-5 h-5 text-green-600" />
+              <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
+                <MapPin className="w-5 h-5 text-green-600 dark:text-green-400" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-800">
+                <h3 className="font-semibold text-gray-800 dark:text-gray-100">
                   위치 추적
                 </h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   실시간 위치 공유
                 </p>
               </div>
@@ -232,7 +233,7 @@ export const SettingsPage = memo(function SettingsPage() {
               className={`relative w-14 h-8 rounded-full transition-colors ${
                 locationTracking
                   ? 'bg-primary'
-                  : 'bg-gray-300'
+                  : 'bg-gray-300 dark:bg-gray-600'
               }`}
             >
               <motion.div
@@ -250,18 +251,18 @@ export const SettingsPage = memo(function SettingsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200"
+          className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
         >
           <button className="w-full flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <Globe className="w-5 h-5 text-purple-600" />
+              <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg">
+                <Globe className="w-5 h-5 text-purple-600 dark:text-purple-400" />
               </div>
               <div className="text-left">
-                <h3 className="font-semibold text-gray-800">
+                <h3 className="font-semibold text-gray-800 dark:text-gray-100">
                   언어
                 </h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   한국어
                 </p>
               </div>
@@ -275,30 +276,30 @@ export const SettingsPage = memo(function SettingsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200"
+          className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
         >
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 bg-red-100 rounded-lg">
-              <Calendar className="w-5 h-5 text-red-600" />
+            <div className="p-2 bg-red-100 dark:bg-red-900 rounded-lg">
+              <Calendar className="w-5 h-5 text-red-600 dark:text-red-400" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-800">
+              <h3 className="font-semibold text-gray-800 dark:text-gray-100">
                 테스트 모드
               </h3>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 {testMode ? '활성화됨' : '비활성화됨'}
               </p>
             </div>
           </div>
 
           {testMode && (
-            <div className="mb-4 p-3 bg-red-50 rounded-lg">
-              <p className="text-sm text-red-700 font-medium">
+            <div className="mb-4 p-3 bg-red-50 dark:bg-red-950 rounded-lg">
+              <p className="text-sm text-red-700 dark:text-red-300 font-medium">
                 현재 시간: {new Date(testDate).toLocaleString('ko-KR')}
               </p>
               <button
                 onClick={resetTestMode}
-                className="mt-2 flex items-center gap-2 text-sm text-red-600 hover:text-red-700 font-medium"
+                className="mt-2 flex items-center gap-2 text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium"
               >
                 <RotateCcw className="w-4 h-4" />
                 실제 시간으로 복구
@@ -307,41 +308,41 @@ export const SettingsPage = memo(function SettingsPage() {
           )}
 
           <div className="space-y-2">
-            <p className="text-sm font-medium text-gray-700 mb-2">빠른 테스트:</p>
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">빠른 테스트:</p>
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => setQuickTest('1일차-시작')}
-                className="px-3 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm hover:bg-blue-100 transition-colors"
+                className="px-3 py-2 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 rounded-lg text-sm hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
               >
                 1일차 시작
               </button>
               <button
                 onClick={() => setQuickTest('1일차-도착')}
-                className="px-3 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm hover:bg-blue-100 transition-colors"
+                className="px-3 py-2 bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 rounded-lg text-sm hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors"
               >
                 1일차 도착
               </button>
               <button
                 onClick={() => setQuickTest('2일차-마사지')}
-                className="px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm hover:bg-green-100 transition-colors"
+                className="px-3 py-2 bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300 rounded-lg text-sm hover:bg-green-100 dark:hover:bg-green-900 transition-colors"
               >
                 2일차 마사지
               </button>
               <button
                 onClick={() => setQuickTest('2일차-호이안')}
-                className="px-3 py-2 bg-green-50 text-green-700 rounded-lg text-sm hover:bg-green-100 transition-colors"
+                className="px-3 py-2 bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300 rounded-lg text-sm hover:bg-green-100 dark:hover:bg-green-900 transition-colors"
               >
                 2일차 호이안
               </button>
               <button
                 onClick={() => setQuickTest('3일차-바나힐스')}
-                className="px-3 py-2 bg-purple-50 text-purple-700 rounded-lg text-sm hover:bg-purple-100 transition-colors"
+                className="px-3 py-2 bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 rounded-lg text-sm hover:bg-purple-100 dark:hover:bg-purple-900 transition-colors"
               >
                 3일차 바나힐스
               </button>
               <button
                 onClick={() => setQuickTest('4일차-대성당')}
-                className="px-3 py-2 bg-orange-50 text-orange-700 rounded-lg text-sm hover:bg-orange-100 transition-colors"
+                className="px-3 py-2 bg-orange-50 dark:bg-orange-950 text-orange-700 dark:text-orange-300 rounded-lg text-sm hover:bg-orange-100 dark:hover:bg-orange-900 transition-colors"
               >
                 4일차 대성당
               </button>
@@ -349,22 +350,62 @@ export const SettingsPage = memo(function SettingsPage() {
           </div>
         </motion.div>
 
-        {/* 앱 정보 */}
+        {/* 데이터 초기화 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200"
+          className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
         >
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-orange-100 rounded-lg">
-              <Info className="w-5 h-5 text-orange-600" />
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-red-100 dark:bg-red-900 rounded-lg">
+              <Trash2 className="w-5 h-5 text-red-600 dark:text-red-400" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-800">
+              <h3 className="font-semibold text-gray-800 dark:text-gray-100">
+                데이터 초기화
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                앱 데이터 삭제
+              </p>
+            </div>
+          </div>
+
+          <div className="mb-4 p-3 bg-red-50 dark:bg-red-950 rounded-lg">
+            <p className="text-sm text-red-700 dark:text-red-300">
+              ⚠️ 여행 진행 상태, 즐겨찾기 등 모든 저장된 데이터가 삭제됩니다.
+            </p>
+          </div>
+
+          <button
+            onClick={() => {
+              if (window.confirm('정말로 모든 데이터를 삭제하시겠습니까?\n\n삭제된 데이터는 복구할 수 없습니다.')) {
+                localStorage.clear();
+                window.location.reload();
+              }
+            }}
+            className="w-full px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
+          >
+            모든 데이터 삭제
+          </button>
+        </motion.div>
+
+        {/* 앱 정보 */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+        >
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-orange-100 dark:bg-orange-900 rounded-lg">
+              <Info className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-800 dark:text-gray-100">
                 앱 정보
               </h3>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 버전 1.0.0
               </p>
             </div>

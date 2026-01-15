@@ -13,6 +13,25 @@ export interface RouteInfo {
   durationInTraffic?: number; // 초 (교통 상황 반영)
   polyline: string; // Encoded polyline
   steps: RouteStep[];
+  travelMode?: 'DRIVING' | 'TRANSIT' | 'WALKING' | 'BICYCLING'; // 교통수단
+}
+
+export interface TransitDetails {
+  line: {
+    name: string; // 노선명 (예: "146번 버스")
+    short_name?: string; // 짧은 이름
+    vehicle: string; // 교통수단 종류 (BUS, SUBWAY, TRAIN 등)
+    color?: string; // 노선 색상
+  };
+  departure_stop: {
+    name: string; // 승차 정류장명
+    location: { lat: number; lng: number };
+  };
+  arrival_stop: {
+    name: string; // 하차 정류장명
+    location: { lat: number; lng: number };
+  };
+  num_stops: number; // 정거장 수
 }
 
 export interface RouteStep {
@@ -21,6 +40,8 @@ export interface RouteStep {
   duration: number;
   startLocation: { lat: number; lng: number };
   endLocation: { lat: number; lng: number };
+  transit?: TransitDetails; // 대중교통 상세 정보 (TRANSIT 모드일 때만)
+  travel_mode?: string; // 이동 수단 (WALKING, TRANSIT 등)
 }
 
 export interface RouteOptions {

@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Navigation, Clock, TrendingUp, AlertCircle, Loader } from 'lucide-react';
+import { Navigation, Clock, TrendingUp, AlertCircle, Loader, Train, Bus, ArrowRight, MapPin } from 'lucide-react';
 import { useLocation } from '@/hooks/useLocation';
 import { useTravelStatus } from '@/hooks/useTravelStatus';
 import { useGoogleMaps } from '@/hooks/useGoogleMaps';
 import { routeService, RouteInfo } from '@/lib/services/RouteService';
 import { travelData } from '@/lib/travelData';
+import { combineDateAndTime, KOREA_TIMEZONE } from '@/lib/timeUtils';
 
 export function RouteInfoCard() {
   const travelStatus = useTravelStatus();
@@ -21,38 +22,44 @@ export function RouteInfoCard() {
   const [isCalculating, setIsCalculating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // 현재 활동의 목적지 좌표 (현재 활동에 location이 없으면 다음 활동 찾기)
-  const destination = useMemo(() => {
-    if (!travelStatus || travelStatus.status !== 'IN_PROGRESS') return null;
+  // 다음 목적지 찾기 (현재 활동 또는 다음 예정 활동)
+  const { destination, nextActivity } = useMemo(() => {
+    if (!travelStatus || travelStatus.status !== 'IN_PROGRESS') {
+      return { destination: null, nextActivity: null };
+    }
 
-    // 현재 활동에 location이 있으면 사용
+    // 현재 활동이 있고 location이 있으면 사용
     if (travelStatus.currentActivity?.location) {
       return {
-        lat: travelStatus.currentActivity.location.latitude,
-        lng: travelStatus.currentActivity.location.longitude,
+        destination: {
+          lat: travelStatus.currentActivity.location.latitude,
+          lng: travelStatus.currentActivity.location.longitude,
+        },
+        nextActivity: travelStatus.currentActivity
       };
     }
 
-    // 현재 활동에 location이 없으면 다음 활동 찾기
-    const currentDay = travelData.days.find(day => day.day === travelStatus.currentDay);
-    if (!currentDay) return null;
+    // 현재 활동이 없거나 location이 없으면 다음 활동 찾기
+    // 전체 일정에서 다음 예정 활동 찾기
+    for (const day of travelData.days) {
+      for (const activity of day.activities) {
+        const activityStartTime = combineDateAndTime(day.date, activity.time, KOREA_TIMEZONE);
+        const now = new Date();
 
-    const currentActivityIndex = currentDay.activities.findIndex(
-      a => a.id === travelStatus.currentActivity?.id
-    );
-
-    // 같은 날의 다음 활동 중 location이 있는 것 찾기
-    for (let i = currentActivityIndex + 1; i < currentDay.activities.length; i++) {
-      const activity = currentDay.activities[i];
-      if (activity.location) {
-        return {
-          lat: activity.location.latitude,
-          lng: activity.location.longitude,
-        };
+        // 아직 시작하지 않은 활동 중 location이 있는 첫 번째 활동
+        if (now < activityStartTime && activity.location) {
+          return {
+            destination: {
+              lat: activity.location.latitude,
+              lng: activity.location.longitude,
+            },
+            nextActivity: activity
+          };
+        }
       }
     }
 
-    return null;
+    return { destination: null, nextActivity: null };
   }, [travelStatus]);
 
   // 두 좌표 간 직선 거리 계산 (km)
@@ -82,8 +89,8 @@ export function RouteInfoCard() {
       hasPosition: !!position,
       position,
       isLoaded,
-      hasActivity: !!travelStatus?.currentActivity,
-      activity: travelStatus?.currentActivity?.title,
+      hasNextActivity: !!nextActivity,
+      nextActivity: nextActivity?.title,
       hasDestination: !!destination,
       destination
     });
@@ -94,11 +101,11 @@ export function RouteInfoCard() {
       return;
     }
 
-    if (!position || !isLoaded || !travelStatus.currentActivity || !destination) {
+    if (!position || !isLoaded || !nextActivity || !destination) {
       console.log('RouteInfoCard: 경로 계산 건너뛰기 - 필수 조건 미충족', {
         position: !!position,
         isLoaded,
-        currentActivity: !!travelStatus.currentActivity,
+        nextActivity: !!nextActivity,
         destination: !!destination
       });
       return;
@@ -140,42 +147,124 @@ export function RouteInfoCard() {
         let originParam: any = position;
         let destinationParam: any = destination;
 
-        if (isKorea && travelStatus?.currentActivity) {
+        if (isKorea && nextActivity?.location?.address) {
           // 한국인 경우 주소 문자열 사용
-          // travelData에서 현재 활동 찾기
-          const currentDay = travelData.days.find(d => d.day === travelStatus.currentDay);
-          const currentActivity = currentDay?.activities.find(a => a.id === travelStatus.currentActivity?.id);
-
-          // 현재 활동에 location이 없으면 다음 활동 찾기
-          let targetActivity = currentActivity;
-          if (currentActivity && !currentActivity.location && currentDay) {
-            const currentIndex = currentDay.activities.indexOf(currentActivity);
-            for (let i = currentIndex + 1; i < currentDay.activities.length; i++) {
-              if (currentDay.activities[i].location) {
-                targetActivity = currentDay.activities[i];
-                break;
-              }
-            }
-          }
-
-          if (targetActivity?.location?.address) {
-            // 목적지에 주소가 있으면 주소 사용
-            console.log('🏠 한국 주소 사용:', targetActivity.location.address);
-            destinationParam = targetActivity.location.address;
-          }
+          console.log('🏠 한국 주소 사용:', nextActivity.location.address);
+          destinationParam = nextActivity.location.address;
         }
 
-        const route = await routeService.calculateRoute(originParam, destinationParam, {
+        // DRIVING 모드로 먼저 시도
+        console.log('🚗 DRIVING 모드로 경로 계산 시도');
+        let route = await routeService.calculateRoute(originParam, destinationParam, {
           departureTime: new Date(),
           trafficModel: 'best_guess',
         });
 
-        // route가 null인 경우 (ZERO_RESULTS) 처리
+        // DRIVING이 실패하면 TRANSIT 시도
+        if (route === null && isKorea) {
+          console.warn('⚠️ DRIVING 실패 → TRANSIT 모드로 재시도');
+
+          // TRANSIT은 좌표만 사용 (주소는 TRANSIT에서 문제가 될 수 있음)
+          const transitOrigin = { lat: position.latitude, lng: position.longitude };
+          const transitDestination = { lat: destination.lat, lng: destination.lng };
+
+          // RouteService에 TRANSIT 모드를 직접 호출할 수 없으므로,
+          // Google Maps Directions API를 직접 호출
+          if (window.google?.maps) {
+            const directionsService = new google.maps.DirectionsService();
+
+            await new Promise<void>((resolve, reject) => {
+              directionsService.route(
+                {
+                  origin: transitOrigin,
+                  destination: transitDestination,
+                  travelMode: google.maps.TravelMode.TRANSIT,
+                  region: 'KR',
+                },
+                (result, status) => {
+                  console.log('[RouteInfoCard] TRANSIT API 응답:', status);
+
+                  if (status === google.maps.DirectionsStatus.OK && result) {
+                    const leg = result.routes[0].legs[0];
+                    route = {
+                      distance: leg.distance?.value || 0,
+                      duration: leg.duration?.value || 0,
+                      durationInTraffic: leg.duration?.value, // TRANSIT은 실시간 교통 없음
+                      polyline: result.routes[0].overview_polyline,
+                      steps: leg.steps.map((step) => {
+                        const baseStep: any = {
+                          instruction: step.instructions,
+                          distance: step.distance?.value || 0,
+                          duration: step.duration?.value || 0,
+                          startLocation: {
+                            lat: step.start_location.lat(),
+                            lng: step.start_location.lng(),
+                          },
+                          endLocation: {
+                            lat: step.end_location.lat(),
+                            lng: step.end_location.lng(),
+                          },
+                          travel_mode: step.travel_mode,
+                        };
+
+                        // TRANSIT 세부 정보 추가
+                        if (step.transit) {
+                          baseStep.transit = {
+                            line: {
+                              name: step.transit.line.name || '',
+                              short_name: step.transit.line.short_name,
+                              vehicle: step.transit.line.vehicle?.type || 'BUS',
+                              color: step.transit.line.color,
+                            },
+                            departure_stop: {
+                              name: step.transit.departure_stop.name,
+                              location: {
+                                lat: step.transit.departure_stop.location.lat(),
+                                lng: step.transit.departure_stop.location.lng(),
+                              },
+                            },
+                            arrival_stop: {
+                              name: step.transit.arrival_stop.name,
+                              location: {
+                                lat: step.transit.arrival_stop.location.lat(),
+                                lng: step.transit.arrival_stop.location.lng(),
+                              },
+                            },
+                            num_stops: step.transit.num_stops || 0,
+                          };
+                        }
+
+                        return baseStep;
+                      }),
+                      travelMode: 'TRANSIT', // 대중교통 모드 표시
+                    };
+                    console.log('✅ TRANSIT 경로 계산 성공', {
+                      steps: route.steps.length,
+                      transitSteps: route.steps.filter((s: any) => s.transit).length
+                    });
+                    resolve();
+                  } else {
+                    console.warn('⚠️ TRANSIT도 실패:', status);
+                    resolve(); // 에러가 아니라 경로 없음
+                  }
+                }
+              );
+            });
+          }
+        }
+
+        // 최종 결과 설정
         if (route === null) {
-          console.warn('⚠️ 경로를 찾을 수 없습니다 (비행기/배 구간일 수 있음)');
+          console.warn('⚠️ 모든 교통수단으로 경로를 찾을 수 없습니다');
           setRouteInfo(null);
           setError(null);
         } else {
+          console.log('📍 RouteInfo 설정:', {
+            distance: route.distance,
+            duration: route.duration,
+            travelMode: route.travelMode,
+            hasSteps: route.steps.length
+          });
           setRouteInfo(route);
         }
       } catch (err: any) {
@@ -198,7 +287,7 @@ export function RouteInfoCard() {
     // 60초마다 경로 재계산 (실시간 교통 정보 반영) - 떨림 방지를 위해 간격 증가
     const interval = setInterval(calculateRoute, 60000);
     return () => clearInterval(interval);
-  }, [position, isLoaded, travelStatus, destination]);
+  }, [position, isLoaded, travelStatus, destination, nextActivity]);
 
   // API 키 누락 에러
   if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY === 'YOUR_API_KEY_HERE') {
@@ -255,20 +344,20 @@ export function RouteInfoCard() {
   }
 
   // 위치 정보 없음 또는 여행 전
-  if (!position || travelStatus?.status === 'BEFORE_TRIP' || !travelStatus?.currentActivity) {
+  if (!position || travelStatus?.status === 'BEFORE_TRIP') {
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-blue-50 rounded-2xl p-6 shadow-lg border border-blue-200"
+        className="bg-blue-50 dark:bg-blue-950 rounded-2xl p-6 shadow-lg border border-blue-200 dark:border-blue-800"
       >
         <div className="flex items-center gap-3">
-          <Navigation className="w-5 h-5 text-blue-600" />
+          <Navigation className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           <div>
-            <h3 className="font-semibold text-gray-800 mb-1">
+            <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-1">
               실시간 경로 안내
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
               여행이 시작되면 현재 위치에서 다음 목적지까지의 실시간 경로와 소요시간을 확인할 수 있습니다.
             </p>
           </div>
@@ -305,15 +394,15 @@ export function RouteInfoCard() {
       )}
 
       {/* 경로 정보 */}
-      {routeInfo && (
+      {routeInfo && nextActivity && (
         <div className="space-y-4">
           {/* 목적지 */}
           <div>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-              다음 목적지
+              {travelStatus?.currentActivity ? '현재 목적지' : '다음 목적지'}
             </p>
             <p className="font-bold text-lg text-gray-800 dark:text-gray-100">
-              {travelStatus.currentActivity.title}
+              {nextActivity.title}
             </p>
           </div>
 
@@ -366,8 +455,84 @@ export function RouteInfoCard() {
               </motion.div>
             )}
 
+          {/* 대중교통 안내 */}
+          {routeInfo.travelMode === 'TRANSIT' && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-blue-50 dark:bg-blue-950 rounded-xl p-4 border border-blue-200 dark:border-blue-800 space-y-3"
+            >
+              {/* 대중교통 헤더 */}
+              <div className="flex items-center gap-2">
+                <Train className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                <p className="text-sm text-blue-700 dark:text-blue-300 font-medium">
+                  대중교통 경로 (버스/지하철)
+                </p>
+              </div>
+
+              {/* 대중교통 상세 경로 */}
+              <div className="space-y-2">
+                {routeInfo.steps.filter((step: any) => step.transit).map((step: any, index: number) => (
+                  <div
+                    key={index}
+                    className="bg-white dark:bg-gray-800 rounded-lg p-3 border border-blue-100 dark:border-blue-900"
+                  >
+                    {/* 노선 정보 */}
+                    <div className="flex items-center gap-2 mb-2">
+                      <Bus className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                      <span
+                        className="px-2 py-0.5 rounded text-xs font-bold text-white"
+                        style={{ backgroundColor: step.transit.line.color || '#3B82F6' }}
+                      >
+                        {step.transit.line.short_name || step.transit.line.name}
+                      </span>
+                      <span className="text-xs text-gray-600 dark:text-gray-400">
+                        {step.transit.num_stops}개 정거장
+                      </span>
+                    </div>
+
+                    {/* 승차/하차 정보 */}
+                    <div className="space-y-1.5 text-xs">
+                      <div className="flex items-start gap-1.5">
+                        <MapPin className="w-3 h-3 text-green-600 dark:text-green-400 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <span className="text-gray-500 dark:text-gray-400">승차: </span>
+                          <span className="text-gray-800 dark:text-gray-200 font-medium">
+                            {step.transit.departure_stop.name}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-1.5">
+                        <MapPin className="w-3 h-3 text-red-600 dark:text-red-400 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <span className="text-gray-500 dark:text-gray-400">하차: </span>
+                          <span className="text-gray-800 dark:text-gray-200 font-medium">
+                            {step.transit.arrival_stop.name}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 소요 시간 */}
+                    <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                      약 {routeService.formatDuration(step.duration)}
+                    </div>
+                  </div>
+                ))}
+
+                {/* 도보 구간 안내 */}
+                {routeInfo.steps.some((step: any) => step.travel_mode === 'WALKING') && (
+                  <div className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
+                    <ArrowRight className="w-3 h-3" />
+                    <span>도보 이동 구간 포함</span>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+
           {/* 업데이트 시간 */}
-          <p className="text-xs text-gray-500 text-center">
+          <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
             60초마다 자동 업데이트
           </p>
         </div>
