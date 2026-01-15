@@ -327,29 +327,66 @@ export const MapView = memo(function MapView({ showAmenities = false, onAmenityS
       destination.lng
     );
 
+    console.log('[MapView] 경로 계산 시도:', {
+      origin: { lat: position.latitude, lng: position.longitude },
+      destination,
+      distance: `${distance.toFixed(2)}km`,
+    });
+
     if (distance > 100) {
+      console.log('[MapView] 거리가 100km를 초과하여 경로 계산 스킵:', distance);
       setDirections(null);
       return;
     }
 
     const directionsService = new google.maps.DirectionsService();
 
-    directionsService.route(
-      {
+    // 경로 계산 시도 (DRIVING → TRANSIT → 실패)
+    const tryDirections = (travelMode: google.maps.TravelMode) => {
+      const request: google.maps.DirectionsRequest = {
         origin: { lat: position.latitude, lng: position.longitude },
         destination: destination,
-        travelMode: google.maps.TravelMode.DRIVING,
-        drivingOptions: {
+        travelMode: travelMode,
+      };
+
+      // DRIVING 모드일 때만 실시간 교통 정보 추가
+      if (travelMode === google.maps.TravelMode.DRIVING) {
+        (request as any).drivingOptions = {
           departureTime: new Date(),
           trafficModel: google.maps.TrafficModel.BEST_GUESS,
-        },
-      },
-      (result, status) => {
-        if (status === google.maps.DirectionsStatus.OK && result) {
-          setDirections(result);
-        }
+        };
       }
-    );
+
+      directionsService.route(request, (result, status) => {
+        console.log(`[MapView] Directions API 응답 (${travelMode}):`, status);
+
+        if (status === google.maps.DirectionsStatus.OK && result) {
+          console.log(`[MapView] 경로 계산 성공 (${travelMode})`);
+          setDirections(result);
+        } else if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
+          // DRIVING 실패 시 TRANSIT 시도
+          if (travelMode === google.maps.TravelMode.DRIVING) {
+            console.warn('[MapView] DRIVING 경로 없음 → TRANSIT 시도');
+            tryDirections(google.maps.TravelMode.TRANSIT);
+          } else {
+            console.error('[MapView] 모든 교통수단으로 경로를 찾을 수 없습니다');
+            setDirections(null);
+          }
+        } else {
+          console.error('[MapView] 경로 계산 실패:', {
+            status,
+            travelMode,
+            origin: { lat: position.latitude, lng: position.longitude },
+            destination,
+            distance: `${distance.toFixed(2)}km`,
+          });
+          setDirections(null);
+        }
+      });
+    };
+
+    // DRIVING 모드로 먼저 시도
+    tryDirections(google.maps.TravelMode.DRIVING);
   }, [position, isLoaded, travelStatus, destination]);
 
   // 여행 전 또는 여행 시작 시점에는 첫 번째 일정 위치로 지도 표시 (map 객체 직접 조작)

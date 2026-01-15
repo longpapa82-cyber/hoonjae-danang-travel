@@ -3,7 +3,7 @@ import { LOCATIONS } from './locations';
 
 export const travelData: TravelData = {
   title: '다낭 여행',
-  startDate: '2026-01-15T13:00:00+09:00', // 한국 시간
+  startDate: '2026-01-15T10:00:00+09:00', // 한국 시간
   endDate: '2026-01-19T08:00:00+09:00',
   days: [
     {
@@ -13,7 +13,7 @@ export const travelData: TravelData = {
       activities: [
         {
           id: '1-1',
-          time: '13:00',
+          time: '10:00',
           title: '집에서 출발',
         },
         {
